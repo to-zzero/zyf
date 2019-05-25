@@ -1,0 +1,67 @@
+html, body {
+  width: 100%;
+  min-height: 100vh;
+}
+
+body {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  font-size: 16px;
+  min-width: 1200px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  line-height: 1.5;
+}
+
+.ul-reset {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flex-box {
+  display: flex;
+
+  &.space-between {
+    justify-content: space-between;
+  }
+  &.spacee-around {
+    justify-content: space-around;
+  }
+
+  &.align-center {
+    align-items: center;
+  }
+
+  .flex-1 {
+    flex: 1;
+  }
+}
+
+@for $i from 0 through 20 {
+  .mg-t#{$i * 4} {
+    margin-top: #{$i * 4}px;
+  }
+  .mg-b#{$i * 4} {
+    margin-bottom: #{$i * 4}px;
+  }
+  .mg-l#{$i * 4} {
+    margin-left: #{$i * 4}px;
+  }
+  .mg-r#{$i * 4} {
+    margin-right: #{$i * 4}px;
+  }
+
+  .mg-lr#{$i * 4} {
+    margin-left: #{$i * 4}px;
+    margin-right: #{$i * 4}px;
+  }
+
+  .mg-tb#{$i * 4} {
+    margin-top: #{$i * 4}px;
+    margin-bottom: #{$i * 4}px;
+  }
+}
