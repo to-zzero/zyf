@@ -22,8 +22,6 @@
 import GeminiScrollbar from 'gemini-scrollbar';
 import 'gemini-scrollbar/gemini-scrollbar.css';
 
-let geminiScrollbar;
-
 export default {
   name:'BasisScrollbar',
   props: {
@@ -50,28 +48,43 @@ export default {
       type: String
     }
   },
+  data () {
+    return {
+      geminiScrollbar: null
+    }
+  },
   mounted () {
-    geminiScrollbar = new GeminiScrollbar({
+    this.geminiScrollbar = new GeminiScrollbar({
       element: this.$refs.geminiScrollbar,
       createElements: false,
+      autoshow: true,
+      forceGemini: true,
       onResize: () => {
         this.$emit('resize')
       },
       ...this.$props
     })
     if (this.autoCreate) {
-      geminiScrollbar.create()
+      this.geminiScrollbar.create()
     }
-    this.$emit('ready', geminiScrollbar)
+    this.$emit('ready', this.geminiScrollbar)
   },
   updated () {
-    geminiScrollbar && geminiScrollbar.update()
+    this.geminiScrollbar && this.geminiScrollbar.update()
   },
   beforeDestroy () {
-    if (geminiScrollbar) {
-      geminiScrollbar.destroy()
+    if (this.geminiScrollbar) {
+      this.geminiScrollbar.destroy()
     }
-    geminiScrollbar = null
+    this.geminiScrollbar = null
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .gm-scroll-view {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+</style>

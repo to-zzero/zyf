@@ -1,6 +1,5 @@
 /* eslint-disable prefer-destructuring */
 const path = require('path')
-console.log(2222222222222)
 
 module.exports = {
   // devServer: {

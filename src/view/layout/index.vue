@@ -2,7 +2,7 @@
   <section class="layout">
     <layout-header />
 
-    <div class="flex-box mg-t16">
+    <div class="flex-box layout-wrap">
       <layout-menu />
       <layout-content class="flex-1 mg-l16" />
     </div>
@@ -29,6 +29,10 @@
 </script>
 
 <style scoped lang="scss">
+  .layout-wrap {
+    max-width: 1200px;
+    margin: 16px auto 0;
+  }
   .layout {
     min-height: 100vh;
   }
