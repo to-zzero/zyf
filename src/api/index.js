@@ -6,7 +6,7 @@ import axios from 'axios'
 // import cookie from '../../static/js/cookie.js'
 
 axios.defaults.timeout = 10000;   // 超时时间
-axios.defaults.baseUrl = '/v1/api/services';
+axios.defaults.baseURL = '/v1/api';
 
 //整理数据
 axios.defaults.transformRequest = function (data) {
@@ -27,10 +27,9 @@ axios.interceptors.request.use(
 // http response 拦截器
 axios.interceptors.response.use(
   response => {
-    if (response.data.resultCode=="404") {
-      console.log("response.data.resultCode是404")
+    if (response.data.resultCode === "404") {
       return
-    }else{
+    } else {
       return response;
     }
   },
@@ -40,7 +39,7 @@ axios.interceptors.response.use(
 );
 
 export const getMenuList = function () {
-  return axios.post('/categroy')
+  return axios.get('/catalog/list')
 }
 
 export const getContentList = function (body) {
@@ -60,5 +59,9 @@ export const itemOperating = function (type) { // type = on, off, delete
     action: type
   })
 }
+
+export { catalog_list } from './catalog'
+
+export { servie_list } from './service'
 
 export default axios;

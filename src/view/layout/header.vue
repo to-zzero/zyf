@@ -2,10 +2,10 @@
   <header class="layout-header">
     <div class="content flex-box space-between pd-lr8">
       <span class="title">海图服务发布系统</span>
-
       <div>
-        user-area
+        欢迎:admin
       </div>
+      <basis-btn class="mg-l4">配置</basis-btn>
     </div>
   </header>
 </template>

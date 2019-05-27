@@ -2,17 +2,19 @@
 const path = require('path')
 
 module.exports = {
-  // devServer: {
-  //   proxy: {
-  //     '/v1': {
-  //       target: 'https://dex.ceo/', // 线上环境
-  //       changeOrigin: true,
-  //       pathRewrite: {
-  //         '^/api': '',
-  //       },
-  //     },
-  //   },
-  // },
+  devServer: {
+    port:8081,
+    proxy: {
+      '/v1': {
+        // target: 'http://149.248.32.162:8082/', // 线上环境
+        target: 'http://127.0.0.1:8082/', // 线上环境
+        changeOrigin: true,
+        pathRewrite: {
+          '/v1': '/v1',
+        },
+      },
+    },
+  },
   pluginOptions: {
     'style-resources-loader': {
       preProcessor: 'scss',
