@@ -1,12 +1,18 @@
 <template>
-  <section class="layout">
-    <layout-header/>
+  <el-container>
+    <el-header>
+      <layout-header/>
+    </el-header>
 
-    <div class="flex-box layout-wrap">
-      <layout-menu @onSubjectClick="onSubjectClick"/>
-      <layout-content :serviceList="serviceList" class="flex-1 mg-l16"/>
-    </div>
-  </section>
+    <el-container style="padding-left: 20px;">
+      <el-aside width="220px">
+        <layout-menu @onSubjectClick="onSubjectClick"/>
+      </el-aside>
+      <el-main>
+        <layout-content :serviceList="serviceList" @search="onSearch" class="flex-1 mg-l16"/>
+      </el-main>
+    </el-container>
+  </el-container>
 </template>
 
 <script>
@@ -25,12 +31,23 @@ export default {
   },
   data() {
     return {
-      serviceList: []
+      serviceList: [],
+      currentSubject: null
     };
+  },
+  mounted() {
+    this.queryServices(this.currentSubject, null);
   },
   methods: {
     async onSubjectClick(id) {
-      var list = await servie_list(id);
+      this.currentSubject = id;
+      this.queryServices(id);
+    },
+    async onSearch(val) {
+      this.queryServices(this.currentSubject, val);
+    },
+    async queryServices(id, name) {
+      var list = await servie_list(id, name);
       this.serviceList = list.map(r => {
         if (r.metadata) {
           r.metadata = JSON.parse(r.metadata);

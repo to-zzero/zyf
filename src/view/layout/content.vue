@@ -1,21 +1,23 @@
 <template>
   <div class="layout-content_wrap">
     <div class="flex-box mg-b16">
-      <basis-input class="flex-1"/>
+      <basis-input @search="onSearch" class="flex-1"/>
 
-      <basis-btn class="mg-l16" @click="openDialog('publish-service')">发布服务</basis-btn>
-      <basis-btn class="mg-l16" @click="openDialog('service')">服务聚合</basis-btn>
+      <basis-btn class="mg-l16" @click="openDialog('publish_service')">发布服务</basis-btn>
+      <basis-btn class="mg-l16" @click="openDialog('service_aggrate')">服务聚合</basis-btn>
     </div>
     <!-- <basis-scroll height="calc(100vh - 120px)"> -->
     <ul class="layout-content pd-lr16 pd-tb16 ul-reset">
       <li class="list-item_wrap mg-r16" v-for="service in serviceList" :key="service.id">
         <div class="flex-box space-between item-header">
           <span>{{service.name}}</span>
-          <a href="/">详细信息</a>
+          <a :href="`/service/info/${service.id}`" target="_blank">详细信息</a>
         </div>
 
         <div class="flex-box align-start">
-          <div style="width: 100px; height: 100px; border: 1px solid #ccc;"></div>
+          <div style="width: 100px; height: 100px; border: 1px solid #ccc;">
+            <img :src="`/service/thumbnail/${service.thumbnail}`" style="width:100%;height:100%">
+          </div>
           <ul class="ul-reset mg-l16 relative flex-1">
             <li class="flex-box mg-b8">
               <span>提供单位：{{service.metadata.provider}}</span>
@@ -45,34 +47,32 @@
               <span class="control-item" @click="openDialog('view')">查看</span>
               <span class="control-item" @click="itemAction('delete')">删除</span>
               <span class="control-item" @click="openDialog('edit')">编辑</span>
-              <span class="control-item" @click="openDialog('setting')">配置</span>
             </li>
           </ul>
         </div>
       </li>
     </ul>
     <!-- </basis-scroll> -->
-
-    <modal name="publish-service">publish-service</modal>
-
-    <modal name="service">service</modal>
-
-    <modal name="view">view</modal>
-
-    <modal name="edit">edit</modal>
-
-    <modal name="setting">setting</modal>
+    <el-dialog :visible.sync="dlg_publish_service" title="发布服务"></el-dialog>
+    <el-dialog :visible.sync="dlg_view" title="查看服务"></el-dialog>
+    <el-dialog :visible.sync="dlg_edit" title="修改服务"></el-dialog>
+    <el-dialog :visible.sync="dlg_service_aggrate" title="服务聚合"></el-dialog>
   </div>
 </template>
 
 <script>
 import { itemOperating } from "@/api";
+import { constants } from "crypto";
 export default {
   name: "LayoutContent",
   props: ["serviceList"],
   data() {
     return {
-      service: this.$props.serviceInfo
+      service: this.$props.serviceInfo,
+      dlg_publish_service: false,
+      dlg_service_aggrate: false,
+      dlg_view: false,
+      dlg_edit: false,
     };
   },
   mounted() {
@@ -80,13 +80,17 @@ export default {
   },
   methods: {
     openDialog(name) {
-      this.$modal.show(name);
+      this["dlg_" + name] = true;
+      console.log(this);
     },
     itemAction(action) {
       this.$message({ message: "敬请期待", type: "warning" });
       itemOperating(action).then(res => {
         console.log(res);
       });
+    },
+    onSearch(val) {
+      this.$emit("search", val);
     }
   }
 };

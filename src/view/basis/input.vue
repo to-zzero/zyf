@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     onSearch() {
-      this.$emit("search", searchText);
+      this.$emit("search", this.searchText);
     }
   }
 };
