@@ -2,8 +2,8 @@
   <header class="layout-header">
     <div class="content flex-box space-between pd-lr8">
       <span class="title">海图服务发布系统</span>
-      <div style="right:120px;position: absolute;">欢迎:admin</div>
-      <basis-btn class="mg-l4">目录配置</basis-btn>
+      <div style="margin-left: auto;">欢迎:admin</div>
+      <basis-btn class="mg-l16">目录配置</basis-btn>
     </div>
     <el-dialog :visible.sync="dlg_setting_show" title="目录配置"></el-dialog>
   </header>
@@ -23,8 +23,9 @@ export default {
 <style scoped lang="scss">
 .layout-header {
   height: 50px;
-  background: #337ab7;
+  background-image: linear-gradient(to right, #0033ff , #0099ff);
   color: #fff;
+  padding: 0 20px;
 }
 
 .content {

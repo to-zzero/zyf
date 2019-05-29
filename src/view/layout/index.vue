@@ -1,10 +1,10 @@
 <template>
   <el-container>
-    <el-header>
+    <el-header style="padding: 0;">
       <layout-header/>
     </el-header>
 
-    <el-container style="padding-left: 20px;">
+    <el-container style="width: 1200px; margin: 0 auto;">
       <el-aside width="220px">
         <layout-menu @onSubjectClick="onSubjectClick"/>
       </el-aside>
