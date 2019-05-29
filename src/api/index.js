@@ -18,7 +18,8 @@ axios.defaults.transformRequest = function (data) {
 // http request 拦截器
 axios.interceptors.request.use(
   config => {
-    config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    config.headers['Content-Type'] = 'application/json';
+    // config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
     return config;
   },
   error => {
@@ -61,7 +62,7 @@ export const itemOperating = function (type) { // type = on, off, delete
   })
 }
 
-export { catalog_list } from './catalog'
+export { catalog_list, save_catalog, add_services, remove_services } from './catalog'
 
 export { servie_list } from './service'
 
