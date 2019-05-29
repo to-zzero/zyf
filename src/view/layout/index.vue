@@ -60,6 +60,7 @@ export default {
         } else {
           r.keyword = [];
         }
+      r.thumbnail="1439126935969.jpg"
 
         r.status = !!r.status;
 

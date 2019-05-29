@@ -16,7 +16,7 @@
 
         <div class="flex-box align-start">
           <div style="width: 100px; height: 100px; border: 1px solid #ccc;">
-            <img :src="`/service/thumbnail/${service.thumbnail}`" style="width:100%;height:100%">
+            <img :src="`/thumbnail/${service.thumbnail}`" style="width:100%;height:100%">
           </div>
           <ul class="ul-reset mg-l16 relative flex-1">
             <li class="flex-box mg-b8">
