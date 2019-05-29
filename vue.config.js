@@ -10,7 +10,7 @@ module.exports = {
         target: 'http://127.0.0.1:8082/', // 线上环境
         changeOrigin: true,
         pathRewrite: {
-          '^/api': '/',
+          '^/api': '/api',
         },
       },
     },

@@ -3,9 +3,11 @@
     <div class="content flex-box space-between pd-lr8">
       <span class="title">海图服务发布系统</span>
       <div style="right:120px;position: absolute;">欢迎:admin</div>
-      <basis-btn class="mg-l4">目录配置</basis-btn>
+      <basis-btn class="mg-l4" @click="dlg_setting_show=true">目录配置</basis-btn>
     </div>
-    <el-dialog :visible.sync="dlg_setting_show" title="目录配置"></el-dialog>
+    <el-dialog width="80%" :visible.sync="dlg_setting_show" title="目录配置">
+      <catalog-config></catalog-config>
+    </el-dialog>
   </header>
 </template>
 
