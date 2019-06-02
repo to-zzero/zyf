@@ -24,7 +24,8 @@
             ></el-button>
           </span>
           <span v-if="node.level==1">
-            <el-button type="text" size="mini" @click="(evt) => append_subject(node,data,evt)">添加子目录</el-button>
+            <el-button type="text" size="mini" @click="$emit('add')">添加子目录</el-button>
+            <!-- <el-button type="text" size="mini" @click="(evt) => append_subject(node,data,evt)">添加子目录</el-button> -->
           </span>
         </span>
       </el-tree>
@@ -41,13 +42,16 @@
 </template>
 
 <script>
-import {
-  catalog_list,
-  save_catalog,
-  servie_list,
-  add_services,
-  remove_services
-} from "../../api";
+// import {
+//   catalog_list,
+//   save_catalog,
+//   servie_list,
+//   add_services,
+//   remove_services
+// } from "../../api";
+
+import api from '@/api'
+
 export default {
   data() {
     return {
@@ -59,7 +63,7 @@ export default {
     };
   },
   async mounted() {
-    var list = await catalog_list();
+    var list = await api.catalog.catalog_list();
     this.catalog_data = list.map(r => {
       r.label = r.name;
       r.children = r.subject;
@@ -69,7 +73,7 @@ export default {
       });
       return r;
     });
-    var services = await servie_list();
+    var services = await api.service.servie_list();
     this.all_services = services.map(r => {
       r.key = r.id;
       r.label = r.name;
@@ -90,7 +94,7 @@ export default {
       node.expanded = true;
     },
     async save_subject(data) {
-      var id = await save_catalog(data.name, data.pid);
+      var id = await api.catalog.save_catalog(data.name, data.pid);
       if (id) {
         data.id = id;
         data.label = data.name;
@@ -99,7 +103,7 @@ export default {
     async onNodeChange(data, node) {
       this.selected_services = [];
       if (data.id && node.level > 1) {
-        var services = await servie_list(data.id);
+        var services = await api.service.servie_list(data.id);
         services = services.map(r=>r.id);
         this.selected_services=services
       }
@@ -107,10 +111,10 @@ export default {
     async service_change(value, direction,keys) {      
       if (direction == "left") {
         //remove
-        await remove_services(keys);
+        await api.service.remove_services(keys);
       } else {
         //add
-        await add_services(keys);
+        await api.service.add_services(keys);
       }
     }
   }

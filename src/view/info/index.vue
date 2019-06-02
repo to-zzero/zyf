@@ -175,7 +175,7 @@
 </template>
 
 <script>
-  import { getInfo } from '@/api/service'
+  import api from '@/api'
   import LayoutHeader from '../layout/header'
   export default {
     name: 'info',
@@ -184,7 +184,7 @@
     },
     async mounted () {
       const { id } = this.$route.query || {}
-      const data = await getInfo(id)
+      const data = await api.service.getInfo(id)
       console.log(data)
     }
   }

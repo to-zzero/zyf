@@ -23,7 +23,7 @@ import LayoutContent from "./content";
 import LayoutMenu from "./menu";
 import Search from './search';
 
-import { servie_list } from "../../api";
+import api from '@/api'
 
 export default {
   name: "LayoutIndex",
@@ -53,7 +53,7 @@ export default {
       this.queryServices(this.currentSubject, val);
     },
     async queryServices(id, name) {
-      var list = await servie_list(id, name);
+      var list = await api.service.servie_list(id, name);
       this.serviceList = list.list.map(r => {
         if (r.metadata) {
           r.metadata = JSON.parse(r.metadata);

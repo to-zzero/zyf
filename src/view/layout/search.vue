@@ -20,7 +20,46 @@
       </el-button>
     </div>
 
-    <el-dialog :visible.sync="dlg_publish_service" title="发布服务"></el-dialog>
+    <el-dialog width="610px" :visible.sync="dlg_publish_service" title="发布服务">
+      <ul class="ul-reset">
+        <li class="flex-box mg-b16">
+          <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">目录名称</div>
+          <el-input style="width: 440px;"></el-input>
+        </li>
+
+        <li class="flex-box mg-b16">
+          <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">目录编码</div>
+          <el-input style="width: 440px;"></el-input>
+        </li>
+
+        <li class="flex-box mg-b16">
+          <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">描述</div>
+          <el-input style="width: 440px;"></el-input>
+        </li>
+
+        <li class="flex-box mg-b16">
+          <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">排序</div>
+          <el-input style="width: 440px;"></el-input>
+        </li>
+
+        <li class="flex-box mg-b16">
+          <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">目录分组</div>
+          <el-select style="width: 440px;" v-model="value" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </li>
+
+        <li class="flex-box" style="justify-content: flex-end;">
+          <el-button>取消</el-button>
+          <el-button type="primary">确定</el-button>
+        </li>
+      </ul>
+    </el-dialog>
     <el-dialog :visible.sync="dlg_service_aggrate" title="服务聚合"></el-dialog>
   </div>
 </template>
@@ -32,7 +71,24 @@
       return {
         dlg_publish_service: false,
         dlg_service_aggrate: false,
-        searchContent: ''
+        searchContent: '',
+        value: '',
+        options: [{
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }]
       }
     },
     methods: {

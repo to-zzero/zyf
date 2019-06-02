@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { catalog_list } from "../../api";
+import api from "../../api";
 export default {
   name: "LayoutMenu",
   data() {
@@ -28,7 +28,7 @@ export default {
     };
   },
   mounted() {
-    catalog_list().then(res => {
+    api.catalog.catalog_list().then(res => {
       this.menu_data = res
     })
   },
