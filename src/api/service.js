@@ -19,3 +19,9 @@ export async function servie_list(catalogId, name) {
     }
     return []
 }
+
+export async function getInfo (id) {
+    return http.post('/service/get', {
+        id
+    })
+}

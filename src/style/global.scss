@@ -9,6 +9,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: left;
   color: #2c3e50;
+  background: #f4f4f9;
   font-size: 16px;
   min-width: 1200px;
   box-sizing: border-box;
@@ -66,5 +67,35 @@ body {
   .mg-tb#{$i * 4} {
     margin-top: #{$i * 4}px;
     margin-bottom: #{$i * 4}px;
+  }
+}
+
+.el-button--primary {
+  background-color: #4874ed!important;
+  border-color: #4874ed!important;
+  
+  &:hover {
+    background-color: #5280ff!important;
+    border-color: #5280ff!important;
+  }
+  &:active {
+    background-color: #264fbf!important;
+    border-color: #264fbf!important;
+  }
+}
+
+.el-button--default {
+  background-color: #fff!important;
+  color: #4874ed!important;
+  border: solid 1px #fff!important;
+  &:hover {
+    background-color: #5280ff!important;
+    border-color: #5280ff!important;
+    color: #fff!important;
+  }
+  &:active {
+    background-color: #264fbf!important;
+    border-color: #264fbf!important;
+    color: #fff!important;
   }
 }

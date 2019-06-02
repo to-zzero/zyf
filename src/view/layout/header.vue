@@ -3,7 +3,9 @@
     <div class="content flex-box space-between pd-lr8">
       <span class="title">海图服务发布系统</span>
       <div style="margin-left: auto;">欢迎:admin</div>
-      <basis-btn class="mg-l16" @click="dlg_setting_show=true">目录配置</basis-btn>
+      <el-button class="mg-l16" @click="dlg_setting_show=true">
+        系统配置
+      </el-button>
     </div>
     <el-dialog width="80%" :visible.sync="dlg_setting_show" title="目录配置">
       <catalog-config></catalog-config>
@@ -24,7 +26,7 @@ export default {
 
 <style scoped lang="scss">
 .layout-header {
-  height: 50px;
+  height: 60px;
   background-image: linear-gradient(to right, #0033ff , #0099ff);
   color: #fff;
   padding: 0 20px;
@@ -33,7 +35,7 @@ export default {
 .content {
   max-width: 1200px;
   margin: 0 auto;
-  height: 50px;
+  height: 60px;
 }
 
 .title {

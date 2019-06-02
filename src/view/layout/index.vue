@@ -4,12 +4,14 @@
       <layout-header/>
     </el-header>
 
+    <search @search="onSearch"></search>
+
     <el-container style="width: 1200px; margin: 0 auto;">
-      <el-aside width="220px">
+      <el-aside width="264px">
         <layout-menu @onSubjectClick="onSubjectClick"/>
       </el-aside>
-      <el-main>
-        <layout-content :serviceList="serviceList" @search="onSearch" class="flex-1 mg-l16"/>
+      <el-main style="padding-right: 0px;">
+        <layout-content @clearSearch="onSubjectClick({id: null, subject: {}})" :currentSelect="currentSelect" :serviceList="serviceList" @search="onSearch" class="flex-1"/>
       </el-main>
     </el-container>
   </el-container>
@@ -19,6 +21,7 @@
 import LayoutHeader from "./header";
 import LayoutContent from "./content";
 import LayoutMenu from "./menu";
+import Search from './search';
 
 import { servie_list } from "../../api";
 
@@ -27,20 +30,23 @@ export default {
   components: {
     LayoutHeader,
     LayoutContent,
-    LayoutMenu
+    LayoutMenu,
+    Search
   },
   data() {
     return {
       serviceList: [],
-      currentSubject: null
+      currentSubject: null,
+      currentSelect: {}
     };
   },
   mounted() {
     this.queryServices(this.currentSubject, null);
   },
   methods: {
-    async onSubjectClick(id) {
+    async onSubjectClick({id, subject}) {
       this.currentSubject = id;
+      this.currentSelect = subject;
       this.queryServices(id);
     },
     async onSearch(val) {
@@ -48,7 +54,7 @@ export default {
     },
     async queryServices(id, name) {
       var list = await servie_list(id, name);
-      this.serviceList = list.map(r => {
+      this.serviceList = list.list.map(r => {
         if (r.metadata) {
           r.metadata = JSON.parse(r.metadata);
         } else {

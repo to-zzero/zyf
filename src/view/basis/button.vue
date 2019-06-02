@@ -1,5 +1,6 @@
 <template>
   <button
+    :class="type"
     class="basis-button"
     v-bind="$attrs"
     v-on="$listeners">
@@ -10,8 +11,10 @@
 <script>
   export default {
     name: 'BasisInput',
-    mounted () {
-      console.log(this)
+    props: {
+      type: {
+        default: 'primary'
+      }
     }
   }
 </script>
@@ -21,12 +24,18 @@
     outline: none;
     border-radius: 4px;
     padding: 8px 16px;
-    background: #4679b2;
     color: #fff;
     box-shadow: none;
     border: none;
     transition: all .3s;
     cursor: pointer;
+
+    &.primary {
+      font-size: 14px;
+      font-weight: 500;
+      color: #ffffff;
+      background-color: #4874ed;
+    }
 
     &:hover {
       background:  #2679b2;
