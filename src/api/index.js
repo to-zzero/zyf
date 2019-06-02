@@ -40,30 +40,16 @@ axios.interceptors.response.use(
   }
 );
 
-export const getMenuList = function () {
-  return axios.get('/catalog/list')
-}
-
-export const getContentList = function (body) {
-  return axios.post('/list', {
-    token: '',
-    uuid: '',
-    sort: 'visit',
-    a2z: true,
-    query: '',
-    page: body.page,
-    size: body.size
-  })
-}
-
 export const itemOperating = function (type) { // type = on, off, delete
   return axios.post('/action', {
     action: type
   })
 }
 
-export { catalog_list, save_catalog, add_services, remove_services } from './catalog'
+import * as catalog from './catalog'
 
-export { servie_list } from './service'
+import * as service from './service'
 
-export default axios;
+export default {
+  axios, catalog, service
+};
