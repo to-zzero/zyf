@@ -1,8 +1,6 @@
 <template>
   <div class="user-management">
-    <div class="title">
-      服务目录
-    </div>
+    <div class="title">服务目录</div>
 
     <div class="flex-box add">
       <span @click="addList">
@@ -13,35 +11,21 @@
 
     <div class="list mg-t40">
       <el-table
+      :border="false"
         :data="tableData"
         row-class-name="custom-tr"
-        style="width: 100%">
+        :default-expand-all="true"
+        style="width: 100%"
+      >
         <el-table-column type="expand">
           <template slot-scope="{row}">
-            <el-table
-              :show-header="false"
-              :data="row.subject"
-              style="width: 100%">
-              <el-table-column
-                prop="count">
-              </el-table-column>
-              <el-table-column
-                prop="name">
-              </el-table-column>
-              <el-table-column
-                prop="province">
-              </el-table-column>
-              <el-table-column
-                prop="city">
-              </el-table-column>
-              <el-table-column
-                prop="address">
-              </el-table-column>
-              <el-table-column
-                prop="zip">
-              </el-table-column>
-              <el-table-column
-                fixed="right">
+            <el-table :show-header="false" :data="row.subject" style="width: 100%">
+              <el-table-column type="index" width="80" class-name="subject-col" prop="count"></el-table-column>
+              <el-table-column prop="name" width="180" class-name="subject-col"></el-table-column>
+              <el-table-column prop="code" width="120" class-name="subject-col"></el-table-column>
+              <el-table-column prop="desc" width="200" class-name="subject-col"></el-table-column>
+              <el-table-column prop="order" width="120" class-name="subject-col"></el-table-column>
+              <el-table-column fixed="right">
                 <template slot-scope="scope">
                   <el-button @click="editItem(scope.row)" type="text" size="small">编辑</el-button>
                   <el-button @click="removeItem(scope.row)" type="text" size="small">删除</el-button>
@@ -50,31 +34,14 @@
             </el-table>
           </template>
         </el-table-column>
-        <el-table-column
-          label="序号"
-          prop="id">
+        <el-table-column label="序号" width="80" align="left" type="index" prop="id"></el-table-column>
+        <el-table-column label="目录名称" width="180">
+          <div slot-scope="props" style="font-weight: 600;">{{ props.row.name }}</div>
         </el-table-column>
-        <el-table-column
-          label="目录名称">
-          <div slot-scope="props" style="font-weight: 600;">
-            {{ props.row.name }}
-          </div>
-        </el-table-column>
-        <el-table-column
-          label="目录编码"
-          prop="desc">
-        </el-table-column>
-        <el-table-column
-          label="描述"
-          prop="desc">
-        </el-table-column>
-        <el-table-column
-          label="排序"
-          prop="desc">
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          prop="desc">
+        <el-table-column label="目录编码" prop="code" width="120"></el-table-column>
+        <el-table-column label="描述" width="200" prop="desc"></el-table-column>
+        <el-table-column label="排序" prop="order" width="120"></el-table-column>
+        <el-table-column label="操作" >
           <template slot-scope="scope">
             <el-button @click="edit(scope.row)" type="text" size="small">编辑</el-button>
             <el-button @click="remove(scope.row)" type="text" size="small">删除</el-button>
@@ -86,115 +53,87 @@
 </template>
 
 <script>
-  import api from '@/api'
-  export default {
-    name: 'UserManagement',
-    data () {
-      return {
-        tableData: [{
-          id: '12987122',
-          name: '好滋好味鸡蛋仔',
-          category: '江浙小吃、小吃零食',
-          desc: '荷兰优质淡奶，奶香浓而不腻',
-          address: '上海市普陀区真北路',
-          shop: '王小虎夫妻店',
-          shopId: '10333'
-        }, {
-          id: '12987123',
-          name: '好滋好味鸡蛋仔',
-          category: '江浙小吃、小吃零食',
-          desc: '荷兰优质淡奶，奶香浓而不腻',
-          address: '上海市普陀区真北路',
-          shop: '王小虎夫妻店',
-          shopId: '10333'
-        }, {
-          id: '12987125',
-          name: '好滋好味鸡蛋仔',
-          category: '江浙小吃、小吃零食',
-          desc: '荷兰优质淡奶，奶香浓而不腻',
-          address: '上海市普陀区真北路',
-          shop: '王小虎夫妻店',
-          shopId: '10333'
-        }, {
-          id: '12987126',
-          name: '好滋好味鸡蛋仔',
-          category: '江浙小吃、小吃零食',
-          desc: '荷兰优质淡奶，奶香浓而不腻',
-          address: '上海市普陀区真北路',
-          shop: '王小虎夫妻店',
-          shopId: '10333'
-        }]
-      }
+import api from "@/api";
+export default {
+  name: "UserManagement",
+  data() {
+    return {
+      tableData: []
+    };
+  },
+  mounted() {
+    this.getList();
+  },
+  methods: {
+    addList() {
+      this.$root.$emit("addList", true);
     },
-    mounted () {
-      this.getList()
+    getList() {
+      api.catalog.catalog_list().then(res => {
+        this.tableData = res;
+      });
     },
-    methods: {
-      addList () {
-        this.$root.$emit('addList', true)
-      },
-      getList () {
-        api.catalog.catalog_list().then(res => {
-          this.tableData = res
-        })
-      },
-      edit (row) {
-        this.$router.push({
-          path: '/info_edit',
-          query: {
-            id: row.id
-          }
-        })
-      }, // 编辑父级目录
-      remove (row) {}, // 删除父集目录
-      editItem (row) {}, // 编辑子目录
-      removeItem (row) {} // 删除子目录
-    }
+    edit(row) {
+      this.$router.push({
+        path: "/info_edit",
+        query: {
+          id: row.id
+        }
+      });
+    }, // 编辑父级目录
+    remove(row) {}, // 删除父集目录
+    editItem(row) {}, // 编辑子目录
+    removeItem(row) {} // 删除子目录
   }
+};
 </script>
 
 <style lang="scss">
-  .user-management {
+.user-management {
+  border-radius: 4px;
+  box-shadow: 0 -1px 0 0 #e6eaee;
+  background-color: #ffffff;
+  padding: 24px 32px;
+
+  .custom-tr {
+    background-color: #f6f6f6 !important;
+  }
+
+  .title {
+    font-size: 20px;
+    font-weight: 600;
+    padding-left: 12px;
+    border-left: 4px solid #4874ed;
+    color: #292929;
+    margin-bottom: 24px;
+  }
+
+  .add {
+    text-align: center;
+    justify-content: center;
+    height: 52px;
     border-radius: 4px;
-    box-shadow: 0 -1px 0 0 #e6eaee;
-    background-color: #ffffff;
-    padding: 24px 32px;
-
-    .custom-tr {
-      background-color: #f6f6f6!important;
-    }
-
-    .title {
-      font-size: 20px;
-      font-weight: 600;
-      padding-left: 12px;
-      border-left: 4px solid #4874ed;
-      color: #292929;
-      margin-bottom: 24px;
-    }
-
-    .add {
-      text-align: center;
-      justify-content: center;
-      height: 52px;
-      border-radius: 4px;
-      border: dashed 1px #dfe3e9;
-      span {
-        cursor: pointer;
-      }
-    }
-
-    .table-expand {
-      font-size: 0;
-    }
-    .table-expand label {
-      width: 90px;
-      color: #99a9bf;
-    }
-    .table-expand .el-form-item {
-      margin-right: 0;
-      margin-bottom: 0;
-      width: 50%;
+    border: dashed 1px #dfe3e9;
+    span {
+      cursor: pointer;
     }
   }
+
+  .table-expand {
+    font-size: 0;
+  }
+  .table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+  .table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 50%;
+  }
+
+  .subject-col {
+    padding-left: 24px;
+  }
+}
 </style>

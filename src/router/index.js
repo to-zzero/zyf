@@ -21,7 +21,7 @@ const routes = [
     component: Setting,
     children: [
       {
-        path: 'user_management',
+        path: 'catalog',
         name: 'UserManagement',
         component: UserManagement
       }
