@@ -40,22 +40,6 @@ axios.interceptors.response.use(
   }
 );
 
-export const getMenuList = function () {
-  return axios.get('/catalog/list')
-}
-
-export const getContentList = function (body) {
-  return axios.post('/list', {
-    token: '',
-    uuid: '',
-    sort: 'visit',
-    a2z: true,
-    query: '',
-    page: body.page,
-    size: body.size
-  })
-}
-
 export const itemOperating = function (type) { // type = on, off, delete
   return axios.post('/action', {
     action: type
