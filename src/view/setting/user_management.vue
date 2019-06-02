@@ -16,7 +16,7 @@
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >目录名称</div>
-          <el-input style="width: 440px;"></el-input>
+          <el-input style="width: 440px;" v-model="current.name"></el-input>
         </li>
 
         <li class="flex-box mg-b16">
@@ -24,17 +24,17 @@
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >目录编码</div>
-          <el-input style="width: 440px;"></el-input>
+          <el-input style="width: 440px;" v-model="current.code"></el-input>
         </li>
 
         <li class="flex-box mg-b16">
           <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">描述</div>
-          <el-input style="width: 440px;"></el-input>
+          <el-input style="width: 440px;" v-model="current.desc"></el-input>
         </li>
 
         <li class="flex-box mg-b16">
           <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">排序</div>
-          <el-input style="width: 440px;"></el-input>
+          <el-input type="number" style="width: 440px;" v-model="current.order"></el-input>
         </li>
 
         <li class="flex-box mg-b16">
@@ -42,8 +42,8 @@
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >目录分组</div>
-          <el-select style="width: 440px;" v-model="current.pid" placeholder="请选择">
-            <el-option v-for="item in tableData" clearable :key="item.id" :label="item.name" :value="item.id"></el-option>
+          <el-select style="width: 440px;" v-model="current.pid" clearable placeholder="请选择">
+            <el-option v-for="item in tableData" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </li>
 
@@ -126,12 +126,12 @@ export default {
     editCatalog(row) {
       this.show_edit_dlg = true;
       this.current = row;
+      console.log(row);
     },
     deleteCatalog(row) {
-      this.$msgbox({
-        title: "提示",
-        message: `是否删除 ${row.name}?`,
-        type: "warning"
+      this.$confirm(`是否删除 ${row.name}?`, "提示", {
+        type: "warning",
+        // roundButton: true
       })
         .then(async () => {
           await api.catalog.delCatalog(row.id);
