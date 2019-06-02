@@ -1,9 +1,9 @@
 <template>
   <header class="layout-header">
     <div class="content flex-box space-between pd-lr8">
-      <span class="title">海图服务发布系统</span>
+      <span class="title" @click="$router.push('/')">海图服务发布系统</span>
       <div style="margin-left: auto;">欢迎:admin</div>
-      <el-button class="mg-l16" @click="dlg_setting_show=true">
+      <el-button class="mg-l16" @click="routerTo('/#/setting')">
         系统配置
       </el-button>
     </div>
@@ -92,6 +92,11 @@ export default {
     this.$root.$on('addList', (val) => {
       this.dlg_setting_show = val
     })
+  },
+  methods: {
+    routerTo (path) {
+      window.open(path)
+    }
   }
 };
 </script>
@@ -114,5 +119,6 @@ export default {
   font-size: 24px;
   color: #fff;
   font-weight: bold;
+  cursor: pointer;
 }
 </style>

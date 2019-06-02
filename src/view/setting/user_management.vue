@@ -14,10 +14,12 @@
     <div class="list mg-t40">
       <el-table
         :data="tableData"
+        row-class-name="custom-tr"
         style="width: 100%">
         <el-table-column type="expand">
           <template slot-scope="{row}">
             <el-table
+              :show-header="false"
               :data="row.subject"
               style="width: 100%">
               <el-table-column
@@ -41,8 +43,8 @@
               <el-table-column
                 fixed="right">
                 <template slot-scope="scope">
-                  <el-button @click="edit(scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="remove(scope.row)" type="text" size="small">删除</el-button>
+                  <el-button @click="editItem(scope.row)" type="text" size="small">编辑</el-button>
+                  <el-button @click="removeItem(scope.row)" type="text" size="small">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -53,8 +55,10 @@
           prop="id">
         </el-table-column>
         <el-table-column
-          label="目录名称"
-          prop="name">
+          label="目录名称">
+          <div slot-scope="props" style="font-weight: 600;">
+            {{ props.row.name }}
+          </div>
         </el-table-column>
         <el-table-column
           label="目录编码"
@@ -71,6 +75,10 @@
         <el-table-column
           label="操作"
           prop="desc">
+          <template slot-scope="scope">
+            <el-button @click="edit(scope.row)" type="text" size="small">编辑</el-button>
+            <el-button @click="remove(scope.row)" type="text" size="small">删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -130,8 +138,17 @@
           this.tableData = res
         })
       },
-      edit (row) {},
-      remove (row) {}
+      edit (row) {
+        this.$router.push({
+          path: '/info_edit',
+          query: {
+            id: row.id
+          }
+        })
+      }, // 编辑父级目录
+      remove (row) {}, // 删除父集目录
+      editItem (row) {}, // 编辑子目录
+      removeItem (row) {} // 删除子目录
     }
   }
 </script>
@@ -142,6 +159,10 @@
     box-shadow: 0 -1px 0 0 #e6eaee;
     background-color: #ffffff;
     padding: 24px 32px;
+
+    .custom-tr {
+      background-color: #f6f6f6!important;
+    }
 
     .title {
       font-size: 20px;

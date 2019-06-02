@@ -1,6 +1,8 @@
 <template>
   <el-menu
     style="width: 260px; height: calc(100vh - 60px); overflow-y: auto;">
+    <img style="display: block; margin: 64px auto 24px; width: 80px; height: auto;" src="../../assets/setting-illustration@2x.png" alt="setting">
+    <div style="font-weight: 600; color: #292929; font-size: 20px; text-align: center; margin-bottom: 64px;">系统配置</div>
     <el-submenu index="1">
       <template slot="title">
         <!-- <i class="el-icon-location"></i> -->
@@ -54,5 +56,22 @@
 <style lang="scss">
   .el-submenu__title {
     font-weight: 600;
+  }
+  .el-submenu {
+    .el-submenu__icon-arrow {
+      font-size: 16px!important;
+      margin-top: -8px!important;
+    }
+    &.is-opened {
+      .el-submenu__icon-arrow {
+        color: #4874ed!important;
+      }
+    }
+    .el-menu-item.is-active  {
+      background-color: #f4f4f9!important;
+      color: #4874ed!important;
+      border-left: 6px solid #4874ed!important;
+      padding-left: 34px!important;
+    }
   }
 </style>
