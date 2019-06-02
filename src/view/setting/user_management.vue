@@ -9,7 +9,7 @@
       </span>
     </div>
 
-    <el-dialog :visible.sync="show_edit_dlg" :title="current.id?'修改目录':'新建目录'">
+    <el-dialog width="610px" :visible.sync="show_edit_dlg" :title="current.id?'修改目录':'新建目录'">
       <ul class="ul-reset">
         <li class="flex-box mg-b16">
           <div
@@ -100,7 +100,7 @@
 <script>
 // import api from "@/api";
 import api from "../../api";
-import { async } from "q";
+// import { async } from "q";
 export default {
   name: "UserManagement",
   data() {
@@ -126,7 +126,7 @@ export default {
     editCatalog(row) {
       this.show_edit_dlg = true;
       this.current = row;
-      console.log(row);
+      // console.log(row);
     },
     deleteCatalog(row) {
       this.$confirm(`是否删除 ${row.name}?`, "提示", {

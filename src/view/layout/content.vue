@@ -2,8 +2,8 @@
   <div class="layout-content_wrap">
     <div class="current mg-b24 flex-box">
       <span style="margin-right: 12px; font-weight: 600; font-size：14px; color: #292929;">当前目录：</span>
-      <div v-if="currentSelect.name" class="current-tag" @click="$emit('clearSearch')">
-        {{currentSelect.name}} ×
+      <div class="current-tag" @click="clearSearch">
+        {{currentSelect.name || '全部'}} {{ currentSelect.name ? '×' : '' }}
       </div>
     </div>
     <ul class="layout-content pd-lr16 pd-tb16 ul-reset">
@@ -14,41 +14,73 @@
         </div>
 
         <div class="flex-box align-start">
-          <div style="width: 100px; height: 100px; border: 1px solid #ccc;">
+          <div style="width: 110px; height: 110px;">
             <img :src="`/thumbnail/${service.thumbnail}`" style="width:100%;height:100%">
           </div>
           <ul class="ul-reset mg-l16 relative flex-1">
             <li class="flex-box mg-b8">
-              <span>提供单位：<span class="tw-b">{{service.metadata.provider || '--'}}</span></span>
+              <span style="font-size: 14px; color: #696969;">提供单位：<span class="tw-b" style="color: #292929;">{{service.metadata.provider || '--'}}</span></span>
             </li>
             <li class="flex-box mg-b8">
-              <span>发布时间：<span class="tw-b">{{service.metadata.createAt || '--'}}</span></span>
+              <span style="font-size: 14px; color: #696969;">发布时间：<span class="tw-b" style="color: #292929;">{{service.metadata.createAt || '--'}}</span></span>
             </li>
             <li class="flex-box mg-b8">
-              <span>摘要信息：<span class="tw-b">{{service.metadata.abstract || '--'}}</span></span>
+              <span style="font-size: 14px; color: #696969;">摘要信息：<span class="tw-b" style="color: #292929;">{{service.metadata.abstract || '--'}}</span></span>
             </li>
             <li class="flex-box">
-              <span>关键字：</span>
-              <div class="tag-item" v-for="keyword in service.keyword" :key="keyword">{{keyword}}</div>
+              <span style="font-size: 14px; color: #696969;">关键字：</span>
+              <div class="tag-item" style="color: #fff;" v-for="keyword in service.keyword" :key="keyword">{{keyword}}</div>
             </li>
             <li class="control-area flex-box">
-              <el-switch
-                size="small"
-                active-color="#13ce66"
-                inactive-color="#ff4949"
-                v-model="service.status"
-              ></el-switch>
-              <span
+              <!-- <span
                 class="control-item"
                 style="margin-left:3px"
                 @click="itemAction('on')"
-              >{{(service.status)?'停止':'开启'}}</span>
-              <span class="control-item" @click="openDialog('view')">查看</span>
-              <span class="control-item" @click="itemAction('delete')">删除</span>
-              <span class="control-item" @click="openDialog('edit')">编辑</span>
+              >{{(service.status)?'停止':'开启'}}</span> -->
+              <span class="control-item flex-box" style="color: #696969;" @click="openDialog('view')">
+                <img src="../../assets/eye@2x.png" style="width: 16px; height: auto; margin-right: 4px;" alt="">
+                查看
+              </span>
+              <span class="control-item flex-box" style="color: #696969;" @click="itemAction('delete')">
+                <img src="../../assets/delete@2x.png" style="width: 16px; height: auto; margin-right: 4px;" alt="">
+                删除
+              </span>
+              <span class="control-item flex-box" style="color: #696969;" @click="openDialog('edit')">
+                <img src="../../assets/edit@2x.png" style="width: 16px; height: auto; margin-right: 4px;" alt="">
+                编辑
+              </span>
+              <div class="switch-wrap control-item">
+                <el-switch
+                  :width="50"
+                  size="small"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949"
+                  :value="service.status"
+                  @change="v => itemAction(v ? 'on' : 'off')"
+                ></el-switch>
+                <span
+                  :style="service.status ? 'left: 10%; right: unset;' : ''"
+                  @click="itemAction(service.status ? 'on' : 'off')"
+                  class="text">
+                  {{ !service.status ? 'OFF' : 'ON' }}
+                </span>
+              </div>
             </li>
           </ul>
         </div>
+      </li>
+
+      <li style="text-align: center; font-weight: 600;" class="list-item_wrap" v-if="!serviceList.length">
+        暂无服务
+      </li>
+
+      <li class="flex-box" style="justify-content: flex-end;">
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="1000"
+          @current-change="currentChange">
+        </el-pagination>
       </li>
     </ul>
 
@@ -86,16 +118,49 @@ export default {
     },
     onSearch(val) {
       this.$emit("search", val)
+    },
+    clearSearch () {
+      if (this.currentSelect.name) {
+        this.$emit('clearSearch')
+      }
+    },
+    currentChange (page) {
+      alert(`第${page}页`)
     }
   }
 };
 </script>
 
+<style>
+  .el-pager .number:not(.active), .btn-prev, .btn-next, .el-icon.more {
+    background-color: #ffffff!important;
+    color: #b1b7cc!important;
+  }
+  .el-pager .number.active {
+    background: #4874ed!important;
+  }
+  .el-icon.more.el-icon-d-arrow-right {
+    color: #4874ed!important;
+  }
+</style>
+
+
 <style scoped lang="scss">
+.switch-wrap {
+  position: relative;
+  .text {
+    position: absolute;
+    right: 10%;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 12px;
+  }
+}
 .current-tag {
   border-radius: 4px;
   background-color: #4874ed;
-  padding: 4px;
+  padding: 4px 8px;
   color: #fff;
   font-size: 14px;
   cursor: pointer;
@@ -145,11 +210,13 @@ export default {
 }
 
 .tag-item {
+  height: 24px;
   border-radius: 4px;
-  padding: 4px;
-  background: #337ab7;
+  background-color: #4874ed;
   color: #fff;
   font-size: 12px;
+  line-height: 24px;
+  padding: 0 8px;
   &:not(:last-of-type) {
     margin-right: 16px;
   }

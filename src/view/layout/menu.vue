@@ -4,14 +4,24 @@
     <li class="item-wrap">
       <ul class="ul-reset item-content" v-for="catalog in menu_data" :key="catalog.id">
         <li
-          class="inner-item"             
-        >{{catalog.name}}</li>
-        <li
-          class="inner-item"
-          v-for="subject in catalog.subject"
-          :key="subject.id"
-          @click="onSubjectClick(subject.id, subject)"
-        >{{subject.name}}({{subject.count}})</li>
+          @click="showCatalog(catalog)"
+          class="inner-item relative">
+          {{catalog.name}}
+          <i
+            class="custom-icon"
+            :class="(catalog.isView || catalog.isView === undefined) ? '' : 'un-opened'"/>
+        </li>
+        <template v-if="catalog.isView || catalog.isView === undefined">
+          <li
+            class="inner-item"
+            v-for="subject in (!catalog.showMore ? catalog.subject.slice(0, 5) : catalog.subject)"
+            :key="subject.id"
+            @click="onSubjectClick(subject.id, subject)"
+          >{{subject.name}}({{subject.count}})</li>
+          <li v-if="catalog.subject.length > 5" @click="showMore(catalog)" class="view-more">
+            {{ !catalog.showMore ? '查看更多' : '收起'}}
+          </li>
+        </template>
       </ul>
     </li>
   </ul>
@@ -38,6 +48,24 @@ export default {
         id,
         subject
       })
+    },
+    showMore (catalog) {
+      if (!catalog.showMore) {
+        this.$set(catalog, 'showMore', true)
+      } else {
+        this.$set(catalog, 'showMore', false)
+      }
+    },
+    showCatalog (catalog) {
+      if (catalog.isView === undefined) {
+        this.$set(catalog, 'isView', false)
+        return false        
+      }
+      if (!catalog.isView) {
+        this.$set(catalog, 'isView', true)
+      } else {
+        this.$set(catalog, 'isView', false)
+      }
     }
   }
 };
@@ -47,6 +75,34 @@ export default {
 // .layout-menu {
 //   background: #fff;
 // }
+.relative {
+  position: relative;
+  cursor: pointer;
+  
+  .custom-icon {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    transform: rotate(45deg);
+    right: 12px;
+    top: calc(50% - 5px);
+    border-left: 2px solid #4874ed;
+    border-top: 2px solid #4874ed;
+
+    &.un-opened {
+      transform: rotate(225deg);
+    } 
+  }
+}
+.view-more {
+  border-radius: 0 0 4px 4px;
+  background-color: #ffffff;
+  color: #7f8fa4;
+  font-size: 14px;
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+}
 .item-content {
   margin-bottom: 12px !important;
   background: #fff;
@@ -67,7 +123,8 @@ export default {
     cursor: pointer;
 
     &:hover {
-      background: #eee;
+      // background: #eee;
+      color: #4874ed;
     }
   }
   &:not(:last-of-type) {

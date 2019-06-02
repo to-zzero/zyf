@@ -99,3 +99,10 @@ body {
     color: #fff!important;
   }
 }
+
+a {
+  text-decoration: none;
+  &:visited {
+    color: #696969;
+  }
+}

@@ -20,9 +20,11 @@
           <div
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
-          >选择SD文件：</div>
-          <el-input style="width: 440px;">
-            <i class="el-icon-files" slot="suffix" style="line-height: 40px; cursor: pointer;"></i>
+          >选择.sd文件：</div>
+          <el-input disabled style="width: 440px;">
+            <div class="flex-box" style="height: 40px; width: 30px; justify-content: center; cursor-pointer" slot="suffix"> <!-- 文件夹图标 -->
+              <img src="../../assets/folder@2x.png" style="width: 16px;" alt="">
+            </div>
           </el-input>
         </li>
 
@@ -48,12 +50,17 @@
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >所属分组：</div>
           <el-select style="width: 440px;" v-model="value" placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
+            <template v-for="item in 3"> <!-- 循环template -->
+              <div style="font-size: 12px; opacity: 0.5; color: #354052; padding: 8px 12px;">
+                {{item}}-一级
+              </div>
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+              </template>
           </el-select>
         </li>
 
