@@ -90,7 +90,7 @@ export default {
   mounted () {
     this.$root.$off('addList')
     this.$root.$on('addList', (val) => {
-      this.dlg_setting_show = val
+      this.dlg_publish_service = val
     })
   },
   methods: {
