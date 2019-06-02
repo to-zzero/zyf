@@ -46,8 +46,10 @@ export const itemOperating = function (type) { // type = on, off, delete
   })
 }
 
-export { catalog_list, save_catalog, add_services, remove_services } from './catalog'
+import * as catalog from './catalog'
 
-export { servie_list } from './service'
+import * as service from './service'
 
-export default axios;
+export default {
+  axios, catalog, service
+};
