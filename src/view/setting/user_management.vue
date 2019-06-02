@@ -3,15 +3,60 @@
     <div class="title">服务目录</div>
 
     <div class="flex-box add">
-      <span @click="addList">
+      <span @click="addCatalog">
         <i class="el-icon-plus"></i>
         添加目录
       </span>
     </div>
 
+    <el-dialog :visible.sync="show_edit_dlg" :title="current.id?'修改目录':'新建目录'">
+      <ul class="ul-reset">
+        <li class="flex-box mg-b16">
+          <div
+            class="flex-1 mg-r16"
+            style="font-size: 14px; color: #7f8fa4; text-align: right;"
+          >目录名称</div>
+          <el-input style="width: 440px;"></el-input>
+        </li>
+
+        <li class="flex-box mg-b16">
+          <div
+            class="flex-1 mg-r16"
+            style="font-size: 14px; color: #7f8fa4; text-align: right;"
+          >目录编码</div>
+          <el-input style="width: 440px;"></el-input>
+        </li>
+
+        <li class="flex-box mg-b16">
+          <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">描述</div>
+          <el-input style="width: 440px;"></el-input>
+        </li>
+
+        <li class="flex-box mg-b16">
+          <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">排序</div>
+          <el-input style="width: 440px;"></el-input>
+        </li>
+
+        <li class="flex-box mg-b16">
+          <div
+            class="flex-1 mg-r16"
+            style="font-size: 14px; color: #7f8fa4; text-align: right;"
+          >目录分组</div>
+          <el-select style="width: 440px;" v-model="current.pid" placeholder="请选择">
+            <el-option v-for="item in tableData" clearable :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </li>
+
+        <li class="flex-box" style="justify-content: flex-end;">
+          <el-button @click="show_edit_dlg=false">取消</el-button>
+          <el-button type="primary" @click="save_catalog">确定</el-button>
+        </li>
+      </ul>
+    </el-dialog>
+
     <div class="list mg-t40">
       <el-table
-      :border="false"
+        :border="false"
         :data="tableData"
         row-class-name="custom-tr"
         :default-expand-all="true"
@@ -27,8 +72,8 @@
               <el-table-column prop="order" width="120" class-name="subject-col"></el-table-column>
               <el-table-column fixed="right">
                 <template slot-scope="scope">
-                  <el-button @click="editItem(scope.row)" type="text" size="small">编辑</el-button>
-                  <el-button @click="removeItem(scope.row)" type="text" size="small">删除</el-button>
+                  <el-button @click="editCatalog(scope.row)" type="text" size="small">编辑</el-button>
+                  <el-button @click="deleteCatalog(scope.row)" type="text" size="small">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -41,10 +86,10 @@
         <el-table-column label="目录编码" prop="code" width="120"></el-table-column>
         <el-table-column label="描述" width="200" prop="desc"></el-table-column>
         <el-table-column label="排序" prop="order" width="120"></el-table-column>
-        <el-table-column label="操作" >
+        <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button @click="edit(scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="remove(scope.row)" type="text" size="small">删除</el-button>
+            <el-button @click="editCatalog(scope.row)" type="text" size="small">编辑</el-button>
+            <el-button @click="deleteCatalog(scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -53,37 +98,56 @@
 </template>
 
 <script>
-import api from "@/api";
+// import api from "@/api";
+import api from "../../api";
+import { async } from "q";
 export default {
   name: "UserManagement",
   data() {
     return {
-      tableData: []
+      tableData: [],
+      show_edit_dlg: false,
+      current: {}
     };
   },
   mounted() {
     this.getList();
   },
   methods: {
-    addList() {
-      this.$root.$emit("addList", true);
-    },
     getList() {
       api.catalog.catalog_list().then(res => {
         this.tableData = res;
       });
     },
-    edit(row) {
-      this.$router.push({
-        path: "/info_edit",
-        query: {
-          id: row.id
-        }
-      });
-    }, // 编辑父级目录
-    remove(row) {}, // 删除父集目录
-    editItem(row) {}, // 编辑子目录
-    removeItem(row) {} // 删除子目录
+    addCatalog() {
+      this.show_edit_dlg = true;
+      this.current = {};
+    },
+    editCatalog(row) {
+      this.show_edit_dlg = true;
+      this.current = row;
+    },
+    deleteCatalog(row) {
+      this.$msgbox({
+        title: "提示",
+        message: `是否删除 ${row.name}?`,
+        type: "warning"
+      })
+        .then(async () => {
+          await api.catalog.delCatalog(row.id);
+          this.$message("删除成功");
+        })
+        .catch(() => {});
+    },
+    async save_catalog() {
+      if (!this.current.id) {
+        await api.catalog.create(this.current);
+        this.show_edit_dlg = false;
+      } else {
+        await api.catalog.update(this.current);
+        this.show_edit_dlg = false;
+      }
+    }
   }
 };
 </script>
