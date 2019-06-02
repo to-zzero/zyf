@@ -7,7 +7,7 @@
     <div class="flex-box align-start">
       <menu-list />
 
-      <div style="padding: 32px 40px; overflow-y: auto; flex: 1;">
+      <div style="padding: 32px 40px; overflow-y: auto; flex: 1; max-height: calc(100vh - 60px); box-sizing: border-box;">
         <router-view></router-view>
       </div>
     </div>
