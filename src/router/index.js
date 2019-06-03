@@ -13,16 +13,19 @@ const routes = [
   {
     path: '/',
     name: 'Home',
+    meta: { title: '首页' },
     component: Layout
   },
   {
     path: '/setting',
     name: 'Setting',
+    meta: { title: '系统配置' },
     component: Setting,
     redirect: '/setting/catalog',
     children: [
       {
         path: 'catalog',
+        meta: { title: '服务目录' },
         name: 'UserManagement',
         component: UserManagement
       }
@@ -31,15 +34,26 @@ const routes = [
   {
     path: '/info',
     name: 'Info',
+    meta: { title: '查看服务详情' },
     component: Info
   },
   {
     path: '/info_edit',
+    meta: { title: '编辑服务信息' },
     name: 'InfoEdit',
     component: InfoEdit
   }
 ]
 
-export default new Router({
+var router = new Router({
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.title) {
+    document.title = `${to.meta.title} - 服务管理系统`
+  }
+  next()
+})
+
+export default router;

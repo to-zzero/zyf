@@ -80,7 +80,9 @@ export async function create(catalog) {
 }
 
 export async function update(catalog) {
-    let rlt = await http.post('/catalog/create', catalog)
+    var data = { ...catalog }
+    delete data.subject
+    let rlt = await http.post('/catalog/update', data)
     if (rlt && rlt.status == 200) {
         return rlt.data
     }

@@ -2,9 +2,10 @@
   <div class="layout-content_wrap">
     <div class="current mg-b24 flex-box">
       <span style="margin-right: 12px; font-weight: 600; font-size：14px; color: #292929;">当前目录：</span>
-      <div class="current-tag" @click="clearSearch">
-        {{currentSelect.name || '全部'}} {{ currentSelect.name ? '×' : '' }}
-      </div>
+      <div
+        class="current-tag"
+        @click="clearSearch"
+      >{{currentSelect.name || '全部'}} {{ currentSelect.name ? '×' : '' }}</div>
     </div>
     <ul class="layout-content pd-lr16 pd-tb16 ul-reset">
       <li class="list-item_wrap" v-for="service in serviceQueryResult.list" :key="service.id">
@@ -20,37 +21,79 @@
           </div>
           <ul class="ul-reset mg-l16 relative flex-1">
             <li class="flex-box mg-b8">
-              <span style="font-size: 14px; color: #696969;">提供单位：<span class="tw-b" style="color: #292929;">{{service.metadata.provider || '--'}}</span></span>
+              <span style="font-size: 14px; color: #696969;">
+                提供单位：
+                <span
+                  class="tw-b"
+                  style="color: #292929;"
+                >{{service.metadata.provider || '--'}}</span>
+              </span>
             </li>
             <li class="flex-box mg-b8">
-              <span style="font-size: 14px; color: #696969;">发布时间：<span class="tw-b" style="color: #292929;">{{service.metadata.createAt || '--'}}</span></span>
+              <span style="font-size: 14px; color: #696969;">
+                发布时间：
+                <span
+                  class="tw-b"
+                  style="color: #292929;"
+                >{{service.metadata.createAt || '--'}}</span>
+              </span>
             </li>
             <li class="flex-box mg-b8">
-              <span style="font-size: 14px; color: #696969;">摘要信息：<span class="tw-b" style="color: #292929;">{{service.metadata.abstract || '--'}}</span></span>
+              <span style="font-size: 14px; color: #696969;">
+                摘要信息：
+                <span
+                  class="tw-b"
+                  style="color: #292929;"
+                >{{service.metadata.abstract || '--'}}</span>
+              </span>
             </li>
             <li class="flex-box">
               <span style="font-size: 14px; color: #696969;">关键字：</span>
-              <div class="tag-item" style="color: #fff;" v-for="keyword in service.keyword" :key="keyword">{{keyword}}</div>
+              <div
+                class="tag-item"
+                style="color: #fff;"
+                v-for="keyword in service.keyword"
+                :key="keyword"
+              >{{keyword}}</div>
             </li>
             <li class="control-area flex-box">
-              <!-- <span
-                class="control-item"
-                style="margin-left:3px"
-                @click="itemAction('on')"
-              >{{(service.status)?'停止':'开启'}}</span> -->
               <span class="control-item flex-box" style="color: #696969;">
-                <router-link class="flex-box" :to="{path :'/info', query: { id: service.id } }" target="_blank">
-                  <img src="../../assets/eye@2x.png" style="width: 16px; height: auto; margin-right: 4px;" alt="">
+                <router-link
+                  class="flex-box"
+                  :to="{path :'/info', query: { id: service.id } }"
+                  target="_blank"
+                >
+                  <img
+                    src="../../assets/eye@2x.png"
+                    style="width: 16px; height: auto; margin-right: 4px;"
+                    alt
+                  >
                   <span style="color: #696969;">查看</span>
                 </router-link>
               </span>
-              <span class="control-item flex-box" style="color: #696969;" @click="itemAction('delete')">
-                <img src="../../assets/delete@2x.png" style="width: 16px; height: auto; margin-right: 4px;" alt="">
+              <span
+                class="control-item flex-box"
+                style="color: #696969;"
+                @click="deleteService(service)"
+              >
+                <img
+                  src="../../assets/delete@2x.png"
+                  style="width: 16px; height: auto; margin-right: 4px;"
+                  alt
+                >
                 删除
               </span>
               <span class="control-item flex-box" style="color: #696969;">
-                <router-link class="flex-box" :to="{path :'/info_edit', query: { id: service.id } }" target="_blank">
-                  <img src="../../assets/edit@2x.png" style="width: 16px; height: auto; margin-right: 4px;" alt="">
+                <router-link
+                  class="flex-box"
+                  :to="{path :'/info_edit', query: { id: service.id } }"
+                  target="_blank"
+                >
+                  <img
+                    src="../../assets/edit@2x.png"
+                    style="width: 16px; height: auto; margin-right: 4px;"
+                    alt
+                  >
                   <span style="color: #696969;">编辑</span>
                 </router-link>
               </span>
@@ -61,23 +104,24 @@
                   active-color="#13ce66"
                   inactive-color="#ff4949"
                   :value="service.status"
-                  @change="v => itemAction(v ? 'on' : 'off')"
+                  @change="val =>val?startService(service): stopService(service)"
                 ></el-switch>
                 <span
-                  :style="service.status ? 'left: 10%; right: unset;' : ''"
-                  @click="itemAction(service.status ? 'on' : 'off')"
-                  class="text">
-                  {{ !service.status ? 'OFF' : 'ON' }}
-                </span>
+                  @click="service.status?stopService(service):startService(service)"
+                  :style="service.status ? 'left: 15%;top:58%; right: unset;' : 'right:15%;top:58%;'"
+                  class="text"
+                >{{ !service.status ? 'ON' : 'OFF' }}</span>
               </div>
             </li>
           </ul>
         </div>
       </li>
 
-      <li style="text-align: center; font-weight: 600;" class="list-item_wrap" v-if="!serviceQueryResult.list.length">
-        暂无服务
-      </li>
+      <li
+        style="text-align: center; font-weight: 600;"
+        class="list-item_wrap"
+        v-if="!serviceQueryResult.list.length"
+      >暂无服务</li>
 
       <li class="flex-box" style="justify-content: flex-end;">
         <el-pagination
@@ -85,8 +129,8 @@
           layout="prev, pager, next"
           :total="serviceQueryResult.total"
           :page-size="serviceQueryResult.size"
-          @current-change="currentChange">
-        </el-pagination>
+          @current-change="currentChange"
+        ></el-pagination>
       </li>
     </ul>
 
@@ -96,58 +140,85 @@
 </template>
 
 <script>
-import { itemOperating } from "@/api";
+import api from "../../api";
 // import { constants } from "crypto"
 export default {
   name: "LayoutContent",
-  props: ["serviceQueryResult", 'currentSelect'],
+  props: ["serviceQueryResult", "currentSelect"],
   data() {
     return {
       service: this.$props.serviceInfo,
       dlg_publish_service: false,
       dlg_service_aggrate: false,
       dlg_view: false,
-      dlg_edit: false,
+      dlg_edit: false
     };
   },
-  mounted() {
-    
-  },
+  mounted() {},
   methods: {
     openDialog(name) {
-      this["dlg_" + name] = true
+      this["dlg_" + name] = true;
       // console.log(this);
     },
-    itemAction(action) {
-      this.$message({ message: "敬请期待", type: "warning" })
-      itemOperating(action)
+    async deleteService(service) {
+      await api.service.service_action(service, "delete");
     },
-    onSearch(val) {
-      this.$emit("search", val)
+    async startService(service) {
+      
+      await api.service.service_action(service, "on");
     },
-    clearSearch () {
-      if (this.currentSelect.name) {
-        this.$emit('clearSearch')
+    async stopService(service) {
+      
+      await api.service.service_action(service, "off");
+    },
+    async toggleService(service, status) {
+      if (status) {
+        this.startService(service);
+      } else {
+        this.stopService(service);
       }
     },
-    currentChange (page) {
-      this.$emit('page-changed',page)
+    async itemAction(service, action) {
+      if (action === "delete") {
+        try {
+          await this.$confirm(`确定删除服务 ${service.name}`, "删除确认", {
+            type: "warning"
+          });
+        } catch (error) {
+          return;
+        }
+      }
+      api.service.service_action(service.id, action);
+    },
+    onSearch(val) {
+      this.$emit("search", val);
+    },
+    clearSearch() {
+      if (this.currentSelect.name) {
+        this.$emit("clearSearch");
+      }
+    },
+    currentChange(page) {
+      this.$emit("page-changed", page);
     }
   }
 };
 </script>
 
 <style>
-  .el-pager .number:not(.active), .btn-prev, .btn-next, .el-icon.more {
-    background-color: #ffffff!important;
-    color: #b1b7cc!important;
-  }
-  .el-pager .number.active {
-    background: #4874ed!important;
-  }
-  .el-icon.more.el-icon-d-arrow-right {
-    color: #4874ed!important;
-  }
+.el-pager .number:not(.active),
+.btn-prev,
+.btn-next,
+.el-icon.more {
+  background-color: #ffffff !important;
+  color: #b1b7cc !important;
+}
+.el-pager .number.active {
+  background: #4874ed !important;
+}
+.el-icon.more.el-icon-d-arrow-right {
+  color: #4874ed !important;
+}
 </style>
 
 

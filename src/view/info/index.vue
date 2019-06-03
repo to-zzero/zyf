@@ -24,7 +24,7 @@
             </li>
             <li class="flex-box item">
               <div class="inner-title">关键字</div>
-              <div class="inner-info">{{info.keyword.replace(';','、')}}</div>
+              <div class="inner-info">{{info.keyword.replace(/;|；/g,'、')}}</div>
             </li>
 
             <li class="flex-box item">
@@ -63,6 +63,7 @@
 
           <div style="width: 574px; height: 370px; background-color: #d8d8d8;">
             <!-- iframe 直接放这里面 -->
+            <iframe src="./map.html" width="100%" height="100%"></iframe>
           </div>
         </div>
       </div>

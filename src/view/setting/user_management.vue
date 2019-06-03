@@ -43,18 +43,13 @@
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >目录分组</div>
           <el-select
-            multiple
+            :multiple="false"
             style="width: 440px;"
             v-model="current.pid"
             clearable
             placeholder="请选择"
           >
-              <el-option
-                v-for="item in tableData"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
+            <el-option v-for="item in tableData" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </li>
 
@@ -66,22 +61,17 @@
     </el-dialog>
 
     <div class="list mg-t40">
-      <el-table
-        :border="false"
-        :data="tableData"
-        row-class-name="custom-tr"
-        :default-expand-all="true"
-        style="width: 100%"
-      >
+      <el-table :border="false" :data="tableData" row-class-name="custom-tr" style="width: 100%">
+        <!-- :default-expand-all="true" -->
         <el-table-column type="expand">
-          <template slot-scope="{row}">
+          <template v-if="row.subject.length>0" slot-scope="{row}">
             <el-table :show-header="false" :data="row.subject" style="width: 100%">
               <el-table-column type="index" width="80" class-name="subject-col" prop="count"></el-table-column>
               <el-table-column prop="name" width="180" class-name="subject-col"></el-table-column>
               <el-table-column prop="code" width="100" class-name="subject-col"></el-table-column>
               <el-table-column prop="desc" width="200" class-name="subject-col"></el-table-column>
               <el-table-column prop="order" width="60" class-name="subject-col"></el-table-column>
-              <el-table-column >
+              <el-table-column>
                 <template slot-scope="scope">
                   <el-button @click="editCatalog(scope.row)" type="text" size="small">编辑</el-button>
                   <el-button @click="deleteCatalog(scope.row)" type="text" size="small">删除</el-button>
@@ -97,7 +87,7 @@
         <el-table-column label="目录编码" prop="code" width="100"></el-table-column>
         <el-table-column label="描述" prop="desc" width="200"></el-table-column>
         <el-table-column label="排序" prop="order" width="60"></el-table-column>
-        <el-table-column label="操作" >
+        <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button @click="editCatalog(scope.row)" type="text" size="small">编辑</el-button>
             <el-button @click="deleteCatalog(scope.row)" type="text" size="small">删除</el-button>
@@ -118,7 +108,7 @@ export default {
     return {
       tableData: [],
       show_edit_dlg: false,
-      current: {}
+      current: { order: 0 }
     };
   },
   mounted() {
@@ -132,7 +122,7 @@ export default {
     },
     addCatalog() {
       this.show_edit_dlg = true;
-      this.current = {};
+      this.current = { order: 0 };
     },
     editCatalog(row) {
       this.show_edit_dlg = true;
@@ -154,9 +144,15 @@ export default {
       if (!this.current.id) {
         await api.catalog.create(this.current);
         this.show_edit_dlg = false;
+        this.getList();
       } else {
-        await api.catalog.update(this.current);
-        this.show_edit_dlg = false;
+        let result = await api.catalog.update(this.current);
+        if (result === "success") {
+          this.$message({ message: "修改成功", type: "success" });
+          this.show_edit_dlg = false;
+        } else {
+          this.$message({ message: "修改失败", type: "error" });
+        }
       }
     }
   }

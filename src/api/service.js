@@ -66,16 +66,28 @@ export async function get(serviceId) {
  * 发布服务。这个特殊点，需要上传文件，同时也需要属性
  * @param {*} params 
  */
-export async function publish(params) {
-    let rlt = await http.post('/service/publish',params)
+export async function publish(service_info) {
+    var data = { ...service_info }
+    data.metadata = JSON.stringify(data.metadata)
+    data.subjects = data.service_catalog.join(',')
+    delete data.service_catalog
+
+    let formData = new FormData();
+    for (const prop in data) {
+        debugger
+        formData.append(prop, data[prop])
+    }
+    let rlt = await http.post('/service/publish', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
     if (rlt && rlt.status == 200) {
         rlt.data
     }
     return null;
 }
 
-export async function update(info){
-    let rlt = await http.post('/service/update',info)
+export async function update(info) {
+    let rlt = await http.post('/service/update', info)
     if (rlt && rlt.status == 200) {
         rlt.data
     }

@@ -26,12 +26,14 @@
               class="upload"
               slot="suffix"
               drag
-              action="https://jsonplaceholder.typicode.com/posts/"><!-- action需要改一下 -->
-              <img src="../../assets/folder@2x.png" style="width: 16px;" alt="">
+              action="https://jsonplaceholder.typicode.com/posts/"
+            >
+              <!-- action需要改一下 -->
+              <img src="../../assets/folder@2x.png" style="width: 16px;" alt>
             </el-upload>
             <!-- <div class="flex-box" style="height: 40px; width: 30px; justify-content: center; cursor-pointer" slot="suffix">
               <img src="../../assets/folder@2x.png" style="width: 16px;" alt="">
-            </div> -->
+            </div>-->
           </el-input>
         </li>
 
@@ -40,7 +42,7 @@
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >服务名称：</div>
-          <el-input style="width: 440px;"></el-input>
+          <el-input style="width: 440px;" v-model="service_info.name"></el-input>
         </li>
 
         <li class="flex-box mg-b16">
@@ -48,7 +50,7 @@
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >关键字：</div>
-          <el-input style="width: 440px;"></el-input>
+          <el-input style="width: 440px;" placeholder="多个关键字以;分隔" v-model="service_info.keyword"></el-input>
         </li>
 
         <li class="flex-box mg-b16">
@@ -56,18 +58,22 @@
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >所属分组：</div>
-          <el-select multiple style="width: 440px;" v-model="value" placeholder="请选择">
-            <template v-for="item in 3"> <!-- 循环template -->
-              <div style="font-size: 12px; opacity: 0.5; color: #354052; padding: 8px 12px;">
-                {{item}}-一级
-              </div>
+          <el-select
+            multiple
+            style="width: 440px;"
+            v-model="service_info.service_catalog"
+            placeholder="请选择"
+          >
+            <template v-for="catalog in catalog_list">
+              <!-- 循环template -->
+              <div style="padding: 8px 12px;">{{catalog.name}}</div>
               <el-option
-                v-for="item in options"
-                :key="item.value + item.toString()"
-                :label="item.label"
-                :value="item.value"
+                v-for="subject in catalog.subject"
+                :key="subject.id"
+                :label="subject.name"
+                :value="subject.id"
               ></el-option>
-              </template>
+            </template>
           </el-select>
         </li>
 
@@ -76,17 +82,17 @@
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >提供单位：</div>
-          <el-input style="width: 440px;"></el-input>
+          <el-input style="width: 440px;" v-model="service_info.metadata.provider"></el-input>
         </li>
 
         <li class="flex-box mg-b16">
           <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">摘要：</div>
-          <el-input style="width: 440px;"></el-input>
+          <el-input style="width: 440px;" v-model="service_info.metadata.abstract"></el-input>
         </li>
 
         <li class="flex-box" style="justify-content: flex-end;">
-          <el-button>取消</el-button>
-          <el-button type="primary">确定</el-button>
+          <el-button @click="dlg_publish_service=false">取消</el-button>
+          <el-button type="primary" @click="doPublish">确定</el-button>
         </li>
       </ul>
     </el-dialog>
@@ -96,14 +102,26 @@
 </template>
 
 <script>
+import api from "../../api";
+const default_info = JSON.stringify({
+  name: "",
+  keyword: "",
+  service_catalog: [], //服务所属分类
+  metadata: {
+    provider: "",
+    abstract: "",
+    customize: []
+  }
+});
 export default {
   name: "Search",
   data() {
     return {
       dlg_publish_service: false,
       dlg_service_aggrate: false,
+      catalog_list: [],
       searchContent: "",
-      value: "",
+      service_info: JSON.parse(default_info),
       options: [
         {
           value: "选项1",
@@ -131,27 +149,40 @@ export default {
   methods: {
     openDialog(name) {
       this["dlg_" + name] = true;
-      // console.log(this);
     },
     onSearch(val) {
       this.$emit("search", val);
+    },
+    async doPublish() {
+      let result = await api.service.publish(this.service_info);
+      if (result === "success") {
+        this.$message({ message: "发布成功", type: "success" });
+        this.dlg_publish_service = false;
+      } else {
+        this.$message({ message: "发布失败", type: "error" });
+      }
     }
+  },
+  mounted() {
+    api.catalog.catalog_list().then(data => {
+      this.catalog_list = data;
+    });
   }
 };
 </script>
 
 <style lang="scss">
-  .upload {
-    .el-upload-dragger {
-      width: 30px!important;
-      height: 40px!important;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: unset!important;
-      border: none!important;
-    }
+.upload {
+  .el-upload-dragger {
+    width: 30px !important;
+    height: 40px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: unset !important;
+    border: none !important;
   }
+}
 </style>
 
 <style lang="scss" scoped>

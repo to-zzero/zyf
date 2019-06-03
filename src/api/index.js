@@ -18,7 +18,11 @@ axios.defaults.transformRequest = function (data) {
 // http request 拦截器
 axios.interceptors.request.use(
   config => {
-    config.headers['Content-Type'] = 'application/json';
+    if(config.url==='/service/publish'){
+      config.headers['Content-Type'] = 'multipart/form-data';      
+    }else{
+      config.headers['Content-Type'] = 'application/json';
+    }
     // config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
     return config;
   },
