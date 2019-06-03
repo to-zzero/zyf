@@ -49,18 +49,12 @@
             clearable
             placeholder="请选择"
           >
-            <template v-for="item in 3">
-              <!-- 循环template -->
-              <div
-                style="font-size: 12px; opacity: 0.5; color: #354052; padding: 8px 12px;"
-              >{{item}}-一级</div>
               <el-option
                 v-for="item in tableData"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id"
               ></el-option>
-            </template>
           </el-select>
         </li>
 
@@ -73,7 +67,7 @@
 
     <div class="list mg-t40">
       <el-table
-        :border="true"
+        :border="false"
         :data="tableData"
         row-class-name="custom-tr"
         :default-expand-all="true"

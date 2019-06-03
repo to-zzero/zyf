@@ -31,7 +31,7 @@
               <div class="inner-title">主题分类</div>
               <div class="inner-info">基础地理框架数据</div>
             </li>
-            
+
             <li class="flex-box item">
               <div class="inner-title">坐标系</div>
               <div class="inner-info">{{info.metadata.coord}}</div>
@@ -41,7 +41,24 @@
               <div class="inner-title">投影类型</div>
               <div class="inner-info">{{info.metadata.proj}}</div>
             </li>
-            
+
+            <li class="flex-box item">
+              <div class="inner-title">发布机构</div>
+              <div class="inner-info">{{info.metadata.provider}}</div>
+            </li>
+
+            <li class="flex-box item">
+              <div class="inner-title">联系人</div>
+              <div class="inner-info">{{ info.metadata.contract_name}}</div>
+            </li>
+            <li class="flex-box item">
+              <div class="inner-title">联系人电话</div>
+              <div class="inner-info">{{ info.metadata.contract_num}}</div>
+            </li>
+            <li class="flex-box item">
+              <div class="inner-title">联系人邮箱</div>
+              <div class="inner-info">{{ info.metadata.contract_mail}}</div>
+            </li>
           </ul>
         </div>
       </div>
@@ -50,22 +67,9 @@
         <div class="title">服务其他信息</div>
 
         <ul class="ul-reset" style="padding: 0 16px; margin-top: 40px;">
-          <li class="flex-box item">
-            <div class="inner-title">发布机构</div>
-            <div class="inner-info">{{info.metadata.provider}}</div>
-          </li>
-          
-          <li class="flex-box item">
-            <div class="inner-title">联系人</div>
-            <div class="inner-info">{{ info.metadata.contract_name}}</div>
-          </li>
-          <li class="flex-box item">
-            <div class="inner-title">联系人电话</div>
-            <div class="inner-info">{{ info.metadata.contract_num}}</div>
-          </li>
-          <li class="flex-box item">
-            <div class="inner-title">联系人邮箱</div>
-            <div class="inner-info">{{ info.metadata.contract_mail}}</div>
+          <li class="flex-box item" v-for="item in info.metadata.customize" :key="item.key">
+            <div class="inner-title">{{item.key}}</div>
+            <div class="inner-info">{{ item.value }}</div>
           </li>
         </ul>
       </div>
@@ -80,7 +84,12 @@ export default {
   name: "info",
   data() {
     return {
-      info: { keyword: "", metadata: {} }
+      info: {
+        keyword: "",
+        metadata: {
+          customize: []
+        }
+      }
     };
   },
   components: {
@@ -90,6 +99,7 @@ export default {
     const { id } = this.$route.query || {};
     const data = await api.service.get(id);
     data.metadata = JSON.parse(data.metadata || "{}");
+    data.metadata.customize = data.metadata.customize || [];
     this.info = data;
   }
 };

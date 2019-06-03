@@ -67,7 +67,15 @@ export async function get(serviceId) {
  * @param {*} params 
  */
 export async function publish(params) {
-    let rlt = await http.post('/service/publish')
+    let rlt = await http.post('/service/publish',params)
+    if (rlt && rlt.status == 200) {
+        rlt.data
+    }
+    return null;
+}
+
+export async function update(info){
+    let rlt = await http.post('/service/update',info)
     if (rlt && rlt.status == 200) {
         rlt.data
     }
