@@ -42,12 +42,24 @@
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >目录分组</div>
-          <el-select multiple style="width: 440px;" v-model="current.pid" clearable placeholder="请选择">
-            <template v-for="item in 3"> <!-- 循环template -->
-              <div style="font-size: 12px; opacity: 0.5; color: #354052; padding: 8px 12px;">
-                {{item}}-一级
-              </div>
-              <el-option v-for="item in tableData" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          <el-select
+            multiple
+            style="width: 440px;"
+            v-model="current.pid"
+            clearable
+            placeholder="请选择"
+          >
+            <template v-for="item in 3">
+              <!-- 循环template -->
+              <div
+                style="font-size: 12px; opacity: 0.5; color: #354052; padding: 8px 12px;"
+              >{{item}}-一级</div>
+              <el-option
+                v-for="item in tableData"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
             </template>
           </el-select>
         </li>
@@ -61,7 +73,7 @@
 
     <div class="list mg-t40">
       <el-table
-        :border="false"
+        :border="true"
         :data="tableData"
         row-class-name="custom-tr"
         :default-expand-all="true"
@@ -72,10 +84,10 @@
             <el-table :show-header="false" :data="row.subject" style="width: 100%">
               <el-table-column type="index" width="80" class-name="subject-col" prop="count"></el-table-column>
               <el-table-column prop="name" width="180" class-name="subject-col"></el-table-column>
-              <el-table-column prop="code" width="120" class-name="subject-col"></el-table-column>
+              <el-table-column prop="code" width="100" class-name="subject-col"></el-table-column>
               <el-table-column prop="desc" width="200" class-name="subject-col"></el-table-column>
-              <el-table-column prop="order" width="120" class-name="subject-col"></el-table-column>
-              <el-table-column fixed="right">
+              <el-table-column prop="order" width="60" class-name="subject-col"></el-table-column>
+              <el-table-column >
                 <template slot-scope="scope">
                   <el-button @click="editCatalog(scope.row)" type="text" size="small">编辑</el-button>
                   <el-button @click="deleteCatalog(scope.row)" type="text" size="small">删除</el-button>
@@ -88,10 +100,10 @@
         <el-table-column label="目录名称" width="180">
           <div slot-scope="props" style="font-weight: 600;">{{ props.row.name }}</div>
         </el-table-column>
-        <el-table-column label="目录编码" prop="code" width="120"></el-table-column>
-        <el-table-column label="描述" width="200" prop="desc"></el-table-column>
-        <el-table-column label="排序" prop="order" width="120"></el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="目录编码" prop="code" width="100"></el-table-column>
+        <el-table-column label="描述" prop="desc" width="200"></el-table-column>
+        <el-table-column label="排序" prop="order" width="60"></el-table-column>
+        <el-table-column label="操作" >
           <template slot-scope="scope">
             <el-button @click="editCatalog(scope.row)" type="text" size="small">编辑</el-button>
             <el-button @click="deleteCatalog(scope.row)" type="text" size="small">删除</el-button>
@@ -135,7 +147,7 @@ export default {
     },
     deleteCatalog(row) {
       this.$confirm(`是否删除 ${row.name}?`, "提示", {
-        type: "warning",
+        type: "warning"
         // roundButton: true
       })
         .then(async () => {
