@@ -22,9 +22,16 @@
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >选择.sd文件：</div>
           <el-input disabled style="width: 440px;">
-            <div class="flex-box" style="height: 40px; width: 30px; justify-content: center; cursor-pointer" slot="suffix"> <!-- 文件夹图标 -->
+            <el-upload
+              class="upload"
+              slot="suffix"
+              drag
+              action="https://jsonplaceholder.typicode.com/posts/"><!-- action需要改一下 -->
               <img src="../../assets/folder@2x.png" style="width: 16px;" alt="">
-            </div>
+            </el-upload>
+            <!-- <div class="flex-box" style="height: 40px; width: 30px; justify-content: center; cursor-pointer" slot="suffix">
+              <img src="../../assets/folder@2x.png" style="width: 16px;" alt="">
+            </div> -->
           </el-input>
         </li>
 
@@ -56,7 +63,7 @@
               </div>
               <el-option
                 v-for="item in options"
-                :key="item.value"
+                :key="item.value + item.toString()"
                 :label="item.label"
                 :value="item.value"
               ></el-option>
@@ -132,6 +139,20 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+  .upload {
+    .el-upload-dragger {
+      width: 30px!important;
+      height: 40px!important;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: unset!important;
+      border: none!important;
+    }
+  }
+</style>
 
 <style lang="scss" scoped>
 .search-wrap {
