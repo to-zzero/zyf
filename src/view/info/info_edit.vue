@@ -110,10 +110,10 @@
           v-for="(item, index) in customArr"
           :key="index"
           class="flex-box item">
-          <el-input style="width: 100px" placeholder="自定义名称"></el-input>
+          <el-input style="width: 116px" placeholder="自定义名称"></el-input>
           <el-input class="flex-1" style="margin: 0 16px;"></el-input>
-          <el-button @click="remove(index)">删除</el-button>
-          <el-button type="primary" v-if="index === customArr.length - 1 || !customArr.length" style="margin-left: 16px;" @click="add">添加</el-button>
+          <el-button v-if="index !== customArr.length - 1" @click="remove(index)">删除</el-button>
+          <el-button v-else type="primary" @click="add">添加</el-button>
         </li>
 
         <li class="flex-box item mg-t40">
@@ -159,6 +159,7 @@
     methods: {
       add () {
         this.customArr.push({})
+        console.log(this.customArr)
       },
       remove (index) {
         this.customArr.splice(index, 1)
@@ -196,7 +197,7 @@
     font-size: 14px;
     color: #696969;
     margin-right: 16px;
-    width: 100px;
+    width: 116px;
   }
 </style>
 
