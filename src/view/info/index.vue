@@ -60,6 +60,10 @@
               <div class="inner-info">{{ info.metadata.contract_mail}}</div>
             </li>
           </ul>
+
+          <div style="width: 574px; height: 370px; background-color: #d8d8d8;">
+            <!-- iframe 直接放这里面 -->
+          </div>
         </div>
       </div>
 
