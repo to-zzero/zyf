@@ -21,6 +21,9 @@
           <li v-if="catalog.subject.length > 5" @click="showMore(catalog)" class="view-more">
             {{ !catalog.showMore ? '查看更多' : '收起'}}
           </li>
+          <li v-if="catalog.subject.length === 0 " class="no-subjects">
+            暂无内容
+          </li>          
         </template>
       </ul>
     </li>
@@ -103,6 +106,16 @@ export default {
   text-align: center;
   cursor: pointer;
 }
+
+.no-subjects{
+  border-radius: 0 0 4px 4px;
+  background-color: #ffffff;
+  color: #7f8fa4;
+  font-size: 14px;
+  padding: 16px;
+  text-align: center; 
+}
+
 .item-content {
   margin-bottom: 12px !important;
   background: #fff;

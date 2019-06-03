@@ -42,15 +42,9 @@
 </template>
 
 <script>
-// import {
-//   catalog_list,
-//   save_catalog,
-//   servie_list,
-//   add_services,
-//   remove_services
-// } from "../../api";
 
-import api from '@/api'
+// import api from "@/api";
+import api from "../../api";
 
 export default {
   data() {
@@ -103,12 +97,12 @@ export default {
     async onNodeChange(data, node) {
       this.selected_services = [];
       if (data.id && node.level > 1) {
-        var services = await api.service.servie_list(data.id);
-        services = services.map(r=>r.id);
-        this.selected_services=services
+        var services = await api.service.servie_list({ catalogId: data.id });
+        services = services.map(r => r.id);
+        this.selected_services = services;
       }
     },
-    async service_change(value, direction,keys) {      
+    async service_change(value, direction, keys) {
       if (direction == "left") {
         //remove
         await api.service.remove_services(keys);

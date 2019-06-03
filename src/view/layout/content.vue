@@ -7,7 +7,7 @@
       </div>
     </div>
     <ul class="layout-content pd-lr16 pd-tb16 ul-reset">
-      <li class="list-item_wrap" v-for="service in serviceList" :key="service.id">
+      <li class="list-item_wrap" v-for="service in serviceQueryResult.list" :key="service.id">
         <div class="flex-box space-between item-header">
           <span style="font-size: 16px; font-weight: 600;">{{service.name}}</span>
           <router-link :to="{path :'/info', query: { id: service.id } }" target="_blank">详细信息</router-link>
@@ -70,7 +70,7 @@
         </div>
       </li>
 
-      <li style="text-align: center; font-weight: 600;" class="list-item_wrap" v-if="!serviceList.length">
+      <li style="text-align: center; font-weight: 600;" class="list-item_wrap" v-if="!serviceQueryResult.list.length">
         暂无服务
       </li>
 
@@ -78,7 +78,8 @@
         <el-pagination
           background
           layout="prev, pager, next"
-          :total="1000"
+          :total="serviceQueryResult.total"
+          :page-size="serviceQueryResult.size"
           @current-change="currentChange">
         </el-pagination>
       </li>
@@ -94,7 +95,7 @@ import { itemOperating } from "@/api";
 // import { constants } from "crypto"
 export default {
   name: "LayoutContent",
-  props: ["serviceList", 'currentSelect'],
+  props: ["serviceQueryResult", 'currentSelect'],
   data() {
     return {
       service: this.$props.serviceInfo,
@@ -105,7 +106,7 @@ export default {
     };
   },
   mounted() {
-    // console.log(this.serviceList)
+    
   },
   methods: {
     openDialog(name) {
@@ -125,7 +126,7 @@ export default {
       }
     },
     currentChange (page) {
-      alert(`第${page}页`)
+      this.$emit('page-changed',page)
     }
   }
 };

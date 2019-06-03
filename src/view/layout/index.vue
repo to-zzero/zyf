@@ -11,7 +11,14 @@
         <layout-menu @onSubjectClick="onSubjectClick"/>
       </el-aside>
       <el-main style="padding-right: 0px;">
-        <layout-content @clearSearch="onSubjectClick({id: null, subject: {}})" :currentSelect="currentSelect" :serviceList="serviceList" @search="onSearch" class="flex-1"/>
+        <layout-content
+          @page-changed="onPageChanged"
+          @clearSearch="onSubjectClick({id: null, subject: {}})"
+          :currentSelect="currentSelect"
+          :serviceQueryResult="serviceQueryResult"
+          @search="onSearch"
+          class="flex-1"
+        />
       </el-main>
     </el-container>
   </el-container>
@@ -21,9 +28,10 @@
 import LayoutHeader from "./header";
 import LayoutContent from "./content";
 import LayoutMenu from "./menu";
-import Search from './search';
+import Search from "./search";
 
-import api from '@/api'
+import api from "../../api";
+// import api from "@/api";
 
 export default {
   name: "LayoutIndex",
@@ -35,16 +43,24 @@ export default {
   },
   data() {
     return {
-      serviceList: [],
+      serviceQueryResult: { list: [], page: 1, size: 10, total: 0 },
       currentSubject: null,
-      currentSelect: {}
+      currentSelect: {},
+      queryOpt: {
+        catalogId: null,
+        name: null,
+        sort_field: null,
+        page: 1,
+        size: 5,
+        sort_method: 0
+      }
     };
   },
   mounted() {
     this.queryServices(this.currentSubject, null);
   },
   methods: {
-    async onSubjectClick({id, subject}) {
+    async onSubjectClick({ id, subject }) {
       this.currentSubject = id;
       this.currentSelect = subject;
       this.queryServices(id);
@@ -53,8 +69,14 @@ export default {
       this.queryServices(this.currentSubject, val);
     },
     async queryServices(id, name) {
-      var list = await api.service.servie_list(id, name);
-      this.serviceList = list.list.map(r => {
+      this.queryOpt.catalogId = id;
+      this.queryOpt.name = name;
+      this.doQuery();
+    },
+    async doQuery() {
+      let opt = this.queryOpt;
+      var list = await api.service.servie_list(opt);
+      this.serviceQueryResult.list = list.list.map(r => {
         if (r.metadata) {
           r.metadata = JSON.parse(r.metadata);
         } else {
@@ -66,12 +88,20 @@ export default {
         } else {
           r.keyword = [];
         }
-      r.thumbnail="1439126935969.jpg"
+        r.thumbnail = "1439126935969.jpg"; //todo:测试用
 
         r.status = !!r.status;
 
         return r;
       });
+
+      this.serviceQueryResult.page = list.pageNum;
+      this.serviceQueryResult.size = list.pageSize;
+      this.serviceQueryResult.total = list.total;
+    },
+    async onPageChanged(page) {
+      this.queryOpt.page = page;
+      this.doQuery()
     }
   }
 };
