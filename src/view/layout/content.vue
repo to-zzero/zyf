@@ -161,34 +161,29 @@ export default {
       // console.log(this);
     },
     async deleteService(service) {
-      await api.service.service_action(service, "delete");
+      try {
+        await this.$confirm(`确定删除服务 ${service.name}`, "删除确认", {
+          type: "warning"
+        });
+        var result = await api.service.service_action(service.id, "delete");
+        if (result == "success") {
+          this.$emit("reload-catalog");
+        }
+      } catch (error) {
+        return;
+      }
     },
     async startService(service) {
-      
-      await api.service.service_action(service, "on");
+      var result = await api.service.service_action(service.id, "on");
+      if (result == "success") {
+        service.status = true;
+      }
     },
     async stopService(service) {
-      
-      await api.service.service_action(service, "off");
-    },
-    async toggleService(service, status) {
-      if (status) {
-        this.startService(service);
-      } else {
-        this.stopService(service);
+      var result = await api.service.service_action(service.id, "off");
+      if (result == "success") {
+        service.status = false;
       }
-    },
-    async itemAction(service, action) {
-      if (action === "delete") {
-        try {
-          await this.$confirm(`确定删除服务 ${service.name}`, "删除确认", {
-            type: "warning"
-          });
-        } catch (error) {
-          return;
-        }
-      }
-      api.service.service_action(service.id, action);
     },
     onSearch(val) {
       this.$emit("search", val);

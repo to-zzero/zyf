@@ -93,3 +93,7 @@ export async function update(info) {
     }
     return null;
 }
+
+export async function visit(id) {
+    return http.post(`/service/visit/${id}`)
+}

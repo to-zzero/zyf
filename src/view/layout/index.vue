@@ -14,6 +14,7 @@
         <layout-content
           @page-changed="onPageChanged"
           @clearSearch="onSubjectClick({id: null, subject: {}})"
+          @reload-catalog="doQuery"
           :currentSelect="currentSelect"
           :serviceQueryResult="serviceQueryResult"
           @search="onSearch"
@@ -101,7 +102,7 @@ export default {
     },
     async onPageChanged(page) {
       this.queryOpt.page = page;
-      this.doQuery()
+      this.doQuery();
     }
   }
 };

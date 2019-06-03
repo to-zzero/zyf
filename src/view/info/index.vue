@@ -105,6 +105,7 @@ export default {
     const data = await api.service.get(id);
     data.metadata = JSON.parse(data.metadata || "{}");
     data.metadata.customize = data.metadata.customize || [];
+    api.service.visit(id);
     this.info = data;
   }
 };
