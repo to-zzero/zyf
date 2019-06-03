@@ -92,13 +92,13 @@
           <div class="item-title">
             所属分组：
           </div>
-          <el-select v-model="value1" class="flex-1" multiple placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
+          <el-select multiple class="flex-1" v-model="value1" clearable placeholder="请选择">
+            <template v-for="item in 3"> <!-- 循环template -->
+              <div style="font-size: 12px; opacity: 0.5; color: #354052; padding: 8px 12px;">
+                {{item}}-一级
+              </div>
+              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            </template>
           </el-select>
         </li>
 
