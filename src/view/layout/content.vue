@@ -38,17 +38,21 @@
                 style="margin-left:3px"
                 @click="itemAction('on')"
               >{{(service.status)?'停止':'开启'}}</span> -->
-              <span class="control-item flex-box" style="color: #696969;" @click="openDialog('view')">
-                <img src="../../assets/eye@2x.png" style="width: 16px; height: auto; margin-right: 4px;" alt="">
-                查看
+              <span class="control-item flex-box" style="color: #696969;">
+                <router-link class="flex-box" :to="{path :'/info', query: { id: service.id } }" target="_blank">
+                  <img src="../../assets/eye@2x.png" style="width: 16px; height: auto; margin-right: 4px;" alt="">
+                  <span style="color: #696969;">查看</span>
+                </router-link>
               </span>
               <span class="control-item flex-box" style="color: #696969;" @click="itemAction('delete')">
                 <img src="../../assets/delete@2x.png" style="width: 16px; height: auto; margin-right: 4px;" alt="">
                 删除
               </span>
-              <span class="control-item flex-box" style="color: #696969;" @click="openDialog('edit')">
-                <img src="../../assets/edit@2x.png" style="width: 16px; height: auto; margin-right: 4px;" alt="">
-                编辑
+              <span class="control-item flex-box" style="color: #696969;">
+                <router-link class="flex-box" :to="{path :'/info_edit', query: { id: service.id } }" target="_blank">
+                  <img src="../../assets/edit@2x.png" style="width: 16px; height: auto; margin-right: 4px;" alt="">
+                  <span style="color: #696969;">编辑</span>
+                </router-link>
               </span>
               <div class="switch-wrap control-item">
                 <el-switch
