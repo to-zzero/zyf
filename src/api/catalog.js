@@ -4,7 +4,7 @@ import http from 'axios'
 /**
  * 目录列表。一级二级目录
  */
-export const catalog_list = async function () {
+export async function catalog_list() {
     var result = await http.get('/catalog/list', {
     })
 
@@ -19,7 +19,7 @@ export const catalog_list = async function () {
  * @param {*} name 
  * @param {*} pid 
  */
-export const save_catalog = async function (name, pid) {
+export async function save_catalog(name, pid) {
     var result = await http.post('/catalog/create', {
         name,
         pid
