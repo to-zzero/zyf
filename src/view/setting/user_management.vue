@@ -42,8 +42,13 @@
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >目录分组</div>
-          <el-select style="width: 440px;" v-model="current.pid" clearable placeholder="请选择">
-            <el-option v-for="item in tableData" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          <el-select multiple style="width: 440px;" v-model="current.pid" clearable placeholder="请选择">
+            <template v-for="item in 3"> <!-- 循环template -->
+              <div style="font-size: 12px; opacity: 0.5; color: #354052; padding: 8px 12px;">
+                {{item}}-一级
+              </div>
+              <el-option v-for="item in tableData" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            </template>
           </el-select>
         </li>
 
