@@ -21,15 +21,17 @@
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >选择.sd文件：</div>
-          <el-input disabled style="width: 440px;">
+          <el-input disabled :value="fileName" style="width: 440px;">
             <el-upload
+              :show-file-list="false"
+              :on-change="selectFile"
+              :multiple="false"
               class="upload"
               slot="suffix"
-              drag
               action="https://jsonplaceholder.typicode.com/posts/"
             >
               <!-- action需要改一下 -->
-              <img src="../../assets/folder@2x.png" style="width: 16px;" alt>
+              <img src="../../assets/system@2x.png" style="width: 16px;" alt>
             </el-upload>
             <!-- <div class="flex-box" style="height: 40px; width: 30px; justify-content: center; cursor-pointer" slot="suffix">
               <img src="../../assets/folder@2x.png" style="width: 16px;" alt="">
@@ -107,6 +109,7 @@ const default_info = JSON.stringify({
   name: "",
   keyword: "",
   service_catalog: [], //服务所属分类
+  file: null,
   metadata: {
     provider: "",
     abstract: "",
@@ -122,6 +125,7 @@ export default {
       catalog_list: [],
       searchContent: "",
       service_info: JSON.parse(default_info),
+      fileName: '',
       options: [
         {
           value: "选项1",
@@ -153,6 +157,11 @@ export default {
     onSearch(val) {
       this.$emit("search", val);
     },
+    selectFile (file) {
+      console.log(file)
+      this.fileName = file.name
+      this.service_info.file = file
+    },
     async doPublish() {
       let result = await api.service.publish(this.service_info);
       if (result === "success") {
@@ -172,6 +181,16 @@ export default {
 </script>
 
 <style lang="scss">
+.search-wrap {
+  .el-input__suffix {
+    display: flex;
+    align-items: center;
+  }
+  .el-upload {
+    display: flex!important;
+    align-items: center;
+  }
+}
 .upload {
   .el-upload-dragger {
     width: 30px !important;

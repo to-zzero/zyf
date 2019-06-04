@@ -64,7 +64,7 @@ export async function get(serviceId) {
 
 /**
  * 发布服务。这个特殊点，需要上传文件，同时也需要属性
- * @param {*} params 
+ * @param {*} params
  */
 export async function publish(service_info) {
     var data = { ...service_info }
@@ -74,12 +74,16 @@ export async function publish(service_info) {
 
     let formData = new FormData();
     for (const prop in data) {
-        debugger
-        formData.append(prop, data[prop])
+        if (prop === 'file') {
+            formData.append(prop, data[prop].raw)
+            formData.append('fileName', data[prop].name)
+        } else {
+            formData.append(prop, data[prop])
+        }
+        console.log(prop, data[prop], data)
     }
-    let rlt = await http.post('/service/publish', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-    })
+    console.log(formData.get('file'))
+    let rlt = await http.post('/service/publish', formData)
     if (rlt && rlt.status == 200) {
         rlt.data
     }

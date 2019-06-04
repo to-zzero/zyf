@@ -10,20 +10,22 @@ axios.defaults.baseURL = '/api';
 // axios.defaults.baseURL = '/v1/api';
 
 //整理数据
-axios.defaults.transformRequest = function (data) {
-  data = JSON.stringify(data);
-  return data;
-};
+// axios.defaults.transformRequest = function (data) {
+//   data = JSON.stringify(data);
+//   return data;
+// };
 
 // http request 拦截器
 axios.interceptors.request.use(
   config => {
     if(config.url==='/service/publish'){
-      config.headers['Content-Type'] = 'multipart/form-data';      
+      config.headers['Content-Type'] = 'multipart/form-data';
     }else{
       config.headers['Content-Type'] = 'application/json';
+      if (config.method.toUpperCase() === 'POST') {
+        config.data = JSON.stringify(data)
+      }
     }
-    // config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
     return config;
   },
   error => {
