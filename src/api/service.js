@@ -1,4 +1,4 @@
-'use strict'
+// 'use strict'
 import http from 'axios'
 
 /**
@@ -80,12 +80,10 @@ export async function publish(service_info) {
         } else {
             formData.append(prop, data[prop])
         }
-        console.log(prop, data[prop], data)
     }
-    console.log(formData.get('file'))
     let rlt = await http.post('/service/publish', formData)
     if (rlt && rlt.status == 200) {
-        rlt.data
+        return rlt.data
     }
     return null;
 }
@@ -93,7 +91,7 @@ export async function publish(service_info) {
 export async function update(info) {
     let rlt = await http.post('/service/update', info)
     if (rlt && rlt.status == 200) {
-        rlt.data
+        return rlt.data
     }
     return null;
 }
@@ -101,3 +99,22 @@ export async function update(info) {
 export async function visit(id) {
     return http.post(`/service/visit/${id}`)
 }
+
+export async function updateThumbnail(id, file) {
+    let formData = new FormData();
+    formData.append('file', file)
+
+    let rlt = await http.post(`/service/update-thumbnail/${id}`, formData)
+    if (rlt && rlt.status == 200) {
+        return rlt.data
+    }
+    return null;
+}
+
+export async function getThumbnail(id) {
+    var resp = await http.get(`/service/thumbnail/${id}`)
+    if (resp && resp.data)
+        return resp.data
+    return null
+}
+

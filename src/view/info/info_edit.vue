@@ -10,86 +10,48 @@
         </li>
 
         <li class="flex-box item">
-          <div class="item-title">服务简介：</div>
-          <el-input class="flex-1"></el-input>
-        </li>
-
-        <li class="flex-box item">
           <div class="item-title">关键字：</div>
-          <el-input class="flex-1"></el-input>
+          <el-input class="flex-1" placeholder="多个之间用;分隔" v-model="info.keyword"></el-input>
         </li>
 
         <li class="flex-box item">
-          <div class="item-title">服务类型：</div>
-          <el-input class="flex-1"></el-input>
+          <div class="item-title">提供单位：</div>
+          <el-input class="flex-1" v-model="info.metadata.provider"></el-input>
         </li>
 
         <li class="flex-box item">
-          <div class="item-title">主题分类：</div>
-          <el-input class="flex-1"></el-input>
-        </li>
-
-        <li class="flex-box item">
-          <div class="item-title">覆盖区域：</div>
-          <el-input class="flex-1"></el-input>
-        </li>
-
-        <li class="flex-box item">
-          <div class="item-title">坐标系：</div>
-          <el-input class="flex-1"></el-input>
-        </li>
-
-        <li class="flex-box item">
-          <div class="item-title">投影类型：</div>
-          <el-input class="flex-1"></el-input>
-        </li>
-
-        <li class="flex-box item">
-          <div class="item-title">使用权限：</div>
-          <el-input class="flex-1"></el-input>
-        </li>
-
-        <li class="flex-box item">
-          <div class="item-title">服务预览：</div>
-          <el-input class="flex-1"></el-input>
-        </li>
-
-        <li class="flex-box item">
-          <div class="item-title">服务名称：</div>
-          <el-input class="flex-1"></el-input>
+          <div class="item-title">服务摘要：</div>
+          <el-input class="flex-1" v-model="info.metadata.abstract"></el-input>
         </li>
 
         <li class="flex-box item">
           <div class="item-title">所属分组：</div>
-          <el-select multiple class="flex-1" v-model="value1" clearable placeholder="请选择">
-            <template v-for="item in 3">
+          <el-select
+            multiple
+            class="flex-1"
+            v-model="selected_subjects"
+            clearable
+            placeholder="请选择"
+          >
+            <template v-for="item in catalog">
               <!-- 循环template -->
               <div
                 style="font-size: 12px; opacity: 0.5; color: #354052; padding: 8px 12px;"
-              >{{item}}-一级</div>
+              >{{item.name}}</div>
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="subject in item.subject"
+                :key="subject.id"
+                :label="subject.name"
+                :value="subject.id"
               ></el-option>
             </template>
           </el-select>
         </li>
-        <!-- 
-        <li v-if="!customArr.length" class="item" style="text-align: right;">
-          <el-button
-            type="primary"
-            v-if="index === customArr.length - 1 || !customArr.length"
-            style="margin-left: 16px;"
-            @click="add"
-          >添加自定义名称</el-button>
-        </li>-->
 
         <li v-for="(item, index) in customArr" :key="index" class="flex-box item">
           <el-input style="width: 116px;text-align:right" v-model="item.key"></el-input>
           <el-input class="flex-1" style="margin: 0 16px;" v-model="item.value"></el-input>
-          <el-button v-if="index !== customArr.length - 1" @click="remove(index)">删除</el-button>
+          <el-button type="warning" @click="remove(index)">删除</el-button>
         </li>
 
         <li class="flex-box item">
@@ -104,7 +66,6 @@
 
         <li class="flex-box item mg-t40">
           <el-button type="primary" class="flex-1" style="margin-left: 116px;" @click="update">更新</el-button>
-          <!-- <el-button style="margin-left: 16px;">取消</el-button> -->
         </li>
       </ul>
 
@@ -113,9 +74,13 @@
         action="https://jsonplaceholder.typicode.com/posts/"
         :show-file-list="false"
         :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload">
+        :before-upload="beforeAvatarUpload"
+      >
         <img v-if="imageUrl" :src="imageUrl" class="avatar">
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        <span v-else>
+          <i class="el-icon-plus avatar-uploader-icon"></i>
+          <span style="position: absolute;left:37%;top:60%">预览图</span>
+        </span>
       </el-upload>
     </div>
   </div>
@@ -125,6 +90,8 @@
 // import api from '@/api'
 import api from "../../api";
 import LayoutHeader from "../layout/header";
+
+const MIME = ["image/png", "image/jpg", "image/jpeg"];
 export default {
   name: "InfoEdit",
   components: {
@@ -132,29 +99,47 @@ export default {
   },
   data() {
     return {
-      info: { keyword: "", metadata: {} },
-      value1: [],
-      options: [],
+      info: { keyword: "", metadata: { abstract: "" } },
+      selected_subjects: [],
+      catalog: [],
       customArr: [],
       editingPair: { key: "", value: "" },
-      imageUrl: ''
+      imageUrl: ""
     };
   },
   methods: {
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
+      // this.imageUrl = URL.createObjectURL(file.raw);
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg';
+      const isJPG = MIME.indexOf(file.type) >= 0;
       const isLt2M = file.size / 1024 / 1024 < 2;
 
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!');
+        this.$message.error("上传头像图片只能是 JPG/JPEG/PNG 格式!");
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!');
+        this.$message.error("上传头像图片大小不能超过 2MB!");
       }
-      return isJPG && isLt2M;
+
+      if (isJPG && isLt2M) {
+        var fr = new FileReader();
+        fr.readAsDataURL(file);
+        fr.onload = data => {
+          this.imageUrl = data.currentTarget.result;
+          //上传
+
+          api.service.updateThumbnail(this.info.id, file).then(rlt => {
+            if (rlt) {
+              this.$message.success("上传成功");
+            } else {
+              this.$message.success("上传失败");
+            }
+          });
+        };
+      }
+
+      return false;
     },
     add() {
       this.customArr.push({
@@ -163,82 +148,83 @@ export default {
       this.editingPair.key = "";
       this.editingPair.value = "";
     },
-    methods: {
-      add() {
-        this.customArr.push({});
-        console.log(this.customArr);
-      },
-      remove(index) {
-        this.customArr.splice(index, 1);
-      },
-      async update() {
-        var info = {
-          ...this.info
-        };
-        info.metadata.customize = this.customArr;
-        info.metadata = JSON.stringify(info.metadata);
-        var success = await api.service.update(info);
-        if (success) {
-          this.$message({
-            message: "保存成功",
-            type: "success"
-          });
-        } else {
-          this.$message({
-            message: "保存失败",
-            type: "error"
-          });
-        }
+    remove(index) {
+      this.customArr.splice(index, 1);
+    },
+    async update() {
+      var info = {
+        ...this.info
+      };
+      info.metadata.customize = this.customArr;
+      info.metadata = JSON.stringify(info.metadata);
+      info.groupIdList = this.selected_subjects.join(",");
+      var success = await api.service.update(info);
+      if (success) {
+        this.$message({
+          message: "保存成功",
+          type: "success"
+        });
+      } else {
+        this.$message({
+          message: "保存失败",
+          type: "error"
+        });
       }
     }
   },
   mounted() {
     const { id } = this.$route.query || {};
+
+    api.catalog.catalog_list().then(data => {
+      this.catalog = data;
+    });
+
     api.service.get(id).then(data => {
       data.metadata = JSON.parse(data.metadata || "{}");
       this.info = data;
       this.customArr = data.metadata.customize || [];
+      this.selected_subjects = (data.groupIdList || "").split(",");
     });
 
-    api.catalog.catalog_list().then(data => {
-      this.options = data;
+    api.service.getThumbnail(id).then(buffer => {
+      console.log(buffer);
     });
   }
 };
 </script>
 
 <style lang="scss">
-  .info-edit_content {
-    position: relative;
-    .avatar-uploader {
-      position: absolute;
-      right: 16px;
-      top: 32px;
-    }
-    .avatar-uploader .el-upload {
-      border: 1px dashed #d9d9d9;
-      border-radius: 6px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-    .avatar-uploader .el-upload:hover {
-      border-color: #409EFF;
-    }
-    .avatar-uploader-icon {
-      font-size: 28px;
-      color: #8c939d;
-      width: 178px;
-      height: 178px;
-      line-height: 178px;
-      text-align: center;
-    }
-    .avatar {
-      width: 178px;
-      height: 178px;
-      display: block;
-    }
+.info-edit_content {
+  position: relative;
+  .avatar-uploader {
+    position: absolute;
+    right: 50px;
+    top: 32px;
   }
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+}
 </style>
 
 <style lang="scss" scoped>
@@ -261,7 +247,7 @@ export default {
 
 .item {
   &:not(:last-of-type) {
-    margin-bottom: 24px;
+    margin-bottom: 12px;
   }
 }
 

@@ -23,7 +23,7 @@ axios.interceptors.request.use(
     }else{
       config.headers['Content-Type'] = 'application/json';
       if (config.method.toUpperCase() === 'POST') {
-        config.data = JSON.stringify(data)
+        // config.data = JSON.stringify(data)
       }
     }
     return config;

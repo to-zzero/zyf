@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import dayjs from "dayjs";
+
 import LayoutHeader from "./header";
 import LayoutContent from "./content";
 import LayoutMenu from "./menu";
@@ -90,7 +92,7 @@ export default {
           r.keyword = [];
         }
         r.thumbnail = "1439126935969.jpg"; //todo:测试用
-
+        r.pubdate = dayjs(r.createdAt).format("YYYY-MM-DD");
         r.status = !!r.status;
 
         return r;

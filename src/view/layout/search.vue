@@ -25,13 +25,14 @@
             <el-upload
               :show-file-list="false"
               :on-change="selectFile"
+              :before-upload="()=>false"
               :multiple="false"
               class="upload"
               slot="suffix"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              action
             >
               <!-- action需要改一下 -->
-              <img src="../../assets/system@2x.png" style="width: 16px;" alt>
+              <img src="../../assets/system@2x.png" style="width: 25px;" alt>
             </el-upload>
             <!-- <div class="flex-box" style="height: 40px; width: 30px; justify-content: center; cursor-pointer" slot="suffix">
               <img src="../../assets/folder@2x.png" style="width: 16px;" alt="">
@@ -125,29 +126,8 @@ export default {
       catalog_list: [],
       searchContent: "",
       service_info: JSON.parse(default_info),
-      fileName: '',
-      options: [
-        {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ]
+      fileName: "",
+      options: []
     };
   },
   methods: {
@@ -157,18 +137,30 @@ export default {
     onSearch(val) {
       this.$emit("search", val);
     },
-    selectFile (file) {
-      console.log(file)
-      this.fileName = file.name
-      this.service_info.file = file
+    selectFile(file) {
+      this.fileName = file.name;
+      this.service_info.file = file;
     },
     async doPublish() {
-      let result = await api.service.publish(this.service_info);
-      if (result === "success") {
-        this.$message({ message: "发布成功", type: "success" });
-        this.dlg_publish_service = false;
-      } else {
-        this.$message({ message: "发布失败", type: "error" });
+      let loading;
+      try {
+        loading = this.$loading({
+          lock: true,
+          text: "正在发布服务...",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)"
+        });
+        let result = await api.service.publish(this.service_info);
+        if (result === "success") {
+          loading.close();
+          this.$message({ message: "发布成功", type: "success" });
+          this.dlg_publish_service = false;
+        } else {
+          loading.close();
+          this.$message({ message: "发布失败", type: "error" });
+        }
+      } finally {
+        loading.close();
       }
     }
   },
@@ -187,7 +179,7 @@ export default {
     align-items: center;
   }
   .el-upload {
-    display: flex!important;
+    display: flex !important;
     align-items: center;
   }
 }

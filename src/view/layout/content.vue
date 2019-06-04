@@ -35,7 +35,7 @@
                 <span
                   class="tw-b"
                   style="color: #292929;"
-                >{{service.metadata.createAt || '--'}}</span>
+                >{{service.pubdate || '--'}}</span>
               </span>
             </li>
             <li class="flex-box mg-b8">
@@ -141,7 +141,6 @@
 
 <script>
 import api from "../../api";
-// import { constants } from "crypto"
 export default {
   name: "LayoutContent",
   props: ["serviceQueryResult", "currentSelect"],
@@ -160,18 +159,20 @@ export default {
       this["dlg_" + name] = true;
       // console.log(this);
     },
-    async deleteService(service) {
-      try {
-        await this.$confirm(`确定删除服务 ${service.name}`, "删除确认", {
-          type: "warning"
-        });
-        var result = await api.service.service_action(service.id, "delete");
-        if (result == "success") {
-          this.$emit("reload-catalog");
-        }
-      } catch (error) {
-        return;
-      }
+    deleteService(service) {
+      this.$confirm(`确定删除服务 ${service.name}`, "删除确认", {
+        type: "warning",
+        confirmButtonText: "确定",
+        cancelButtonText: "取消"
+      })
+        .then(async () => {
+          var result = await api.service.service_action(service.id, "delete");
+          debugger
+          if (result == "success") {
+            this.$emit("reload-catalog");
+          }
+        })
+        .catch(() => {});
     },
     async startService(service) {
       var result = await api.service.service_action(service.id, "on");

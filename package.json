@@ -11,6 +11,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "core-js": "^2.6.5",
+    "dayjs": "^1.8.14",
     "element-ui": "^2.4.5",
     "gemini-scrollbar": "^1.5.3",
     "normalize.css": "^8.0.1",
