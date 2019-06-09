@@ -11,53 +11,24 @@
         <div style="padding: 0 16px; margin-top: 40px;" class="flex-box space-between">
           <ul class="ul-reset">
             <li class="flex-box item">
-              <div class="inner-title">服务URL</div>
-              <div class="inner-info">{{info.metadata.url}}</div>
+              <div class="inner-title">服务地址：</div>
+              <div class="inner-info">{{serviceUrl}}</div>
             </li>
             <li class="flex-box item">
-              <div class="inner-title">服务名称</div>
+              <div class="inner-title">服务名称：</div>
               <div class="inner-info">{{info.name}}</div>
             </li>
             <li class="flex-box item">
-              <div class="inner-title">服务简介</div>
+              <div class="inner-title">服务摘要：</div>
               <div class="inner-info">{{info.desc}}</div>
             </li>
             <li class="flex-box item">
-              <div class="inner-title">关键字</div>
+              <div class="inner-title">关键字：</div>
               <div class="inner-info">{{info.keyword.replace(/;|；/g,'、')}}</div>
             </li>
-
             <li class="flex-box item">
-              <div class="inner-title">主题分类</div>
-              <div class="inner-info">基础地理框架数据</div>
-            </li>
-
-            <li class="flex-box item">
-              <div class="inner-title">坐标系</div>
-              <div class="inner-info">{{info.metadata.coord}}</div>
-            </li>
-
-            <li class="flex-box item">
-              <div class="inner-title">投影类型</div>
-              <div class="inner-info">{{info.metadata.proj}}</div>
-            </li>
-
-            <li class="flex-box item">
-              <div class="inner-title">发布机构</div>
+              <div class="inner-title">提供单位：</div>
               <div class="inner-info">{{info.metadata.provider}}</div>
-            </li>
-
-            <li class="flex-box item">
-              <div class="inner-title">联系人</div>
-              <div class="inner-info">{{ info.metadata.contract_name}}</div>
-            </li>
-            <li class="flex-box item">
-              <div class="inner-title">联系人电话</div>
-              <div class="inner-info">{{ info.metadata.contract_num}}</div>
-            </li>
-            <li class="flex-box item">
-              <div class="inner-title">联系人邮箱</div>
-              <div class="inner-info">{{ info.metadata.contract_mail}}</div>
             </li>
           </ul>
 
@@ -73,7 +44,7 @@
 
         <ul class="ul-reset" style="padding: 0 16px; margin-top: 40px;">
           <li class="flex-box item" v-for="item in info.metadata.customize" :key="item.key">
-            <div class="inner-title">{{item.key}}</div>
+            <div class="inner-title">{{item.key}}：</div>
             <div class="inner-info">{{ item.value }}</div>
           </li>
         </ul>
@@ -99,6 +70,13 @@ export default {
   },
   components: {
     LayoutHeader
+  },
+  computed: {
+    serviceUrl() {
+      return `${location.protocol}//${location.host}/rest/services/${
+        this.info.id
+      }/wmts`;
+    }
   },
   async mounted() {
     const { id } = this.$route.query || {};
@@ -134,10 +112,11 @@ export default {
   border-left: 4px solid #4874ed;
 }
 .inner-title {
-  width: 100px;
-  margin-right: 16px;
+  width: 80px;
+  // margin-right: 8px;
   color: #828282;
   font-size: 14px;
+  text-align: right;
 }
 .inner-info {
   font-size: 14px;

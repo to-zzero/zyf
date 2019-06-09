@@ -17,7 +17,7 @@
 
         <div class="flex-box align-start">
           <div style="width: 110px; height: 110px;">
-            <img :src="`/thumbnail/${service.thumbnail}`" style="width:100%;height:100%">
+            <img :src="`/api/service/thumbnail/${service.id}`" style="width:100%;height:100%">
           </div>
           <ul class="ul-reset mg-l16 relative flex-1">
             <li class="flex-box mg-b8">
@@ -32,10 +32,7 @@
             <li class="flex-box mg-b8">
               <span style="font-size: 14px; color: #696969;">
                 发布时间：
-                <span
-                  class="tw-b"
-                  style="color: #292929;"
-                >{{service.pubdate || '--'}}</span>
+                <span class="tw-b" style="color: #292929;">{{service.pubdate || '--'}}</span>
               </span>
             </li>
             <li class="flex-box mg-b8">
@@ -154,6 +151,7 @@ export default {
     };
   },
   mounted() {},
+  inject: ["reload"],
   methods: {
     openDialog(name) {
       this["dlg_" + name] = true;
@@ -166,11 +164,23 @@ export default {
         cancelButtonText: "取消"
       })
         .then(async () => {
-          var result = await api.service.service_action(service.id, "delete");
-          debugger
-          if (result == "success") {
-            this.$emit("reload-catalog");
-          }
+          let loading = this.$loading({
+            lock: true,
+            text: "正在删除服务...",
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.25)"
+          });
+          api.service
+            .service_action(service.id, "delete")
+            .then(() => {
+              loading.close();
+              this.$message({ message: "删除成功", type: "success" });
+              this.reload();
+            })
+            .catch(err => {
+              loading.close();
+              this.$message({ message: "删除失败：" + err, type: "error" });
+            });
         })
         .catch(() => {});
     },

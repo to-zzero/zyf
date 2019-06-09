@@ -8,7 +8,7 @@
 
     <el-container style="width: 1200px; margin: 0 auto;">
       <el-aside width="264px">
-        <layout-menu @onSubjectClick="onSubjectClick"/>
+        <layout-menu ref="menu" @onSubjectClick="onSubjectClick"/>
       </el-aside>
       <el-main style="padding-right: 0px;">
         <layout-content

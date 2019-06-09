@@ -11,7 +11,7 @@
 
       <el-button class="mg-l16" type="primary" @click="openDialog('publish_service')">发布服务</el-button>
 
-      <el-button class="mg-l16" type="primary" @click="openDialog('service_aggrate')">服务聚合</el-button>
+      <el-button class="mg-l16" type="primary" @click="openDialog('service_aggrate1')">服务聚合</el-button>
     </div>
 
     <el-dialog width="610px" :visible.sync="dlg_publish_service" title="发布服务">
@@ -32,7 +32,7 @@
               action
             >
               <!-- action需要改一下 -->
-              <img src="../../assets/system@2x.png" style="width: 25px;" alt>
+              <img src="../../assets/folder@2x.png" style="width: 25px;" alt>
             </el-upload>
             <!-- <div class="flex-box" style="height: 40px; width: 30px; justify-content: center; cursor-pointer" slot="suffix">
               <img src="../../assets/folder@2x.png" style="width: 16px;" alt="">
@@ -119,6 +119,7 @@ const default_info = JSON.stringify({
 });
 export default {
   name: "Search",
+  inject: ["reload"],
   data() {
     return {
       dlg_publish_service: false,
@@ -143,31 +144,37 @@ export default {
     },
     async doPublish() {
       let loading;
-      try {
-        loading = this.$loading({
-          lock: true,
-          text: "正在发布服务...",
-          spinner: "el-icon-loading",
-          background: "rgba(0, 0, 0, 0.7)"
-        });
-        let result = await api.service.publish(this.service_info);
-        if (result === "success") {
+      loading = this.$loading({
+        lock: true,
+        text: "正在发布服务...",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.5)"
+      });
+      api.service
+        .publish(this.service_info)
+        .then(() => {
           loading.close();
           this.$message({ message: "发布成功", type: "success" });
           this.dlg_publish_service = false;
-        } else {
+          this.reload();
+        })
+        .catch(err => {
           loading.close();
-          this.$message({ message: "发布失败", type: "error" });
-        }
-      } finally {
-        loading.close();
-      }
+          this.$message({ message: "发布失败:" + err, type: "error" });
+        });
     }
   },
   mounted() {
     api.catalog.catalog_list().then(data => {
       this.catalog_list = data;
     });
+  },
+  watch: {
+    fileName(newVal, oldVal) {
+      if (!this.service_info.name || this.service_info.name === oldVal) {
+        this.service_info.name = newVal;
+      }
+    }
   }
 };
 </script>

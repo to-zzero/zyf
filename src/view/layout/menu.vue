@@ -3,13 +3,12 @@
   <ul class="layout-menu ul-reset mg-t24">
     <li class="item-wrap">
       <ul class="ul-reset item-content" v-for="catalog in menu_data" :key="catalog.id">
-        <li
-          @click="showCatalog(catalog)"
-          class="inner-item relative">
+        <li @click="showCatalog(catalog)" class="inner-item relative">
           {{catalog.name}}
           <i
             class="custom-icon"
-            :class="(catalog.isView || catalog.isView === undefined) ? '' : 'un-opened'"/>
+            :class="(catalog.isView || catalog.isView === undefined) ? '' : 'un-opened'"
+          />
         </li>
         <template v-if="catalog.isView || catalog.isView === undefined">
           <li
@@ -18,12 +17,12 @@
             :key="subject.id"
             @click="onSubjectClick(subject.id, subject)"
           >{{subject.name}}({{subject.count}})</li>
-          <li v-if="catalog.subject.length > 5" @click="showMore(catalog)" class="view-more">
-            {{ !catalog.showMore ? '查看更多' : '收起'}}
-          </li>
-          <li v-if="catalog.subject.length === 0 " class="no-subjects">
-            暂无内容
-          </li>          
+          <li
+            v-if="catalog.subject.length > 5"
+            @click="showMore(catalog)"
+            class="view-more"
+          >{{ !catalog.showMore ? '查看更多' : '收起'}}</li>
+          <li v-if="catalog.subject.length === 0 " class="no-subjects">暂无内容</li>
         </template>
       </ul>
     </li>
@@ -41,33 +40,36 @@ export default {
     };
   },
   mounted() {
-    api.catalog.catalog_list().then(res => {
-      this.menu_data = res
-    })
+    this.loadCatalog();
   },
   methods: {
-    onSubjectClick(id, subject){
-      this.$emit('onSubjectClick', {
+    loadCatalog() {
+      api.catalog.catalog_list().then(res => {
+        this.menu_data = res;
+      });
+    },
+    onSubjectClick(id, subject) {
+      this.$emit("onSubjectClick", {
         id,
         subject
-      })
+      });
     },
-    showMore (catalog) {
+    showMore(catalog) {
       if (!catalog.showMore) {
-        this.$set(catalog, 'showMore', true)
+        this.$set(catalog, "showMore", true);
       } else {
-        this.$set(catalog, 'showMore', false)
+        this.$set(catalog, "showMore", false);
       }
     },
-    showCatalog (catalog) {
+    showCatalog(catalog) {
       if (catalog.isView === undefined) {
-        this.$set(catalog, 'isView', false)
-        return false        
+        this.$set(catalog, "isView", false);
+        return false;
       }
       if (!catalog.isView) {
-        this.$set(catalog, 'isView', true)
+        this.$set(catalog, "isView", true);
       } else {
-        this.$set(catalog, 'isView', false)
+        this.$set(catalog, "isView", false);
       }
     }
   }
@@ -81,7 +83,7 @@ export default {
 .relative {
   position: relative;
   cursor: pointer;
-  
+
   .custom-icon {
     position: absolute;
     width: 8px;
@@ -94,7 +96,7 @@ export default {
 
     &.un-opened {
       transform: rotate(225deg);
-    } 
+    }
   }
 }
 .view-more {
@@ -107,13 +109,13 @@ export default {
   cursor: pointer;
 }
 
-.no-subjects{
+.no-subjects {
   border-radius: 0 0 4px 4px;
   background-color: #ffffff;
   color: #7f8fa4;
   font-size: 14px;
   padding: 16px;
-  text-align: center; 
+  text-align: center;
 }
 
 .item-content {

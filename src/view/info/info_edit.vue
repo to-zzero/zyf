@@ -76,7 +76,9 @@
         :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload"
       >
+
         <img v-if="imageUrl" :src="imageUrl" class="avatar">
+        <img v-else-if="info.hasThunmbnail" :src="`/api/service/thumbnail/${info.id}`" class="avatar">
         <span v-else>
           <i class="el-icon-plus avatar-uploader-icon"></i>
           <span style="position: absolute;left:37%;top:60%">预览图</span>
@@ -104,7 +106,8 @@ export default {
       catalog: [],
       customArr: [],
       editingPair: { key: "", value: "" },
-      imageUrl: ""
+      imageUrl: "",
+      fileInfo: null
     };
   },
   methods: {
@@ -125,17 +128,9 @@ export default {
       if (isJPG && isLt2M) {
         var fr = new FileReader();
         fr.readAsDataURL(file);
+        this.fileInfo = file;
         fr.onload = data => {
           this.imageUrl = data.currentTarget.result;
-          //上传
-
-          api.service.updateThumbnail(this.info.id, file).then(rlt => {
-            if (rlt) {
-              this.$message.success("上传成功");
-            } else {
-              this.$message.success("上传失败");
-            }
-          });
         };
       }
 
@@ -158,18 +153,22 @@ export default {
       info.metadata.customize = this.customArr;
       info.metadata = JSON.stringify(info.metadata);
       info.groupIdList = this.selected_subjects.join(",");
-      var success = await api.service.update(info);
-      if (success) {
-        this.$message({
-          message: "保存成功",
-          type: "success"
+      info.file = this.fileInfo;
+      var success = await api.service
+        .update(info)
+        .then(() => {
+          this.fileInfo = null;
+          this.$message({
+            message: "保存成功",
+            type: "success"
+          });
+        })
+        .catch(err => {
+          this.$message({
+            message: "保存失败。" + err,
+            type: "error"
+          });
         });
-      } else {
-        this.$message({
-          message: "保存失败",
-          type: "error"
-        });
-      }
     }
   },
   mounted() {
@@ -186,9 +185,9 @@ export default {
       this.selected_subjects = (data.groupIdList || "").split(",");
     });
 
-    api.service.getThumbnail(id).then(buffer => {
-      console.log(buffer);
-    });
+    // api.service.getThumbnail(id).then(buffer => {
+    //   console.log(buffer);
+    // });
   }
 };
 </script>

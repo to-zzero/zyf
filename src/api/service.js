@@ -81,7 +81,7 @@ export async function publish(service_info) {
             formData.append(prop, data[prop])
         }
     }
-    let rlt = await http.post('/service/publish', formData)
+    let rlt = await http.post('/service/publish', formData, { timeout: 0 })
     if (rlt && rlt.status == 200) {
         return rlt.data
     }
@@ -89,7 +89,14 @@ export async function publish(service_info) {
 }
 
 export async function update(info) {
-    let rlt = await http.post('/service/update', info)
+    delete info.createAt
+    delete info.updateAt
+    let formData = new FormData();
+    for (const prop in info) {
+        formData.append(prop, info[prop])
+    }
+
+    let rlt = await http.post('/service/update', formData)
     if (rlt && rlt.status == 200) {
         return rlt.data
     }

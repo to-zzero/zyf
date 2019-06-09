@@ -9,18 +9,13 @@ axios.defaults.timeout = 10000;   // 超时时间
 axios.defaults.baseURL = '/api';
 // axios.defaults.baseURL = '/v1/api';
 
-//整理数据
-// axios.defaults.transformRequest = function (data) {
-//   data = JSON.stringify(data);
-//   return data;
-// };
-
+const multipart_posts = ['/service/publish', '/service/update']
 // http request 拦截器
 axios.interceptors.request.use(
   config => {
-    if(config.url==='/service/publish'){
+    if (multipart_posts.includes(config.url)) {
       config.headers['Content-Type'] = 'multipart/form-data';
-    }else{
+    } else {
       config.headers['Content-Type'] = 'application/json';
       if (config.method.toUpperCase() === 'POST') {
         // config.data = JSON.stringify(data)
@@ -38,10 +33,14 @@ axios.interceptors.response.use(
     if (response.data.resultCode === "404") {
       return
     } else {
+      if (response.data && response.data.error) {
+        return Promise.reject(response.data.error)
+      }
       return response;
     }
   },
   error => {
+    debugger
     return Promise.reject(error.response)   // 返回接口返回的错误信息
   }
 );
