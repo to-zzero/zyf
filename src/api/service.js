@@ -62,6 +62,24 @@ export async function get(serviceId) {
     return null;
 }
 
+export async function getCapabilities(serviceId) {
+    let url = '/service/GetCapabilities/' + serviceId
+    let rlt = await http.get(url)
+    if (rlt && rlt.status == 200) {
+        return rlt.data
+    }
+    return null;
+}
+
+export async function getProxy() {
+    let url = '/arcgis/proxy'
+    let rlt = await http.get(url)
+    if (rlt && rlt.status == 200) {
+        return rlt.data
+    }
+    return null;
+}
+
 /**
  * 发布服务。这个特殊点，需要上传文件，同时也需要属性
  * @param {*} params
@@ -86,6 +104,14 @@ export async function publish(service_info) {
         return rlt.data
     }
     return null;
+}
+
+export async function getStatus(id) {
+    let rlt = http.get('/service/publish/' + id, { timeout: 0 })
+    if (rlt && rlt.status == 200) {
+        return rlt.data
+    }
+    return false;
 }
 
 export async function update(info) {

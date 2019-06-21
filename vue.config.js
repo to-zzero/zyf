@@ -1,19 +1,26 @@
 /* eslint-disable prefer-destructuring */
 const path = require('path')
-
+const proxy_path = 'http://120.27.63.240:8082/', // 线上环境
+// const proxy_path = 'http://127.0.0.1:8082/'
 module.exports = {
   devServer: {
-    port:8081,
+    port: 8081,
     proxy: {
       '/api': {
-        target: 'http://103.200.114.146:8082/', // 线上环境
-        // target: 'http://127.0.0.1:8082/', // 线上环境
+        target: proxy_path, // 线上环境
         changeOrigin: true,
         pathRewrite: {
-          '^/api': '/api',
-        },
+          '^/api': '/api'
+        }
       },
-    },
+      '/rest': {
+        target: proxy_path, // 线上环境
+        changeOrigin: true,
+        pathRewrite: {
+          '^/rest': '/rest',
+        }
+      }
+    }
   },
   pluginOptions: {
     'style-resources-loader': {

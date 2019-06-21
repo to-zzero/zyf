@@ -12,7 +12,9 @@
           <ul class="ul-reset">
             <li class="flex-box item">
               <div class="inner-title">服务地址：</div>
-              <div class="inner-info">{{serviceUrl}}</div>
+              <div class="inner-info">
+                <a :href="GetCapabilitiesUrl" target="about_blank">{{serviceUrl}}</a>
+              </div>
             </li>
             <li class="flex-box item">
               <div class="inner-title">服务名称：</div>
@@ -34,7 +36,11 @@
 
           <div style="width: 574px; height: 370px; background-color: #d8d8d8;">
             <!-- iframe 直接放这里面 -->
-            <iframe src="./map.html" width="100%" height="100%"></iframe>
+            <iframe
+              :src="`./map.html?proxy=${proxy}&service=${info.id}`"
+              width="100%"
+              height="100%"
+            ></iframe>
           </div>
         </div>
       </div>
@@ -54,12 +60,14 @@
 </template>
 
 <script>
-import api from "@/api";
+// import api from "@/api";
+import api from "../../api";
 import LayoutHeader from "../layout/header";
 export default {
   name: "info",
   data() {
     return {
+      proxy: "",
       info: {
         keyword: "",
         metadata: {
@@ -73,14 +81,24 @@ export default {
   },
   computed: {
     serviceUrl() {
-      return `${location.protocol}//${location.host}/rest/services/${
-        this.info.id
-      }/wmts`;
+      // return `${location.protocol}//${location.host}/rest/services/${
+      //   this.info.id
+      // }/wmts`;
+      return `/rest/services/${this.info.id}`;
+    },
+    GetCapabilitiesUrl(){
+      return `/api/service/GetCapabilities/${this.info.id}`;
     }
   },
   async mounted() {
     const { id } = this.$route.query || {};
-    const data = await api.service.get(id);
+
+    const [data, capabilities, proxy] = await Promise.all([
+      api.service.get(id),
+      api.service.getCapabilities(id),
+      api.service.getProxy()
+    ]);
+    this.proxy = proxy;
     data.metadata = JSON.parse(data.metadata || "{}");
     data.metadata.customize = data.metadata.customize || [];
     api.service.visit(id);

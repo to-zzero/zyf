@@ -106,6 +106,7 @@
 
 <script>
 import api from "../../api";
+import { async } from "q";
 const default_info = JSON.stringify({
   name: "",
   keyword: "",
@@ -152,11 +153,33 @@ export default {
       });
       api.service
         .publish(this.service_info)
-        .then(() => {
-          loading.close();
-          this.$message({ message: "发布成功", type: "success" });
-          this.dlg_publish_service = false;
-          this.reload();
+        .then(async service => {
+          // loading.text=
+          // loading.close();
+          let checkStatus = async function() {
+            status = await api.service.getStatus(service.id);
+            if (status == 99) {
+              loading.close();
+              this.$message({ message: "发布失败", type: "error" });
+              this.dlg_publish_service = false;
+              api.service.service_action(service.id, "delete");
+              return;
+            } else if (status == 100) {
+              loading.close();
+              this.$message({ message: "发布成功", type: "success" });
+              this.dlg_publish_service = false;
+              this.reload();
+              return;
+            }
+            setTimeout(() => {
+              checkStatus();
+            }, 1000);
+          };
+          checkStatus();
+
+          // this.$message({ message: "发布成功", type: "success" });
+          // this.dlg_publish_service = false;
+          // this.reload();
         })
         .catch(err => {
           loading.close();
@@ -172,7 +195,7 @@ export default {
   watch: {
     fileName(newVal, oldVal) {
       if (!this.service_info.name || this.service_info.name === oldVal) {
-        this.service_info.name = newVal;
+        this.service_info.name = newVal.substr(0, newVal.lastIndexOf("."));
       }
     }
   }
