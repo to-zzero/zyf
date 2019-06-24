@@ -3,71 +3,146 @@
     <layout-header></layout-header>
 
     <div class="info-edit_content">
-      <ul class="ul-reset">
-        <li class="flex-box item">
-          <div class="item-title">服务名称：</div>
-          <el-input class="flex-1" v-model="info.name"></el-input>
-        </li>
+      <el-collapse v-model="actvieTab">
+        <el-collapse-item title="基本信息" name="basic">
+          <ul>
+            <li class="flex-box item">
+              <div class="item-title">服务名称：</div>
+              <el-input class="flex-1" v-model="info.name"></el-input>
+            </li>
 
-        <li class="flex-box item">
-          <div class="item-title">关键字：</div>
-          <el-input class="flex-1" placeholder="多个之间用;分隔" v-model="info.keyword"></el-input>
-        </li>
+            <li class="flex-box item">
+              <div class="item-title">所属分组：</div>
+              <el-select
+                multiple
+                class="flex-1"
+                v-model="selected_subjects"
+                clearable
+                placeholder="请选择"
+              >
+                <template v-for="item in catalog">
+                  <!-- 循环template -->
+                  <div
+                    :key="item.id"
+                    style="font-size: 12px; opacity: 0.5; color: #354052; padding: 8px 12px;"
+                  >{{item.name}}</div>
+                  <el-option
+                    v-for="subject in item.subject"
+                    :key="subject.id"
+                    :label="subject.name"
+                    :value="subject.id"
+                  ></el-option>
+                </template>
+              </el-select>
+            </li>
 
-        <li class="flex-box item">
-          <div class="item-title">提供单位：</div>
-          <el-input class="flex-1" v-model="info.metadata.provider"></el-input>
-        </li>
+            <li class="flex-box item">
+              <div class="item-title">关键字：</div>
+              <el-input class="flex-1" placeholder="多个之间用;分隔" v-model="info.keyword"></el-input>
+            </li>
 
-        <li class="flex-box item">
-          <div class="item-title">服务摘要：</div>
-          <el-input class="flex-1" v-model="info.metadata.abstract"></el-input>
-        </li>
+            <li class="flex-box item">
+              <div class="item-title">提供单位：</div>
+              <el-input class="flex-1" v-model="info.metadata.provider"></el-input>
+            </li>
 
-        <li class="flex-box item">
-          <div class="item-title">所属分组：</div>
-          <el-select
-            multiple
-            class="flex-1"
-            v-model="selected_subjects"
-            clearable
-            placeholder="请选择"
-          >
-            <template v-for="item in catalog">
-              <!-- 循环template -->
-              <div
-                style="font-size: 12px; opacity: 0.5; color: #354052; padding: 8px 12px;"
-              >{{item.name}}</div>
-              <el-option
-                v-for="subject in item.subject"
-                :key="subject.id"
-                :label="subject.name"
-                :value="subject.id"
-              ></el-option>
-            </template>
-          </el-select>
-        </li>
+            <li class="flex-box item">
+              <div class="item-title">服务摘要：</div>
+              <el-input class="flex-1" v-model="info.metadata.abstract"></el-input>
+            </li>
 
-        <li v-for="(item, index) in customArr" :key="index" class="flex-box item">
-          <el-input style="width: 116px;text-align:right" v-model="item.key"></el-input>
-          <el-input class="flex-1" style="margin: 0 16px;" v-model="item.value"></el-input>
-          <el-button type="warning" @click="remove(index)">删除</el-button>
-        </li>
+            <li class="flex-box item">
+              <div class="item-title">坐标系统：</div>
+              <el-input class="flex-1" v-model="info.metadata.coord"></el-input>
+            </li>
 
-        <li class="flex-box item">
-          <el-input
-            style="width: 116px;text-align:right"
-            v-model="editingPair.key"
-            placeholder="自定义名称"
-          ></el-input>
-          <el-input class="flex-1" v-model="editingPair.value" style="margin: 0 16px;"></el-input>
-          <el-button type="primary" @click="add">添加</el-button>
-        </li>
+            <li class="flex-box item">
+              <div class="item-title">投影类型：</div>
+              <el-input class="flex-1" v-model="info.metadata.proj"></el-input>
+            </li>
+            <li class="flex-box item">
+              <div class="item-title">范围范围：</div>
+              <div>
+                <label for="xmin">xmin:</label>
+                <el-input
+                  id="xmin"
+                  style="width:80px"
+                  class="flex-1"
+                  v-model="info.metadata.init_extent.xmin"
+                ></el-input>
+                <label for="xmax">xmax:</label>
+                <el-input
+                  style="width:80px"
+                  class="flex-1"
+                  v-model="info.metadata.init_extent.xmax"
+                ></el-input>
+                <label for="ymin">ymin:</label>
+                <el-input
+                  style="width:80px"
+                  class="flex-1"
+                  v-model="info.metadata.init_extent.ymin"
+                ></el-input>
+                <label for="ymax">ymax:</label>
+                <el-input
+                  style="width:80px"
+                  class="flex-1"
+                  v-model="info.metadata.init_extent.ymax"
+                ></el-input>
+              </div>
+            </li>
+          </ul>
+        </el-collapse-item>
+        <el-collapse-item title="联系人信息" name="contact">
+          <ul>
+            <li class="flex-box item">
+              <div class="item-title">发布机构：</div>
+              <el-input class="flex-1" v-model="info.metadata.organization"></el-input>
+            </li>
 
-        <li class="flex-box item mg-t40">
-          <el-button type="primary" class="flex-1" style="margin-left: 116px;" @click="update">更新</el-button>
-        </li>
-      </ul>
+            <li class="flex-box item">
+              <div class="item-title">地址：</div>
+              <el-input class="flex-1" v-model="info.metadata.address"></el-input>
+            </li>
+
+            <li class="flex-box item">
+              <div class="item-title">联系人：</div>
+              <el-input class="flex-1" v-model="info.metadata.contact"></el-input>
+            </li>
+
+            <li class="flex-box item">
+              <div class="item-title">联系人电话：</div>
+              <el-input class="flex-1" v-model="info.metadata.contact_phone"></el-input>
+            </li>
+
+            <li class="flex-box item">
+              <div class="item-title">联系人邮箱：</div>
+              <el-input class="flex-1" v-model="info.metadata.contact_mail"></el-input>
+            </li>
+          </ul>
+        </el-collapse-item>
+        <el-collapse-item title="扩展信息" name="extend">
+          <ul>
+            <li v-for="(item, index) in customArr" :key="index" class="flex-box item">
+              <el-input style="width: 116px;text-align:right" v-model="item.key"></el-input>
+              <el-input class="flex-1" style="margin: 0 16px;" v-model="item.value"></el-input>
+              <el-button type="warning" @click="remove(index)">删除</el-button>
+            </li>
+
+            <li class="flex-box item">
+              <el-input
+                style="width: 116px;text-align:right"
+                v-model="editingPair.key"
+                placeholder="自定义名称"
+              ></el-input>
+              <el-input class="flex-1" v-model="editingPair.value" style="margin: 0 16px;"></el-input>
+              <el-button type="primary" @click="add">添加</el-button>
+            </li>
+          </ul>
+        </el-collapse-item>
+      </el-collapse>
+      <div class="flex-box item mg-t40">
+        <el-button type="primary" class="flex-1" style="margin-left: 116px;" @click="update">更新</el-button>
+      </div>
 
       <el-upload
         class="avatar-uploader"
@@ -76,9 +151,12 @@
         :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload"
       >
-
         <img v-if="imageUrl" :src="imageUrl" class="avatar">
-        <img v-else-if="info.hasThunmbnail" :src="`/api/service/thumbnail/${info.id}`" class="avatar">
+        <img
+          v-else-if="info.hasThunmbnail"
+          :src="`/api/service/thumbnail/${info.id}`"
+          class="avatar"
+        >
         <span v-else>
           <i class="el-icon-plus avatar-uploader-icon"></i>
           <span style="position: absolute;left:37%;top:60%">预览图</span>
@@ -101,7 +179,8 @@ export default {
   },
   data() {
     return {
-      info: { keyword: "", metadata: { abstract: "" } },
+      actvieTab: "basic",
+      info: { keyword: "", metadata: { abstract: "", init_extent: {} } },
       selected_subjects: [],
       catalog: [],
       customArr: [],
@@ -181,6 +260,14 @@ export default {
     api.service.get(id).then(data => {
       data.metadata = JSON.parse(data.metadata || "{}");
       this.info = data;
+      if (!this.info.metadata.init_extent) {
+        this.$set(this.info.metadata, "init_extent", {
+          xmin: "",
+          ymin: "",
+          xmax: "",
+          ymax: ""
+        });
+      }
       this.customArr = data.metadata.customize || [];
       this.selected_subjects = (data.groupIdList || "").split(",");
     });
@@ -256,6 +343,10 @@ export default {
   color: #696969;
   margin-right: 16px;
   width: 116px;
+}
+
+.el-collapse-item__header {
+  padding-left: 50% !important;
 }
 </style>
 

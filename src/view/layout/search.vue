@@ -156,11 +156,19 @@ export default {
         .then(async service => {
           // loading.text=
           // loading.close();
-          let checkStatus = async function() {
+          // return;
+          let checkStatus = async () => {
+            console.log(this);
             status = await api.service.getStatus(service.id);
+            status = status * 1;
             if (status == 99) {
               loading.close();
-              this.$message({ message: "发布失败", type: "error" });
+              this.$message({
+                message: "发布失败",
+                type: "error",
+                showClose: true,
+                duration: 0
+              });
               this.dlg_publish_service = false;
               api.service.service_action(service.id, "delete");
               return;
@@ -175,7 +183,7 @@ export default {
               checkStatus();
             }, 1000);
           };
-          checkStatus();
+          () => checkStatus();
 
           // this.$message({ message: "发布成功", type: "success" });
           // this.dlg_publish_service = false;

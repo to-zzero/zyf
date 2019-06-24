@@ -21,16 +21,45 @@
               <div class="inner-info">{{info.name}}</div>
             </li>
             <li class="flex-box item">
-              <div class="inner-title">服务摘要：</div>
-              <div class="inner-info">{{info.desc}}</div>
-            </li>
-            <li class="flex-box item">
               <div class="inner-title">关键字：</div>
               <div class="inner-info">{{info.keyword.replace(/;|；/g,'、')}}</div>
             </li>
             <li class="flex-box item">
+              <div class="inner-title">服务摘要：</div>
+              <div class="inner-info">{{info.desc}}</div>
+            </li>
+            <li class="flex-box item">
+              <div class="inner-title">服务类型：</div>
+              <div class="inner-info">{{info.metadata.type|| 'OGC WMTS'}}</div>
+            </li>
+            <li class="flex-box item">
+              <div class="inner-title">坐标系统：</div>
+              <div class="inner-info">{{info.metadata.coord}}</div>
+            </li>
+            <li class="flex-box item">
+              <div class="inner-title">投影类型：</div>
+              <div class="inner-info">{{info.metadata.proj}}</div>
+            </li>
+            <li class="flex-box item">
+              <div class="inner-title">服务范围：</div>
+              <div class="inner-info">
+                <div class="inner-info">左上角经度：{{initExtent.xmin}}</div>
+                <div class="inner-info">左上角纬度：{{initExtent.ymax}}</div>
+                <div class="inner-info">右下角经度：{{initExtent.xmax}}</div>
+                <div class="inner-info">右下角纬度：{{initExtent.ymin}}</div>
+              </div>
+            </li>
+            <li class="flex-box item">
+              <div class="inner-title">发布时间：</div>
+              <div class="inner-info">{{pubdate}}</div>
+            </li>
+            <li class="flex-box item">
               <div class="inner-title">提供单位：</div>
               <div class="inner-info">{{info.metadata.provider}}</div>
+            </li>
+            <li class="flex-box item">
+              <div class="inner-title">预览图：</div>
+              <img class="inner-info" :src="`/api/service/thumbnail/${info.id}`">
             </li>
           </ul>
 
@@ -44,7 +73,31 @@
           </div>
         </div>
       </div>
-
+      <div class="connect style">
+        <div class="title">服务联系信息</div>
+        <ul>
+          <li class="flex-box item">
+            <div class="inner-title">发布机构：</div>
+            <div class="inner-info">{{info.metadata.organization}}</div>
+          </li>
+          <li class="flex-box item">
+            <div class="inner-title">地址：</div>
+            <div class="inner-info">{{info.metadata.address}}</div>
+          </li>
+          <li class="flex-box item">
+            <div class="inner-title">联系人：</div>
+            <div class="inner-info">{{info.metadata.contact}}</div>
+          </li>
+          <li class="flex-box item">
+            <div class="inner-title">联系人电话：</div>
+            <div class="inner-info">{{info.metadata.contact_phone}}</div>
+          </li>
+          <li class="flex-box item">
+            <div class="inner-title">联系人邮箱：</div>
+            <div class="inner-info">{{info.metadata.contact_mail}}</div>
+          </li>
+        </ul>
+      </div>
       <div class="connect style">
         <div class="title">服务其他信息</div>
 
@@ -60,9 +113,11 @@
 </template>
 
 <script>
+import dayjs from "dayjs";
 // import api from "@/api";
 import api from "../../api";
 import LayoutHeader from "../layout/header";
+
 export default {
   name: "info",
   data() {
@@ -81,13 +136,19 @@ export default {
   },
   computed: {
     serviceUrl() {
-      // return `${location.protocol}//${location.host}/rest/services/${
-      //   this.info.id
-      // }/wmts`;
       return `/rest/services/${this.info.id}`;
     },
-    GetCapabilitiesUrl(){
+    GetCapabilitiesUrl() {
       return `/api/service/GetCapabilities/${this.info.id}`;
+    },
+    initExtent() {
+      if (this.info && this.info.metadata)
+        return this.info.metadata.init_extent || {};
+      return {};
+    },
+    pubdate() {
+      if (this.info) return dayjs(this.info.createdAt).format("YYYY-MM-DD");
+      return "--";
     }
   },
   async mounted() {
@@ -130,7 +191,7 @@ export default {
   border-left: 4px solid #4874ed;
 }
 .inner-title {
-  width: 80px;
+  width: 100px;
   // margin-right: 8px;
   color: #828282;
   font-size: 14px;

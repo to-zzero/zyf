@@ -107,7 +107,7 @@ export async function publish(service_info) {
 }
 
 export async function getStatus(id) {
-    let rlt = http.get('/service/publish/' + id, { timeout: 0 })
+    let rlt =await http.get('/service/publish/' + id, { timeout: 0 })
     if (rlt && rlt.status == 200) {
         return rlt.data
     }
