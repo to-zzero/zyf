@@ -272,6 +272,7 @@ export default {
       this.selected_subjects = (data.groupIdList || "").split(",");
     });
 
+
     // api.service.getThumbnail(id).then(buffer => {
     //   console.log(buffer);
     // });

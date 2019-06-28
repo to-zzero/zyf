@@ -154,11 +154,7 @@ export default {
       api.service
         .publish(this.service_info)
         .then(async service => {
-          // loading.text=
-          // loading.close();
-          // return;
           let checkStatus = async () => {
-            console.log(this);
             status = await api.service.getStatus(service.id);
             status = status * 1;
             if (status == 99) {
@@ -183,7 +179,7 @@ export default {
               checkStatus();
             }, 1000);
           };
-          () => checkStatus();
+          checkStatus();
 
           // this.$message({ message: "发布成功", type: "success" });
           // this.dlg_publish_service = false;

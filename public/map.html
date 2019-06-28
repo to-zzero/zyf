@@ -2,9 +2,8 @@
 <html>
 
 <head>
-    <link href="/arcgis/rest/static/main.css" rel="stylesheet" type="text/css" />
-    <link href="https://js.arcgis.com/4.5/esri/css/main.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="https://js.arcgis.com/4.5/"></script>
+    <link href="./arcgis_js_api/4.5/esri/css/main.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="./arcgis_js_api/4.5/init.js"></script>
     <style>
         html,
         body,
@@ -13,7 +12,7 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            background:white;
+            background: white;
         }
     </style>
 </head>
@@ -38,6 +37,7 @@
             console.log(params)
 
             var map = new Map();
+            window.map = map
             var view = new MapView({
                 container: "map",
                 map: map
@@ -47,7 +47,7 @@
             });
             view.ui.add(homeBtn, "top-left");
             var layer = null,
-                layerUrl =`${params.proxy}/arcgis/rest/services/prov_orcl_47c754e4dcb2427c940311ed456d963a/MapServer` ,
+                layerUrl = `${params.proxy}/arcgis/rest/services/${params.service}/MapServer`,
                 layer = new TileLayer(layerUrl, null);
             map.layers.add(layer);
         });

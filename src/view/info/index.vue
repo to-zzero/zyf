@@ -66,7 +66,7 @@
           <div style="width: 574px; height: 370px; background-color: #d8d8d8;">
             <!-- iframe 直接放这里面 -->
             <iframe
-              :src="`./map.html?proxy=${proxy}&service=${info.id}`"
+              :src="`./map.html?proxy=${proxy}&service=${serviceName}`"
               width="100%"
               height="100%"
             ></iframe>
@@ -108,6 +108,34 @@
           </li>
         </ul>
       </div>
+      <div class="connect style">
+        <div class="title">
+          缓存状态信息
+          <el-button size="mini" type="primary" @click="loadCacheStatus">刷新</el-button>
+          <el-button size="mini" type="danger" @click="rebuildCache">重建</el-button>
+        </div>
+        <el-table
+          :data="cacheInfo.lodInfos"
+          v-loading="cache_loading"
+          element-loading-text="正在加载缓存信息..."
+        >
+          <el-table-column label="级别" width="60" align="center" prop="levelID"></el-table-column>
+          <el-table-column label="比例尺" prop="scale"></el-table-column>
+          <el-table-column label="大小" prop="tilesSize">
+            <template slot-scope="scope">{{((scope.row.tilesSize||0)/1024/1024).toFixed(2)}} MB</template>
+          </el-table-column>
+          <el-table-column label="预期切片" prop="expectedTileCount"></el-table-column>
+          <el-table-column label="完成的切片" prop="tileCount"></el-table-column>
+          <el-table-column label="百分比" prop="percent">
+            <template slot-scope="scope">{{scope.row.percent }}%</template>
+          </el-table-column>
+          <el-table-column label="状态" prop="status">
+            <template slot-scope="scope">
+              <el-tag type="success" v-if="scope.row.status==='Complete'">完成</el-tag>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
   </div>
 </template>
@@ -122,13 +150,20 @@ export default {
   name: "info",
   data() {
     return {
+      id: "",
       proxy: "",
       info: {
         keyword: "",
         metadata: {
           customize: []
         }
-      }
+      },
+      cacheInfo: {
+        cacheExecutionStatus: "NONE",
+        lodInfos: [],
+        status: "EXISTS"
+      },
+      cache_loading: false
     };
   },
   components: {
@@ -149,10 +184,15 @@ export default {
     pubdate() {
       if (this.info) return dayjs(this.info.createdAt).format("YYYY-MM-DD");
       return "--";
+    },
+    serviceName() {
+      if (this.info.serviceName) return this.info.serviceName;
+      return `${this.info.name}_${this.info.id}`;
     }
   },
   async mounted() {
     const { id } = this.$route.query || {};
+    this.id = id;
 
     const [data, capabilities, proxy] = await Promise.all([
       api.service.get(id),
@@ -164,6 +204,40 @@ export default {
     data.metadata.customize = data.metadata.customize || [];
     api.service.visit(id);
     this.info = data;
+
+    this.loadCacheStatus();
+  },
+  methods: {
+    loadCacheStatus() {
+      this.cache_loading = true;
+      api.service
+        .getTileCacheStatus(this.id)
+        .then(data => {
+          this.cacheInfo = data;
+          this.cache_loading = false;
+        })
+        .catch(err => {
+          this.cache_loading = false;
+        });
+    },
+
+    rebuildCache() {
+      this.$confirm("重建索引需要较长实际，是否继续?", "提示", {
+        confirmButtonText: "继续",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(async () => {
+        try {
+          await api.service.rebuildCache(this.id);
+          setTimeout(() => {
+            this.loadCacheStatus();
+          }, 1000);
+        } catch (error) {
+          
+          // this.$message(error);
+        }
+      });
+    }
   }
 };
 </script>

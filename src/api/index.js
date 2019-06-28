@@ -2,6 +2,7 @@
  * ajax请求配置
  */
 import axios from 'axios'
+import Vue from 'vue'
 
 // import cookie from '../../static/js/cookie.js'
 
@@ -24,7 +25,7 @@ axios.interceptors.request.use(
     return config;
   },
   error => {
-    return Promise.reject(error.response);
+    return Promise.reject(error);
   });
 
 // http response 拦截器
@@ -34,14 +35,18 @@ axios.interceptors.response.use(
       return
     } else {
       if (response.data && response.data.error) {
-        return Promise.reject(response.data.error)
+        if (response.data.error === '未登录') {
+          //重定向
+        } else {
+          return new Error(response.data.error);
+        }
       }
       return response;
     }
   },
   error => {
     debugger
-    return Promise.reject(error.response)   // 返回接口返回的错误信息
+    return Promise.reject(error)   // 返回接口返回的错误信息
   }
 );
 

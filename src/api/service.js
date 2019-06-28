@@ -107,7 +107,7 @@ export async function publish(service_info) {
 }
 
 export async function getStatus(id) {
-    let rlt =await http.get('/service/publish/' + id, { timeout: 0 })
+    let rlt = await http.get('/service/publish/' + id, { timeout: 0 })
     if (rlt && rlt.status == 200) {
         return rlt.data
     }
@@ -146,6 +146,20 @@ export async function updateThumbnail(id, file) {
 
 export async function getThumbnail(id) {
     var resp = await http.get(`/service/thumbnail/${id}`)
+    if (resp && resp.data)
+        return resp.data
+    return null
+}
+
+export async function getTileCacheStatus(id) {
+    var resp = await http.get(`/service/cacheStatus/${id}`)
+    if (resp && resp.data)
+        return resp.data
+    return null
+}
+
+export async function rebuildCache(id) {
+    var resp = await http.post(`/service/rebuildCache/${id}`)
     if (resp && resp.data)
         return resp.data
     return null
