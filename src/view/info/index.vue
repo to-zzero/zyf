@@ -59,13 +59,14 @@
             </li>
             <li class="flex-box item">
               <div class="inner-title">预览图：</div>
-              <img class="inner-info" :src="`/api/service/thumbnail/${info.id}`">
+              <img class="inner-info" :src="`/api/service/thumbnail/${info.id}`" />
             </li>
           </ul>
 
           <div style="width: 574px; height: 370px; background-color: #d8d8d8;">
             <!-- iframe 直接放这里面 -->
             <iframe
+              v-if="map_load"
               :src="`./map.html?proxy=${proxy}&service=${serviceName}`"
               width="100%"
               height="100%"
@@ -113,6 +114,7 @@
           缓存状态信息
           <el-button size="mini" type="primary" @click="loadCacheStatus">刷新</el-button>
           <el-button size="mini" type="danger" @click="rebuildCache">重建</el-button>
+          <el-tag v-if="cacheStatus">{{ cacheStatus }}</el-tag>
         </div>
         <el-table
           :data="cacheInfo.lodInfos"
@@ -163,7 +165,8 @@ export default {
         lodInfos: [],
         status: "EXISTS"
       },
-      cache_loading: false
+      cache_loading: false,
+      map_load: false
     };
   },
   components: {
@@ -174,7 +177,7 @@ export default {
       return `/rest/services/${this.info.id}`;
     },
     GetCapabilitiesUrl() {
-      return `/api/service/GetCapabilities/${this.info.id}`;
+      return `/rest/services/${this.info.id}/wmts?SREVICE=wmts&REQUEST=GetCapabilities`;
     },
     initExtent() {
       if (this.info && this.info.metadata)
@@ -188,6 +191,17 @@ export default {
     serviceName() {
       if (this.info.serviceName) return this.info.serviceName;
       return `${this.info.name}_${this.info.id}`;
+    },
+    cacheStatus() {
+      if (!this.cacheInfo || !this.cacheInfo.cacheExecutionStatus) return null;
+      switch (this.cacheInfo.cacheExecutionStatus) {
+        case "PROCESSING":
+          return "处理中...";
+          break;
+
+        default:
+          break;
+      }
     }
   },
   async mounted() {
@@ -203,6 +217,7 @@ export default {
     data.metadata = JSON.parse(data.metadata || "{}");
     data.metadata.customize = data.metadata.customize || [];
     api.service.visit(id);
+    this.map_load = true;
     this.info = data;
 
     this.loadCacheStatus();
@@ -227,15 +242,16 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(async () => {
-        try {
-          await api.service.rebuildCache(this.id);
-          setTimeout(() => {
-            this.loadCacheStatus();
-          }, 1000);
-        } catch (error) {
-          
-          // this.$message(error);
-        }
+        return api.service
+          .rebuildCache(this.id)
+          .then(() => {
+            setTimeout(() => {
+              this.loadCacheStatus();
+            }, 1000);
+          })
+          .catch(err => {
+            this.$message(err);
+          });
       });
     }
   }

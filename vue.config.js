@@ -28,6 +28,9 @@ module.exports = {
       patterns: [
         path.resolve(__dirname, './src/style/global.scss')
       ]
+    },
+    'copy-webpack-plugin': {
+      ignore: ['arcgis_js_api']
     }
   }
 };

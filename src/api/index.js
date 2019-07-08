@@ -3,6 +3,10 @@
  */
 import axios from 'axios'
 import Vue from 'vue'
+import router from '../router'
+import errors from '../errors'
+import Cookies from 'js-cookie'
+window.vue = Vue
 
 // import cookie from '../../static/js/cookie.js'
 
@@ -35,17 +39,19 @@ axios.interceptors.response.use(
       return
     } else {
       if (response.data && response.data.error) {
-        if (response.data.error === '未登录') {
-          //重定向
+        if (response.data.code === errors.NOT_LOGIN) {
+          // vue.prototype.$message({ message: response.data.error, type: 'error' })
+          Cookies.remove('sid')
+          router.push({ name: 'login' })
         } else {
-          return new Error(response.data.error);
+          vue.prototype.$message({ message: response.data.error, type: 'error' })
+          return Promise.reject(response.data.error);
         }
       }
       return response;
     }
   },
   error => {
-    debugger
     return Promise.reject(error)   // 返回接口返回的错误信息
   }
 );
@@ -60,7 +66,8 @@ import * as catalog from './catalog'
 
 import * as service from './service'
 
+import * as admin from './admin'
 
 export default {
-  axios, catalog, service
+  axios, catalog, service, admin
 };
