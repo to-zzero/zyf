@@ -65,7 +65,16 @@
           :class="{ 'is-active': $route.path === '/setting/users' }"
           :route="{ path: '/setting/users' }"
         >用户管理</el-menu-item>
-        <el-menu-item index="3-2">权限管理</el-menu-item>
+        <el-menu-item
+          index="3-2"
+          :class="{ 'is-active': $route.path === '/setting/systemlog' }"
+          :route="{ path: '/setting/systemlog' }"
+        >系统日志</el-menu-item>
+        <el-menu-item
+          index="3-2"
+          :class="{ 'is-active': $route.path === '/setting/servicelog' }"
+          :route="{ path: '/setting/servicelog' }"
+        >服务日志</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
   </el-menu>

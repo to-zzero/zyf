@@ -67,7 +67,7 @@
             <!-- iframe 直接放这里面 -->
             <iframe
               v-if="map_load"
-              :src="`./map.html?proxy=${proxy}&service=${serviceName}`"
+              :src="`./map.html?url=/rest/services/${info.id}/wmts`"
               width="100%"
               height="100%"
             ></iframe>
@@ -177,7 +177,7 @@ export default {
       return `/rest/services/${this.info.id}`;
     },
     GetCapabilitiesUrl() {
-      return `/rest/services/${this.info.id}/wmts?SREVICE=wmts&REQUEST=GetCapabilities`;
+      return `/rest/services/${this.info.id}/WMTS/1.0.0/WMTSCapabilities.xml`;
     },
     initExtent() {
       if (this.info && this.info.metadata)

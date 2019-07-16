@@ -12,6 +12,8 @@ import Login from '../view/login'
 import Register from '../view/register'
 import AuthService from '../view/auth-service'
 import Users from '../view/users'
+import SystemLog from '../view/setting/admin_log'
+import ServiceLog from '../view/setting/service_log'
 
 const COOKIE_KEY_TOKEN = "sid"
 const LOGIN_PAGE_NAME = 'login'
@@ -58,7 +60,17 @@ const routes = [
         path: 'users',
         meta: { title: '用户管理' },
         component: Users
-      }
+      },
+      {
+        path: 'systemlog',
+        meta: { title: '系统日志' },
+        component: SystemLog
+      },
+      {
+        path: 'servicelog',
+        meta: { title: '服务日志' },
+        component: ServiceLog
+      },
     ]
   },
   {

@@ -12,6 +12,7 @@ import '@/view/basis'
 
 Vue.use(VModal)
 
+
 Vue.config.productionTip = false
 
 new Vue({

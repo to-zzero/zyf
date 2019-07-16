@@ -1,9 +1,9 @@
 'use strict'
 import http from 'axios'
 
-export async function login(userName, password) {
+export async function login(userName, password, captcha) {
     let resp = await http.post('/admin/login', {
-        userName, password
+        userName, password, captcha
     })
     if (resp && resp.status == 200) {
         return resp.data
@@ -32,3 +32,16 @@ export async function register(username, password, userId, userInfo) {
     throw '请求发生错误'
 }
 
+export async function userList() {
+    let resp = await http.post('/admin/users')
+    if (resp && resp.status == 200) {
+        return resp.data
+    }
+}
+
+export async function getLogList(page, size) {
+    let resp = await http.get(`/admin/log?page=${page}&size=${size}`)
+    if (resp && resp.status == 200) {
+        return resp.data
+    }
+}

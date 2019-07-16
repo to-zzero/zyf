@@ -91,10 +91,8 @@ export default {
         } else {
           r.keyword = [];
         }
-        r.thumbnail = "1439126935969.jpg"; //todo:测试用
-        r.pubdate = dayjs(r.createdAt).format("YYYY-MM-DD");
+        r.pubdate = dayjs(r.createAt).format("YYYY-MM-DD");
         r.status = !!r.status;
-
         return r;
       });
 
