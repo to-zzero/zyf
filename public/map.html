@@ -25,9 +25,9 @@
             "esri/views/MapView",
             "esri/widgets/Home",
             "esri/layers/WMTSLayer",
-            // "esri/layers/TileLayer",
+            "esri/layers/TileLayer",
             "dojo/domReady!"
-        ], function (Map, MapView, Home, WMTSLayer) {
+        ], function (Map, MapView, Home, WMTSLayer, TileLayer) {
             var search = window.location.search.substr(1)
             var params = {}
             search.split('&').map(r => {
@@ -47,13 +47,17 @@
                 view: view
             });
             view.ui.add(homeBtn, "top-left");
-            var layer = new WMTSLayer({ url: params.url });
+            // var layer = new WMTSLayer({ url: params.url });
+            // map.layers.add(layer);
+            // view.whenLayerView(layer).then((layerView) => {
+            //     debugger
+            //     console.log(layer.fullExtent)
+            //     view.extent = layer.fullExtent;
+            // })
+            var layer = null,
+                layerUrl = `${params.proxy}/arcgis/rest/services/${params.service}/MapServer`,
+                layer = new TileLayer(layerUrl, null);
             map.layers.add(layer);
-            view.whenLayerView(layer).then((layerView) => {
-                debugger
-                console.log(layer.fullExtent)
-                view.extent = layer.fullExtent;
-            })
         });
     </script>
 </body>

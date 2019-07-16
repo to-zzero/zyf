@@ -67,7 +67,7 @@
             <!-- iframe 直接放这里面 -->
             <iframe
               v-if="map_load"
-              :src="`./map.html?url=/rest/services/${info.id}/wmts`"
+              :src="`./map.html?proxy=${proxy}&service=${serviceName}`"
               width="100%"
               height="100%"
             ></iframe>

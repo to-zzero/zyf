@@ -17,7 +17,7 @@
 
         <div class="flex-box align-start">
           <div style="width: 110px; height: 110px;">
-            <img :src="`/api/service/thumbnail/${service.id}`" style="width:100%;height:100%">
+            <img :src="`/api/service/thumbnail/${service.id}`" style="width:100%;height:100%" />
           </div>
           <ul class="ul-reset mg-l16 relative flex-1">
             <li class="flex-box mg-b8">
@@ -59,14 +59,16 @@
                   class="flex-box"
                   :to="{path :'/info', query: { id: service.id } }"
                   target="_blank"
+                  v-if="service.status"
                 >
                   <img
                     src="../../assets/eye@2x.png"
                     style="width: 16px; height: auto; margin-right: 4px;"
                     alt
-                  >
+                  />
                   <span style="color: #696969;">查看</span>
                 </router-link>
+                <span v-else style="color: #b1b1b1;cursor:not-allowed">查看</span>
               </span>
               <span
                 class="control-item flex-box"
@@ -77,7 +79,7 @@
                   src="../../assets/delete@2x.png"
                   style="width: 16px; height: auto; margin-right: 4px;"
                   alt
-                >
+                />
                 删除
               </span>
               <span class="control-item flex-box" style="color: #696969;">
@@ -90,7 +92,7 @@
                     src="../../assets/edit@2x.png"
                     style="width: 16px; height: auto; margin-right: 4px;"
                     alt
-                  >
+                  />
                   <span style="color: #696969;">编辑</span>
                 </router-link>
               </span>
@@ -107,7 +109,7 @@
                   @click="service.status?stopService(service):startService(service)"
                   :style="service.status ? 'left: 15%;top:58%; right: unset;' : 'right:15%;top:58%;'"
                   class="text"
-                >{{ !service.status ? 'ON' : 'OFF' }}</span>
+                >{{ !service.status ? '开' : '关' }}</span>
               </div>
             </li>
           </ul>
@@ -138,6 +140,8 @@
 
 <script>
 import api from "../../api";
+import { Loading } from "element-ui";
+
 export default {
   name: "LayoutContent",
   props: ["serviceQueryResult", "currentSelect"],
@@ -185,16 +189,32 @@ export default {
         .catch(() => {});
     },
     async startService(service) {
-      var result = await api.service.service_action(service.id, "on");
-      if (result == "success") {
-        service.status = true;
-      }
+      let loading = this.$loading({ text: "正在启动服务..." });
+      api.service
+        .service_action(service.id, "on")
+        .then(result => {
+          if (result) {
+            service.status = true;
+          }
+          loading.close();
+        })
+        .catch(e => {
+          loading.close();
+        });
     },
-    async stopService(service) {
-      var result = await api.service.service_action(service.id, "off");
-      if (result == "success") {
-        service.status = false;
-      }
+    stopService(service) {
+      var loading = this.$loading({ text: "正在停止服务..." });
+      api.service
+        .service_action(service.id, "off")
+        .then(result => {
+          if (result) {
+            service.status = false;
+          }
+          loading.close();
+        })
+        .catch(e => {
+          loading.close();
+        });
     },
     onSearch(val) {
       this.$emit("search", val);
