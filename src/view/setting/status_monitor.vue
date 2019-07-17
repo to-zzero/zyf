@@ -174,7 +174,7 @@
             ]
           },
           {
-            id: 2,
+            id: 3,
             name: '分要素',
             children: [
               {
@@ -254,7 +254,8 @@
             data: xData // x轴名称
           },
           yAxis: {
-            type: 'value'
+            type: 'value',
+            splitLine: {show: false}
           },
           tooltip: {
             trigger: 'axis'
@@ -292,9 +293,6 @@
 </script>
 
 <style scoped lang="scss">
-  .color-999 {
-    color: #999;
-  }
   .is-active {
     border-radius: 4px;
     background: #4874ed;

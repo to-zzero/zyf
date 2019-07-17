@@ -35,6 +35,9 @@ body {
   &.space-end {
     justify-content: flex-end;
   }
+  &.space-center {
+    justify-content: center;
+  }
 
   &.align-center {
     align-items: center;
@@ -156,4 +159,12 @@ a {
 }
 .tw-n {
   font-weight: normal;
+}
+
+.color-theme {
+  color: #4874ed;
+}
+
+.color-999 {
+  color: #999;
 }
