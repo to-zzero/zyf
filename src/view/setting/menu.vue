@@ -71,10 +71,42 @@
           :route="{ path: '/setting/systemlog' }"
         >系统日志</el-menu-item>
         <el-menu-item
-          index="3-2"
+          index="3-3"
           :class="{ 'is-active': $route.path === '/setting/servicelog' }"
           :route="{ path: '/setting/servicelog' }"
         >服务日志</el-menu-item>
+      </el-menu-item-group>
+    </el-submenu>
+    <el-submenu index="4">
+      <template slot="title">
+        <img
+          src="../../assets/system@2x.png"
+          style="width: 16px; height: 16px; display: inline-block; margin-right: 16px;"
+          alt
+        />
+        <span>服务监控</span>
+      </template>
+      <el-menu-item-group>
+        <el-menu-item
+          index="4-1"
+          :class="{ 'is-active': $route.path === '/setting/status_monitor' }"
+          :route="{ path: '/setting/status_monitor' }"
+        >状态监控</el-menu-item>
+        <el-menu-item
+          index="4-2"
+          :class="{ 'is-active': $route.path === '/setting/safety_warning' }"
+          :route="{ path: '/setting/safety_warning' }"
+        >安全警告</el-menu-item>
+        <el-menu-item
+          index="4-3"
+          :class="{ 'is-active': $route.path === '/setting/discharge_count' }"
+          :route="{ path: '/setting/discharge_count' }"
+        >流量统计</el-menu-item>
+        <el-menu-item
+          index="4-4"
+          :class="{ 'is-active': $route.path === '/setting/access_log' }"
+          :route="{ path: '/setting/access_log' }"
+        >访问日志</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
   </el-menu>

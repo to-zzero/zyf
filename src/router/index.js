@@ -15,6 +15,11 @@ import Users from '../view/users'
 import SystemLog from '../view/setting/admin_log'
 import ServiceLog from '../view/setting/service_log'
 
+import StatusMonitor from '../view/setting/status_monitor.vue'
+import SafetyWarning from '../view/setting/safety_warning.vue'
+import DischargeCount from '../view/setting/discharge_count.vue'
+import AccessLog from '../view/setting/access_log.vue'
+
 const COOKIE_KEY_TOKEN = "sid"
 const LOGIN_PAGE_NAME = 'login'
 
@@ -71,6 +76,26 @@ const routes = [
         meta: { title: '服务日志' },
         component: ServiceLog
       },
+      {
+        path: 'status_monitor',
+        meta: { title: '状态监控' },
+        component: StatusMonitor
+      },
+      {
+        path: 'safety_warning',
+        meta: { title: '安全警告' },
+        component: SafetyWarning
+      },
+      {
+        path: 'discharge_count',
+        meta: { title: '流量统计' },
+        component: DischargeCount
+      },
+      {
+        path: 'access_log',
+        meta: { title: '访问日志' },
+        component: AccessLog
+      }
     ]
   },
   {

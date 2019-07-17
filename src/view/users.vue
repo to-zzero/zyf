@@ -22,12 +22,12 @@
       </span>
     </el-dialog>
 
-    <el-table :data="users">
-      <el-table-column label="编号" type="index"></el-table-column>
+    <el-table border :data="users">
+      <el-table-column width="100" label="编号" type="index"></el-table-column>
       <el-table-column label="用户名" prop="username"></el-table-column>
       <el-table-column label="创建时间" prop="createAt"></el-table-column>
       <el-table-column label="操作">
-        <template slot-scope="scope">
+        <template slot-scope="{row}">
           <el-button size="mini" @click="add_user_dlg=true">授权</el-button>
           <el-button size="mini" @click="add_user_dlg=true">编辑</el-button>
           <el-button size="mini" @click="deleteUser">删除</el-button>

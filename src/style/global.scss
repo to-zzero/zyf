@@ -29,8 +29,11 @@ body {
   &.space-between {
     justify-content: space-between;
   }
-  &.spacee-around {
+  &.space-around {
     justify-content: space-around;
+  }
+  &.space-end {
+    justify-content: flex-end;
   }
 
   &.align-center {
@@ -38,6 +41,10 @@ body {
   }
   &.align-start {
     align-items: flex-start;
+  }
+
+  &.flex-wrap {
+    flex-wrap: wrap;
   }
 
   .flex-1 {
@@ -68,12 +75,39 @@ body {
     margin-top: #{$i * 4}px;
     margin-bottom: #{$i * 4}px;
   }
+
+  .pd-t#{$i * 4} {
+    padding-top: #{$i * 4}px;
+  }
+  .pd-b#{$i * 4} {
+    padding-bottom: #{$i * 4}px;
+  }
+  .pd-l#{$i * 4} {
+    padding-left: #{$i * 4}px;
+  }
+  .pd-r#{$i * 4} {
+    padding-right: #{$i * 4}px;
+  }
+
+  .pd-lr#{$i * 4} {
+    padding-left: #{$i * 4}px;
+    padding-right: #{$i * 4}px;
+  }
+
+  .pd-tb#{$i * 4} {
+    padding-top: #{$i * 4}px;
+    padding-bottom: #{$i * 4}px;
+  }
+
+  .ts-#{12 + $i * 2} {
+    font-size: #{12 + $i * 2}px;
+  }
 }
 
 .el-button--primary {
   background-color: #4874ed!important;
   border-color: #4874ed!important;
-  
+
   &:hover {
     background-color: #5280ff!important;
     border-color: #5280ff!important;
@@ -105,4 +139,21 @@ a {
   &:visited {
     color: #696969;
   }
+}
+
+.shadow {
+  box-shadow: 1px 0 9px 0 rgba(78, 78, 78, 0.08);
+  background-color: #ffffff;
+  border-radius: 4px;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.tw-b {
+  font-weight: 600;
+}
+.tw-n {
+  font-weight: normal;
 }

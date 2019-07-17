@@ -12,6 +12,7 @@
     "axios": "^0.18.0",
     "core-js": "^2.6.5",
     "dayjs": "^1.8.14",
+    "echarts": "^4.2.1",
     "element-ui": "^2.4.5",
     "gemini-scrollbar": "^1.5.3",
     "js-cookie": "^2.2.0",
