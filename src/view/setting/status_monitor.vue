@@ -48,9 +48,9 @@
 
       <div>
         <div class="mg-b8 ts-20 tw-b flex-box">
-          服务名称
+          {{ serverData.name | empty }}
           <div class="is-active pd-tb4 pd-lr8 mg-l8 ts-12 tw-n">
-            海图A服务
+            {{ serverData.tag | empty }}
           </div>
         </div>
 
@@ -60,31 +60,31 @@
           <li
             class="ts-12 color-999 pd-b4"
             style="width: 200px;">
-            关键字： WMTS
+            关键字： {{ serverData.key | empty }}
           </li>
 
           <li
             class="ts-12 color-999 pd-b4"
             style="width: 200px;">
-            摘要： WMTS
+            摘要： {{ serverData.abstract | empty }}
           </li>
 
           <li
             class="ts-12 color-999 pd-b4"
             style="width: 200px;">
-            发布时间： WMTS
+            发布时间： {{ serverData.publish_time | empty }}
           </li>
 
           <li
             class="ts-12 color-999 pd-b4"
             style="width: 200px;">
-            服务状态： WMTS
+            服务状态： {{ serverData.status | empty }}
           </li>
 
           <li
             class="ts-12 color-999 pd-b4"
             style="width: 200px;">
-            提供单位： WMTS
+            提供单位： {{ serverData.unit | empty }}
           </li>
         </ul>
       </div>
@@ -122,120 +122,34 @@
 
 <script>
   import echarts from 'echarts'
+  import { getStatusMonitorList, getStatusMonitorInfo } from '@/api/admin'
 
   export default {
     name: 'status_monitor',
     data () {
       return {
         selectId: '',
-        searchList: [
-          {
-            id: 1,
-            name: '海图全图',
-            children: [
-              {
-                id: '1-1',
-                name: '海图A服务'
-              },
-              {
-                id: '1-2',
-                name: '海图B服务'
-              },
-              {
-                id: '1-3',
-                name: '海图C服务'
-              },
-              {
-                id: '1-4',
-                name: '海图D服务'
-              }
-            ]
-          },
-          {
-            id: 2,
-            name: '基础底图',
-            children: [
-              {
-                id: '2-1',
-                name: '基础A服务'
-              },
-              {
-                id: '2-2',
-                name: '基础B服务'
-              },
-              {
-                id: '2-3',
-                name: '基础C服务'
-              },
-              {
-                id: '2-4',
-                name: '基础D服务'
-              }
-            ]
-          },
-          {
-            id: 3,
-            name: '分要素',
-            children: [
-              {
-                id: '3-1',
-                name: '分要素A服务'
-              },
-              {
-                id: '3-2',
-                name: '分要素B服务'
-              },
-              {
-                id: '3-3',
-                name: '分要素C服务'
-              },
-              {
-                id: '3-4',
-                name: '分要素D服务'
-              },
-              {
-                id: '3-5',
-                name: '分要素A服务'
-              },
-              {
-                id: '3-6',
-                name: '分要素B服务'
-              },
-              {
-                id: '3-7',
-                name: '分要素C服务'
-              },
-              {
-                id: '3-8',
-                name: '分要素D服务'
-              },
-              {
-                id: '3-9',
-                name: '分要素A服务'
-              },
-              {
-                id: '3-10',
-                name: '分要素B服务'
-              },
-              {
-                id: '3-11',
-                name: '分要素C服务'
-              },
-              {
-                id: '3-12',
-                name: '分要素D服务'
-              }
-            ]
-          }
-        ]
+        searchList: [],
+        serverData: {}
       }
     },
     mounted() {
+      this.getStatusList()
       this.draw(document.getElementById('echart'))
     },
     methods: {
       changeSelect(id) {
         this.selectId = id
+      },
+      getStatusList() {
+        getStatusMonitorList().then((res) => {
+          this.searchList = res
+        })
+      },
+      getStatusMonitorInfo() {
+        getStatusMonitorInfo().then(res => {
+          this.serverData = res
+        })
       },
       draw(el) {
         const myChart = echarts.init(el)
