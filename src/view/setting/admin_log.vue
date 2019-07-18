@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="title">系统日志</div>
     <el-table :data="logList" size="mini">
       <el-table-column label="编号" type="index"></el-table-column>
       <el-table-column label="日志名" prop="username"></el-table-column>
@@ -51,4 +52,12 @@ export default {
 </script>
 
 <style>
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  padding-left: 12px;
+  border-left: 4px solid #4874ed;
+  color: #292929;
+  margin-bottom: 24px;
+}
 </style>

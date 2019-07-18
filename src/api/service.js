@@ -165,3 +165,11 @@ export async function rebuildCache(id) {
     return null
 }
 
+
+export async function servelog(page = 1, size = 20) {
+    var resp = await http.get(`/servelog/list?page=${page}&size=${size}`)
+    if (resp.status === 200) {
+        return resp.data
+    }
+    return null;
+}

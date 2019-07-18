@@ -1,13 +1,13 @@
 <template>
   <div class="discharge-count">
-    <h3 class="mg-t0">流量统计</h3>
+    <h3 class="title">流量统计</h3>
 
     <div class="shadow pd-lr12 pd-tb12">
       <h4 class="mg-t0 mg-b16">概览</h4>
 
       <ul class="ul-reset flex-box space-between">
         <li class="view-item flex-box">
-          <div style="width: 48px; height: 48px; border-radius: 4px; background: #000;">
+          <div style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6;">
           </div>
 
           <div class="mg-l8">
@@ -21,7 +21,7 @@
         </li>
 
         <li class="view-item flex-box">
-          <div style="width: 48px; height: 48px; border-radius: 4px; background: #000;">
+          <div style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6;">
           </div>
 
           <div class="mg-l8">
@@ -35,7 +35,7 @@
         </li>
 
         <li class="view-item flex-box">
-          <div style="width: 48px; height: 48px; border-radius: 4px; background: #000;">
+          <div style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6;">
           </div>
 
           <div class="mg-l8">
@@ -49,7 +49,7 @@
         </li>
 
         <li class="view-item flex-box">
-          <div style="width: 48px; height: 48px; border-radius: 4px; background: #000;">
+          <div style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6;">
           </div>
 
           <div class="mg-l8">
@@ -108,7 +108,7 @@
 
       <ul class="ul-reset flex-box">
         <li class="pd-tb4 pd-r8 ts-14 color-999">
-          图标类型：
+          图表类型：
         </li>
         <li
           :class="{
@@ -238,4 +238,13 @@
     color: #fff;
     border-radius: 4px;
   }
+
+  .title {
+  font-size: 20px;
+  font-weight: 600;
+  padding-left: 12px;
+  border-left: 4px solid #4874ed;
+  color: #292929;
+  margin-bottom: 24px;
+}
 </style>
