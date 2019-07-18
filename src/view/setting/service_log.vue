@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="title">服务日志</div>
     <el-table :data="logList" size="mini">
       <el-table-column label="编号" type="index"></el-table-column>
       <el-table-column label="用户" prop="username"></el-table-column>
@@ -39,7 +40,7 @@ export default {
   },
   methods: {
     handlePageChange(page) {
-      api.admin.getLogList(page, this.size).then(data => {
+      api.service.servelog(page, this.size).then(data => {
         this.total = data.total;
         this.page = data.page;
         // this.size = data.size;
@@ -51,4 +52,12 @@ export default {
 </script>
 
 <style>
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  padding-left: 12px;
+  border-left: 4px solid #4874ed;
+  color: #292929;
+  margin-bottom: 24px;
+}
 </style>

@@ -8,14 +8,18 @@
       >{{currentSelect.name || '全部'}} {{ currentSelect.name ? '×' : '' }}</div>
     </div>
     <ul class="layout-content pd-lr16 pd-tb16 ul-reset">
-      <li class="list-item_wrap" v-for="service in serviceQueryResult.list" :key="service.id">
+      <li        
+        class="list-item_wrap"
+        v-for="service in serviceQueryResult.list"
+        :key="service.id"
+      >
         <div class="flex-box space-between item-header">
           <span style="font-size: 16px; font-weight: 600;">{{service.name}}</span>
           <!-- <router-link :to="{path :'/info', query: { id: service.id } }" target="_blank">详细信息</router-link> -->
           <span style="font-size: 14px; color: #696969">访问次数: {{service.visit}}</span>
         </div>
 
-        <div class="flex-box align-start">
+        <div class="flex-box align-start" id="content_list_item">
           <div style="width: 110px; height: 110px;">
             <img :src="`/api/service/thumbnail/${service.id}`" style="width:100%;height:100%" />
           </div>
@@ -189,7 +193,10 @@ export default {
         .catch(() => {});
     },
     async startService(service) {
-      let loading = this.$loading({ text: "正在启动服务..." });
+      let loading = this.$loading({
+        text: "正在启动服务...",
+        target: "#content_list_item"
+      });
       api.service
         .service_action(service.id, "on")
         .then(result => {
@@ -203,7 +210,10 @@ export default {
         });
     },
     stopService(service) {
-      var loading = this.$loading({ text: "正在停止服务..." });
+      var loading = this.$loading({
+        text: "正在停止服务...",
+        target: "#content_list_item"
+      });
       api.service
         .service_action(service.id, "off")
         .then(result => {

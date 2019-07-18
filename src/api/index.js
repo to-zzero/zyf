@@ -68,6 +68,9 @@ import * as service from './service'
 
 import * as admin from './admin'
 
+import * as serviceAuth from './serviceAuth'
+
+
 export default {
-  axios, catalog, service, admin
+  axios, catalog, service, admin, serviceAuth
 };

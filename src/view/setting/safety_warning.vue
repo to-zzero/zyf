@@ -1,6 +1,6 @@
 <template>
   <div class="safety-warning">
-    <h3 class="mg-t0">安全警告</h3>
+    <h3 class="title">安全警告</h3>
 
     <div class="shadow pd-lr12 pd-tb12">
       <h4 class="mg-t0 mg-b16 border-bottom flex-box space-between pd-b8">
@@ -175,4 +175,13 @@
     color: #fff;
     border-radius: 4px;
   }
+
+  .title {
+  font-size: 20px;
+  font-weight: 600;
+  padding-left: 12px;
+  border-left: 4px solid #4874ed;
+  color: #292929;
+  margin-bottom: 24px;
+}
 </style>

@@ -70,11 +70,11 @@
           :class="{ 'is-active': $route.path === '/setting/systemlog' }"
           :route="{ path: '/setting/systemlog' }"
         >系统日志</el-menu-item>
-        <el-menu-item
+        <!-- <el-menu-item
           index="3-3"
           :class="{ 'is-active': $route.path === '/setting/servicelog' }"
           :route="{ path: '/setting/servicelog' }"
-        >服务日志</el-menu-item>
+        >服务日志</el-menu-item> -->
       </el-menu-item-group>
     </el-submenu>
     <el-submenu index="4">

@@ -94,3 +94,11 @@ export async function delCatalog(id) {
         return rlt.data
     }
 }
+
+//catalog 顶级目录及服务
+export async function catalog_services() {
+    let rlt = await http.get(`/catalog/catalog_services`)
+    if (rlt && rlt.status == 200) {
+        return rlt.data
+    }
+}
