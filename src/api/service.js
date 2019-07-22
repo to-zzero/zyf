@@ -9,7 +9,7 @@ import http from 'axios'
  * @param {string} sort_method  asc|desc
  */
 export async function servie_list(opt) {
-    let { catalogId, name, sort_field, sort_method, page, size } = opt || {}
+    let { catalogId, name, sort_field, sort_method, page, size, aggrate } = opt || {}
     let url = `/service/list?`
     let params = []
     if (catalogId) {
@@ -31,6 +31,11 @@ export async function servie_list(opt) {
     if (size > 0) {
         params.push("size=" + size)
     }
+
+    if (!aggrate) {
+        params.push("aggrate=false")
+    }
+
 
     url += params.join('&')
 

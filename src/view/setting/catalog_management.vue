@@ -19,13 +19,13 @@
           <el-input style="width: 440px;" v-model="current.name"></el-input>
         </li>
 
-        <li class="flex-box mg-b16">
+        <!-- <li class="flex-box mg-b16">
           <div
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >目录编码</div>
           <el-input style="width: 440px;" v-model="current.code"></el-input>
-        </li>
+        </li>-->
 
         <li class="flex-box mg-b16">
           <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">描述</div>
@@ -61,14 +61,22 @@
     </el-dialog>
 
     <div class="list mg-t40">
-      <el-table :border="false" :data="tableData" row-class-name="custom-tr" style="width: 100%">
+      <el-table
+        @row-click="expandRow"
+        ref="mainTable"
+        :border="false"
+        size="medium"
+        :data="tableData"
+        row-class-name="custom-tr"
+        style="width: 100%"
+      >
         <!-- :default-expand-all="true" -->
         <el-table-column type="expand">
           <template v-if="row.subject.length>0" slot-scope="{row}">
-            <el-table :show-header="false" :data="row.subject" style="width: 100%">
+            <el-table size="mini" :show-header="false" :data="row.subject" style="width: 100%">
               <el-table-column type="index" width="80" class-name="subject-col" prop="count"></el-table-column>
               <el-table-column prop="name" width="180" class-name="subject-col"></el-table-column>
-              <el-table-column prop="code" width="100" class-name="subject-col"></el-table-column>
+              <!-- <el-table-column prop="code" width="100" class-name="subject-col"></el-table-column> -->
               <el-table-column prop="desc" width="200" class-name="subject-col"></el-table-column>
               <el-table-column prop="order" width="60" class-name="subject-col"></el-table-column>
               <el-table-column>
@@ -84,7 +92,7 @@
         <el-table-column label="目录名称" width="180">
           <div slot-scope="props" style="font-weight: 600;">{{ props.row.name }}</div>
         </el-table-column>
-        <el-table-column label="目录编码" prop="code" width="100"></el-table-column>
+        <!-- <el-table-column label="目录编码" prop="code" width="100"></el-table-column> -->
         <el-table-column label="描述" prop="desc" width="200"></el-table-column>
         <el-table-column label="排序" prop="order" width="60"></el-table-column>
         <el-table-column label="操作">
@@ -154,6 +162,11 @@ export default {
           this.$message({ message: "修改失败", type: "error" });
         }
       }
+    },
+
+    expandRow(row, col, evt) {
+      debugger;
+      this.$refs.mainTable.toggleRowExpansion(row, true);
     }
   }
 };

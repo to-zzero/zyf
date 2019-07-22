@@ -4,7 +4,7 @@
       <layout-header></layout-header>
     </el-header>
 
-    <div class="content">
+    <div class="content" v-if="map_load">
       <div class="basis style mg-b16">
         <div class="title">服务基本信息</div>
 
@@ -64,6 +64,11 @@
           </ul>
 
           <div style="width: 574px; height: 370px; background-color: #d8d8d8;">
+            <!-- <Map
+              v-if="map_load"
+              :url="`${proxy}/arcgis/rest/services/${serviceName}/MapServer`"
+              :name="serviceName"
+            ></Map>-->
             <!-- iframe 直接放这里面 -->
             <iframe
               v-if="map_load"
@@ -147,6 +152,7 @@ import dayjs from "dayjs";
 // import api from "@/api";
 import api from "../../api";
 import LayoutHeader from "../layout/header";
+import Map from "../map";
 
 export default {
   name: "info",
@@ -170,7 +176,8 @@ export default {
     };
   },
   components: {
-    LayoutHeader
+    LayoutHeader,
+    Map
   },
   computed: {
     serviceUrl() {

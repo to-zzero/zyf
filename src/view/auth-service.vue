@@ -2,15 +2,15 @@
   <div>
     <dir class="title">服务授权</dir>
     <el-table :data="authList">
-      <el-table-column type="index" label="序号"></el-table-column>
-      <el-table-column prop="userName" label="授权用户"></el-table-column>
+      <el-table-column type="index" label="序号" width="60" header-align="center"></el-table-column>
+      <el-table-column prop="userName" label="授权单位" width="150" ></el-table-column>
       <el-table-column prop="token" label="令牌"></el-table-column>
-      <el-table-column prop="updateAt" label="更新时间"></el-table-column>
+      <el-table-column prop="updateAt" label="更新时间" width="160" header-align="center"></el-table-column>
 
-      <el-table-column prop label="操作">
+      <el-table-column width="100" fixed="right">
         <div slot-scope="{row}">
-          <el-button size="mini">详情</el-button>
-          <el-button size="mini" type="danger">删除</el-button>
+          <!-- <el-button size="mini">详情</el-button> -->
+          <!-- <el-button size="mini" type="danger">删除</el-button> -->
         </div>
       </el-table-column>
     </el-table>

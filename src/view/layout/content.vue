@@ -6,13 +6,13 @@
         class="current-tag"
         @click="clearSearch"
       >{{currentSelect.name || '全部'}} {{ currentSelect.name ? '×' : '' }}</div>
+      <el-tooltip placement="bottom">
+        <div slot="content">包含聚合服务</div>
+        <el-checkbox v-model="with_aggrate" @change="handleAggrateChanged">聚合</el-checkbox>
+      </el-tooltip>
     </div>
     <ul class="layout-content pd-lr16 pd-tb16 ul-reset">
-      <li        
-        class="list-item_wrap"
-        v-for="service in serviceQueryResult.list"
-        :key="service.id"
-      >
+      <li class="list-item_wrap" v-for="service in serviceQueryResult.list" :key="service.id">
         <div class="flex-box space-between item-header">
           <span style="font-size: 16px; font-weight: 600;">{{service.name}}</span>
           <!-- <router-link :to="{path :'/info', query: { id: service.id } }" target="_blank">详细信息</router-link> -->
@@ -151,6 +151,7 @@ export default {
   props: ["serviceQueryResult", "currentSelect"],
   data() {
     return {
+      with_aggrate: true,
       service: this.$props.serviceInfo,
       dlg_publish_service: false,
       dlg_service_aggrate: false,
@@ -236,6 +237,9 @@ export default {
     },
     currentChange(page) {
       this.$emit("page-changed", page);
+    },
+    handleAggrateChanged() {
+      this.$emit("option-changed", this.with_aggrate);
     }
   }
 };

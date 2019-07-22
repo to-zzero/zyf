@@ -5,7 +5,7 @@
       <el-table-column label="编号" type="index"></el-table-column>
       <el-table-column label="日志名" prop="username"></el-table-column>
       <el-table-column label="用户" prop="function"></el-table-column>
-      <el-table-column label="IP地址" prop="status">
+      <el-table-column label="IP地址" prop="ip">
         <!-- <template slot-scope="scope">
           <el-tag type="error" size="mini" v-if="scope.row.status==0">失败</el-tag>
           <el-tag type="success" size="mini" v-if="scope.row.status==1">成功</el-tag>

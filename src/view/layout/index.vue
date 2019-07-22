@@ -1,18 +1,19 @@
 <template>
   <el-container>
     <el-header style="padding: 0;">
-      <layout-header/>
+      <layout-header />
     </el-header>
 
-    <search @search="onSearch"></search>
+    <search @search="onSearch" :catalog="currentSubject"></search>
 
     <el-container style="width: 1200px; margin: 0 auto;">
       <el-aside width="264px">
-        <layout-menu ref="menu" @onSubjectClick="onSubjectClick"/>
+        <layout-menu ref="menu" @onSubjectClick="onSubjectClick" />
       </el-aside>
       <el-main style="padding-right: 0px;">
         <layout-content
           @page-changed="onPageChanged"
+          @option-changed="onOptionChanged"
           @clearSearch="onSubjectClick({id: null, subject: {}})"
           @reload-catalog="doQuery"
           :currentSelect="currentSelect"
@@ -102,6 +103,13 @@ export default {
     },
     async onPageChanged(page) {
       this.queryOpt.page = page;
+      this.doQuery();
+    },
+
+    onOptionChanged(with_aggrate) {
+      this.queryOpt.page = 1;
+      this.queryOpt.aggrate = with_aggrate;
+      console.log(with_aggrate);
       this.doQuery();
     }
   }
