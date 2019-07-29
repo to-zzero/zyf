@@ -32,7 +32,7 @@ export async function servie_list(opt) {
         params.push("size=" + size)
     }
 
-    if (!aggrate) {
+    if (aggrate === false) {
         params.push("aggrate=false")
     }
 

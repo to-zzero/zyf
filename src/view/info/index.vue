@@ -223,7 +223,7 @@ export default {
     this.proxy = proxy;
     data.metadata = JSON.parse(data.metadata || "{}");
     data.metadata.customize = data.metadata.customize || [];
-    api.service.visit(id);
+    // api.service.visit(id);
     this.map_load = true;
     this.info = data;
 

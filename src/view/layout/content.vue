@@ -16,7 +16,7 @@
         <div class="flex-box space-between item-header">
           <span style="font-size: 16px; font-weight: 600;">{{service.name}}</span>
           <!-- <router-link :to="{path :'/info', query: { id: service.id } }" target="_blank">详细信息</router-link> -->
-          <span style="font-size: 14px; color: #696969">访问次数: {{service.visit}}</span>
+          <!-- <span style="font-size: 14px; color: #696969">访问次数: {{service.visit}}</span> -->
         </div>
 
         <div class="flex-box align-start" id="content_list_item">

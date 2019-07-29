@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="title">用户管理</div>
-    <el-button type="primary" @click="add_user_dlg=true" size="mini" style="margin-bottom:6px">添加</el-button>
+    <!-- <el-button type="primary" @click="add_user_dlg=true" size="mini" style="margin-bottom:6px">添加</el-button> -->
 
     <el-dialog :title="edit_user? '修改用户':'创建用户'" :visible.sync="add_user_dlg">
       <el-form :inline="true" :model="userInfo">

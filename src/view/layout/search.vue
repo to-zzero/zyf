@@ -14,14 +14,14 @@
       <el-button class="mg-l16" type="primary" @click="openDialog('service_aggrate')">服务聚合</el-button>
     </div>
 
-    <el-dialog width="610px" :visible.sync="dlg_publish_service" title="发布服务">
+    <el-dialog width="610px" :visible.sync="dlg_publish_service" title="发布服务" :close-on-click-modal="false">
       <ul class="ul-reset">
         <li class="flex-box mg-b16">
           <div
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >选择.sd文件(*):</div>
-          <el-input disabled :value="fileName" style="width: 440px;">
+          <el-input disabled :value="fileName" style="width: 440px;" size="mini">
             <el-upload
               :show-file-list="false"
               :on-change="selectFile"
@@ -45,7 +45,7 @@
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >服务名称(*):</div>
-          <el-input style="width: 440px;" v-model="service_info.name"></el-input>
+          <el-input style="width: 440px;" v-model="service_info.name" size="mini"></el-input>
         </li>
 
         <li class="flex-box mg-b16">
@@ -53,7 +53,7 @@
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >所属分组(*):</div>
-          <el-select
+          <el-select size="mini"
             multiple
             style="width: 440px;"
             v-model="service_info.service_catalog"
@@ -77,7 +77,7 @@
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >关键字:</div>
-          <el-input style="width: 440px;" placeholder="多个关键字以;分隔" v-model="service_info.keyword"></el-input>
+          <el-input size="mini" style="width: 440px;" placeholder="多个关键字以;分隔" v-model="service_info.keyword"></el-input>
         </li>
 
         <li class="flex-box mg-b16">
@@ -85,22 +85,27 @@
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >提供单位:</div>
-          <el-input style="width: 440px;" v-model="service_info.metadata.provider"></el-input>
+          <el-input  size="mini" style="width: 440px;" v-model="service_info.metadata.provider"></el-input>
         </li>
 
         <li class="flex-box mg-b16">
           <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">摘要:</div>
-          <el-input style="width: 440px;" v-model="service_info.metadata.abstract"></el-input>
+          <el-input size="mini" style="width: 440px;" v-model="service_info.metadata.abstract"></el-input>
         </li>
 
         <li class="flex-box" style="justify-content: flex-end;">
-          <el-button @click="dlg_publish_service=false">取消</el-button>
+          <el-button @click="dlg_publish_service=false" size="mini">取消</el-button>
           <el-button type="primary" @click="doPublish">确定</el-button>
         </li>
       </ul>
     </el-dialog>
 
-    <serviceAggrateDialg v-if="dlg_service_aggrate" v-model="dlg_service_aggrate"></serviceAggrateDialg>
+    <serviceAggrateDialg
+      v-if="dlg_service_aggrate"
+      :isOpen="dlg_service_aggrate"
+      @change="dlg_service_aggrate=!dlg_service_aggrate"
+      :catalog_list="catalog_list"
+    ></serviceAggrateDialg>
   </div>
 </template>
 
