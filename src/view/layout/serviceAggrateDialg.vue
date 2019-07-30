@@ -16,14 +16,23 @@
         >{{ formData.type ? '服务链接' : '选择服务' }}</div>
         <el-input v-if="formData.type === 1" style="width: 460px;" v-model="formData.url" size="mini"></el-input>
         <el-select v-else v-model="formData.group" style="width: 460px;" placeholder="请选择" size="mini">
-          <template v-for="(catalog) in catalog_list" >
+          <el-option-group
+            v-for="catalog in catalog_list"
+            :key="catalog.name"
+            :label="catalog.name">
             <el-option
-              v-for="subject in catalog.subject"
+              v-for="subject in catalog.children"
               :key="subject.id"
               :label="subject.name"
               :value="subject.id"
             ></el-option>
-          </template>
+          </el-option-group>
+          <!-- <el-option
+            v-for="subject in catalog_list"
+            :key="subject.id"
+            :label="subject.name"
+            :value="subject.id"
+          ></el-option> -->
         </el-select>
       </li>
 
@@ -123,10 +132,11 @@
 </template>
 
 <script>
+import api from "../../api";
 const SERVIE_TYPE_SYSTEM = 0;
 const SERVIE_TYPE_WMTS = 1;
 export default {
-  props: ["isOpen", "catalog_list"],
+  props: ["isOpen", 'catalog_list'],
   data() {
     return {
       dlg_service_aggrate: this.isOpen,
@@ -134,7 +144,7 @@ export default {
         level: [10, 15],
         type: SERVIE_TYPE_SYSTEM,
         url: "",
-        group: [],
+        group: '',
         layerName: "",
         style: "",
         tile: "",
@@ -149,7 +159,7 @@ export default {
           abstract: "",
           customize: []
         }
-      }
+      },
     };
   },
   mounted() {

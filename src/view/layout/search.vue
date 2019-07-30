@@ -104,7 +104,7 @@
       v-if="dlg_service_aggrate"
       :isOpen="dlg_service_aggrate"
       @change="dlg_service_aggrate=!dlg_service_aggrate"
-      :catalog_list="catalog_list"
+      :catalog_list="service_list"
     ></serviceAggrateDialg>
   </div>
 </template>
@@ -136,6 +136,7 @@ export default {
       dlg_publish_service: false,
       dlg_service_aggrate: false,
       catalog_list: [],
+      service_list: [],
       searchContent: "",
       service_info: JSON.parse(default_info),
       fileName: "",
@@ -215,6 +216,20 @@ export default {
   mounted() {
     api.catalog.catalog_list().then(data => {
       this.catalog_list = data;
+    });
+
+    api.catalog.catalog_services({size:1000}).then(cataloglist => {
+      let result = [];
+      for (const catalog of cataloglist) {
+        var searchListItem = {
+          id: catalog.id,
+          name: catalog.name,
+          children: catalog.items.filter(r => r)
+        };
+        result.push(searchListItem);
+      }
+
+      this.$set(this, 'service_list', result);
     });
   },
   watch: {
