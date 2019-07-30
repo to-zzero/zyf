@@ -164,38 +164,6 @@ export default {
       this.fileName = file.name;
       this.service_info.file = file;
     },
-    addToServiceList() {
-      const { url, layerName, style, tile } = this.formData;
-
-      const len = this.formData.serviceList.length;
-      this.$set(this.formData.serviceList, len, {
-        url,
-        layerName,
-        style,
-        tile,
-        index: len
-      });
-    },
-    moveItem(row, type) {
-      const { index } = row;
-      this.formData.serviceList.splice(index, 1);
-      if (type) {
-        this.formData.serviceList.splice(
-          index - 1 > -1 ? index - 1 : 0,
-          0,
-          row
-        );
-      } else {
-        this.formData.serviceList.splice(index + 1, 0, row);
-      }
-
-      this.formData.serviceList = this.formData.serviceList.map(
-        (val, index) => {
-          val.index = index;
-          return val;
-        }
-      );
-    },
     async doPublish() {
       let loading;
       loading = this.$loading({

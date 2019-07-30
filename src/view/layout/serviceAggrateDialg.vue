@@ -15,10 +15,8 @@
           style="font-size: 14px; color: #7f8fa4; text-align: right;"
         >{{ formData.type ? '服务链接' : '选择服务' }}</div>
         <el-input v-if="formData.type === 1" style="width: 460px;" v-model="formData.url" size="mini"></el-input>
-        <el-select v-else v-model="formData.group" multiple style="width: 460px;" placeholder="请选择" size="mini">
-          <template v-for="(catalog, index) in catalog_list" >
-            <!-- 循环template -->
-            <div :key="index" style="padding: 8px 12px;">{{catalog.name}}</div>
+        <el-select v-else v-model="formData.group" style="width: 460px;" placeholder="请选择" size="mini">
+          <template v-for="(catalog) in catalog_list" >
             <el-option
               v-for="subject in catalog.subject"
               :key="subject.id"
@@ -54,7 +52,7 @@
           >
             <el-table-column width="100" fixed label="服务名称"  align="center" prop="layerName"></el-table-column>
             <el-table-column label="服务URL" align="center" prop="url"></el-table-column>
-            <el-table-column width="100" fixed="right" label="操作" align="right" prop="url">
+            <el-table-column width="150" fixed="right" label="操作" align="right" prop="url">
               <div slot-scope="{row}">
                 <el-button
                   v-show="row.index"
@@ -68,6 +66,12 @@
                   style="width: 36px; text-align: center; padding-left: 0; padding-right: 0; margin-left: 4px;"
                   size="mini"
                 >下移</el-button>
+                <el-button
+                  @click="removeItem(row)"
+                  type="danger"
+                  style="width: 36px; text-align: center; padding-left: 0; padding-right: 0; margin-left: 4px;"
+                  size="mini"
+                >删除</el-button>
               </div>
             </el-table-column>
           </el-table>
@@ -111,7 +115,7 @@
       </li>-->
 
       <li class="flex-box" style="justify-content: flex-end;">
-        <el-button @click="handleCancel" size="mini">取消</el-button>
+        <el-button @click="handleCancel">取消</el-button>
         <el-button type="primary" @click="handleOK">确定</el-button>
       </li>
     </ul>
@@ -128,7 +132,14 @@ export default {
       dlg_service_aggrate: this.isOpen,
       formData: {
         level: [10, 15],
-        type: SERVIE_TYPE_SYSTEM
+        type: SERVIE_TYPE_SYSTEM,
+        url: "",
+        group: [],
+        layerName: "",
+        style: "",
+        tile: "",
+        serviceList: [],
+        service_catalog: []
       },
       tileRange: {},
       service_info: {
@@ -147,7 +158,6 @@ export default {
     }
   },
   methods: {
-    addToServiceList() {},
     handleCancel() {
       this.dlg_service_aggrate = false;
     },
@@ -156,7 +166,49 @@ export default {
     },
     handleClose() {
       this.$emit("change", false);
-    }
+    },
+    addToServiceList() {
+      const { url, layerName, style, tile } = this.formData;
+
+      const len = this.formData.serviceList.length;
+      this.$set(this.formData.serviceList, len, {
+        url,
+        layerName,
+        style,
+        tile,
+        index: len
+      });
+    },
+    removeItem(row) {
+      const { index } = row;
+      this.formData.serviceList.splice(index, 1);
+      this.formData.serviceList = this.formData.serviceList.map(
+        (val, index) => {
+          val.index = index;
+          return val;
+        }
+      );
+    },
+    moveItem(row, type) {
+      const { index } = row;
+      this.formData.serviceList.splice(index, 1);
+      if (type) {
+        this.formData.serviceList.splice(
+          index - 1 > -1 ? index - 1 : 0,
+          0,
+          row
+        );
+      } else {
+        this.formData.serviceList.splice(index + 1, 0, row);
+      }
+
+      this.formData.serviceList = this.formData.serviceList.map(
+        (val, index) => {
+          val.index = index;
+          return val;
+        }
+      );
+    },
   },
   watch: {
     isOpen(oldVal, newVal) {

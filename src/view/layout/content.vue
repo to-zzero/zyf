@@ -6,7 +6,9 @@
         class="current-tag"
         @click="clearSearch"
       >{{currentSelect.name || '全部'}} {{ currentSelect.name ? '×' : '' }}</div>
-      <el-tooltip placement="bottom">
+      <el-tooltip
+        style="margin-left: auto;"
+        placement="bottom">
         <div slot="content">包含聚合服务</div>
         <el-checkbox v-model="with_aggrate" @change="handleAggrateChanged">聚合</el-checkbox>
       </el-tooltip>
@@ -283,7 +285,8 @@ export default {
   cursor: pointer;
 }
 .current {
-  padding: 12px 32px;
+  padding: 12px 16px;
+  margin: 0 16px;
   border-radius: 4px;
   box-shadow: 1px 0 9px 0 rgba(78, 78, 78, 0.08);
   background-color: #ffffff;
