@@ -14,7 +14,7 @@
     <div
       style="font-weight: 600; color: #292929; font-size: 20px; text-align: center; margin-bottom: 32px;"
     >系统配置</div>
-    <el-submenu index="1">
+    <el-submenu index="1" v-if="canMgrDic">
       <template slot="title">
         <img
           src="../../assets/dictionary@2x.png"
@@ -32,7 +32,7 @@
       </el-menu-item-group>
     </el-submenu>
 
-    <el-submenu index="2">
+    <el-submenu index="2" v-if="canMgrAuth">
       <template slot="title">
         <img
           src="../../assets/management@2x.png"
@@ -50,7 +50,7 @@
       </el-menu-item-group>
     </el-submenu>
 
-    <el-submenu index="3">
+    <el-submenu index="3" v-if="canMgrSys">
       <template slot="title">
         <img
           src="../../assets/system@2x.png"
@@ -74,10 +74,10 @@
           index="3-3"
           :class="{ 'is-active': $route.path === '/setting/servicelog' }"
           :route="{ path: '/setting/servicelog' }"
-        >服务日志</el-menu-item> -->
+        >服务日志</el-menu-item>-->
       </el-menu-item-group>
     </el-submenu>
-    <el-submenu index="4">
+    <el-submenu index="4" v-if="canMgrMon">
       <template slot="title">
         <img
           src="../../assets/system@2x.png"
@@ -113,12 +113,29 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "setting-menu",
   data() {
     return {
       active_menu: ["1"]
     };
+  },
+  computed: {
+    ...mapState(["access"]),
+    canMgrDic() {
+      console.log(JSON.stringify(this.access, null, 2));
+      return this.access.find(r => r.code == 105).visible;
+    },
+    canMgrAuth() {
+      return this.access.find(r => r.code == 106).visible;
+    },
+    canMgrSys() {
+      return this.access.find(r => r.code == 107).visible;
+    },
+    canMgrMon() {
+      return this.access.find(r => r.code == 108).visible;
+    }
   },
   methods: {
     handleSelectMenuItem(key, keyPath) {

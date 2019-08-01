@@ -9,12 +9,27 @@
         ></i>
       </el-input>
 
-      <el-button class="mg-l16" type="primary" @click="openDialog('publish_service')">发布服务</el-button>
+      <el-button
+        v-if="canPublish"
+        class="mg-l16"
+        type="primary"
+        @click="openDialog('publish_service')"
+      >发布服务</el-button>
 
-      <el-button class="mg-l16" type="primary" @click="openDialog('service_aggrate')">服务聚合</el-button>
+      <el-button
+        v-if="canPublish"
+        class="mg-l16"
+        type="primary"
+        @click="openDialog('service_aggrate')"
+      >服务聚合</el-button>
     </div>
 
-    <el-dialog width="610px" :visible.sync="dlg_publish_service" title="发布服务" :close-on-click-modal="false">
+    <el-dialog
+      width="610px"
+      :visible.sync="dlg_publish_service"
+      title="发布服务"
+      :close-on-click-modal="false"
+    >
       <ul class="ul-reset">
         <li class="flex-box mg-b16">
           <div
@@ -53,7 +68,8 @@
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >所属分组(*):</div>
-          <el-select size="mini"
+          <el-select
+            size="mini"
             multiple
             style="width: 440px;"
             v-model="service_info.service_catalog"
@@ -77,7 +93,12 @@
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >关键字:</div>
-          <el-input size="mini" style="width: 440px;" placeholder="多个关键字以;分隔" v-model="service_info.keyword"></el-input>
+          <el-input
+            size="mini"
+            style="width: 440px;"
+            placeholder="多个关键字以;分隔"
+            v-model="service_info.keyword"
+          ></el-input>
         </li>
 
         <li class="flex-box mg-b16">
@@ -85,7 +106,7 @@
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
           >提供单位:</div>
-          <el-input  size="mini" style="width: 440px;" v-model="service_info.metadata.provider"></el-input>
+          <el-input size="mini" style="width: 440px;" v-model="service_info.metadata.provider"></el-input>
         </li>
 
         <li class="flex-box mg-b16">
@@ -104,7 +125,6 @@
       v-if="dlg_service_aggrate"
       :isOpen="dlg_service_aggrate"
       @change="dlg_service_aggrate=!dlg_service_aggrate"
-      :catalog_list="service_list"
     ></serviceAggrateDialg>
   </div>
 </template>
@@ -112,7 +132,7 @@
 <script>
 import api from "../../api";
 import serviceAggrateDialg from "./serviceAggrateDialg";
-// import { async } from "q";
+import { mapState } from "vuex";
 const default_info = JSON.stringify({
   name: "",
   keyword: "",
@@ -136,7 +156,6 @@ export default {
       dlg_publish_service: false,
       dlg_service_aggrate: false,
       catalog_list: [],
-      service_list: [],
       searchContent: "",
       service_info: JSON.parse(default_info),
       fileName: "",
@@ -218,19 +237,13 @@ export default {
       this.catalog_list = data;
     });
 
-    api.catalog.catalog_services({size:1000}).then(cataloglist => {
-      let result = [];
-      for (const catalog of cataloglist) {
-        var searchListItem = {
-          id: catalog.id,
-          name: catalog.name,
-          children: catalog.items.filter(r => r)
-        };
-        result.push(searchListItem);
-      }
 
-      this.$set(this, 'service_list', result);
-    });
+  },
+  computed: {
+    ...mapState(["access"]),
+    canPublish() {
+      return this.access.find(r => r.code == 100).visible;
+    }
   },
   watch: {
     fileName(newVal, oldVal) {

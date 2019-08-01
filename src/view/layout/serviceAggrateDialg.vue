@@ -1,5 +1,11 @@
 <template>
-  <el-dialog width="600px" :visible.sync="dlg_service_aggrate" title="服务聚合" @close="handleClose">
+  <el-dialog
+    width="600px"
+    :visible.sync="dlg_service_aggrate"
+    title="服务聚合"
+    :close-on-click-modal="false"
+    @close="handleClose"
+  >
     <ul class="ul-reset">
       <li class="flex-box mg-b16">
         <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">服务类型</div>
@@ -14,25 +20,26 @@
           class="flex-1 mg-r16"
           style="font-size: 14px; color: #7f8fa4; text-align: right;"
         >{{ formData.type ? '服务链接' : '选择服务' }}</div>
-        <el-input v-if="formData.type === 1" style="width: 460px;" v-model="formData.url" size="mini"></el-input>
-        <el-select v-else v-model="formData.group" style="width: 460px;" placeholder="请选择" size="mini">
-          <el-option-group
-            v-for="catalog in catalog_list"
-            :key="catalog.name"
-            :label="catalog.name">
-            <el-option
-              v-for="subject in catalog.children"
-              :key="subject.id"
-              :label="subject.name"
-              :value="subject.id"
-            ></el-option>
-          </el-option-group>
-          <!-- <el-option
-            v-for="subject in catalog_list"
+        <el-input
+          v-if="formData.type === 1"
+          style="width: 460px;"
+          v-model="formData.url"
+          size="mini"
+        ></el-input>
+        <el-select
+          v-else
+          v-model="formData.layerName"
+          style="width: 460px;"
+          placeholder="请选择"
+          size="mini"
+        >
+          <el-option
+            v-for="subject in service_list"
             :key="subject.id"
             :label="subject.name"
             :value="subject.id"
-          ></el-option> -->
+          ></el-option>
+          <!-- </el-option-group> -->
         </el-select>
       </li>
 
@@ -51,7 +58,7 @@
 
       <li class="flex-box align-start mg-b16">
         <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">服务列表</div>
-        <div style="width: 460px;">
+        <div style="width: 80%">
           <el-table
             size="mini"
             max-height="300"
@@ -59,28 +66,27 @@
             style="width: 100%;"
             :data="formData.serviceList"
           >
-            <el-table-column width="100" fixed label="服务名称"  align="center" prop="layerName"></el-table-column>
-            <el-table-column label="服务URL" align="center" prop="url"></el-table-column>
-            <el-table-column width="150" fixed="right" label="操作" align="right" prop="url">
+            <el-table-column label="服务" align="left" header-align="center" prop="title"></el-table-column>
+            <el-table-column width="100" fixed="right" label="操作" align="right" prop="url">
               <div slot-scope="{row}">
                 <el-button
                   v-show="row.index"
                   @click="moveItem(row, true)"
-                  style="width: 36px; text-align: center; padding-left: 0; padding-right: 0;"
+                  style="width: 20px; text-align: center; padding-left: 0; padding-right: 0;"
                   size="mini"
-                >上移</el-button>
+                >↑</el-button>
                 <el-button
                   v-show="row.index + 1 !== formData.serviceList.length"
                   @click="moveItem(row, false)"
-                  style="width: 36px; text-align: center; padding-left: 0; padding-right: 0; margin-left: 4px;"
+                  style="width: 20px; text-align: center; padding-left: 0; padding-right: 0; margin-left: 4px;"
                   size="mini"
-                >下移</el-button>
+                >↓</el-button>
                 <el-button
                   @click="removeItem(row)"
                   type="danger"
-                  style="width: 36px; text-align: center; padding-left: 0; padding-right: 0; margin-left: 4px;"
+                  style="width: 20px; text-align: center; padding-left: 0; padding-right: 0; margin-left: 4px;"
                   size="mini"
-                >删除</el-button>
+                >X</el-button>
               </div>
             </el-table-column>
           </el-table>
@@ -88,17 +94,14 @@
       </li>
 
       <li class="flex-box mg-b16">
-        <div
-          class="flex-1 mg-r16"
-          style="font-size: 14px; color: #7f8fa4; text-align: right;"
-        >瓦片级别范围</div>
+        <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">瓦片级别</div>
         <el-slider
           style="width: 460px;"
           range
           :max="20"
           :min="1"
-          :marks="tileRange"
           v-model="formData.level"
+          :show-stops="true"
         ></el-slider>
       </li>
 
@@ -112,20 +115,9 @@
         <el-input style="width: 460px;" size="mini" v-model="service_info.keyword"></el-input>
       </li>
 
-      <!-- 
-      <li class="flex-box mg-b16">
-        <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">服务摘要</div>
-        <el-input style="width: 460px;" v-model="service_info.metadata.provider"></el-input>
-      </li>-->
-      <!-- 
-      <li class="flex-box mg-b16">
-        <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">摘要</div>
-        <el-input style="width: 460px;" v-model="service_info.metadata.abstract"></el-input>
-      </li>-->
-
       <li class="flex-box" style="justify-content: flex-end;">
         <el-button @click="handleCancel">取消</el-button>
-        <el-button type="primary" @click="handleOK">确定</el-button>
+        <el-button type="primary" :loading="bntOKLoading" @click="handleOK">确定</el-button>
       </li>
     </ul>
   </el-dialog>
@@ -136,7 +128,7 @@ import api from "../../api";
 const SERVIE_TYPE_SYSTEM = 0;
 const SERVIE_TYPE_WMTS = 1;
 export default {
-  props: ["isOpen", 'catalog_list'],
+  props: ["isOpen"],
   data() {
     return {
       dlg_service_aggrate: this.isOpen,
@@ -144,50 +136,115 @@ export default {
         level: [10, 15],
         type: SERVIE_TYPE_SYSTEM,
         url: "",
-        group: '',
+        group: "",
         layerName: "",
         style: "",
         tile: "",
-        serviceList: [],
-        service_catalog: []
+        serviceList: []
+        // service_catalog: []
       },
+      service_list: [],
       tileRange: {},
+      bntOKLoading: false,
       service_info: {
         keyword: "",
+        name: "",
         metadata: {
           provider: "",
           abstract: "",
           customize: []
         }
-      },
+      }
     };
   },
   mounted() {
     for (let index = 1; index <= 20; index++) {
       this.tileRange[index] = index.toString();
     }
+    api.service.servie_list({ size: 1000 }).then(services => {
+      this.$set(this, "service_list", services.list);
+    });
   },
   methods: {
     handleCancel() {
       this.dlg_service_aggrate = false;
     },
-    handleOK() {
-      this.dlg_service_aggrate = false;
+    async handleOK() {
+      if (this.formData.serviceList.length === 0) {
+        this.$message({ message: "服务列表为空，不能进行聚合", type: "error" });
+        return;
+      }
+
+      if (!this.service_info.name) {
+        this.$message({ message: "请输入服务名称", type: "error" });
+        return;
+      }
+      try {
+        this.bntOKLoading = true;
+        var nameOk = await api.service.checkname(this.service_info.name);
+        if (nameOk == false) {
+          this.$message({
+            message: "服务名称已被使用，请输入其他名称",
+            type: "error"
+          });
+          return;
+        }
+
+        var createOk = await api.service.create_aggrate_service(
+          this.service_info,
+          this.formData.serviceList
+        );
+
+        if (createOk) {
+          this.$message({
+            message: "服务创建成功",
+            type: "success"
+          });
+          return;
+        } else {
+          this.$message({
+            message: "服务创建失败",
+            type: "error"
+          });
+          return;
+        }
+
+        this.dlg_service_aggrate = false;
+      } catch (error) {
+        //
+      } finally {
+        this.bntOKLoading = false;
+      }
     },
     handleClose() {
       this.$emit("change", false);
     },
     addToServiceList() {
       const { url, layerName, style, tile } = this.formData;
-
+      var obj = { info: {} };
+      if (this.formData.type === 0) {
+        var layer = this.service_list.find(
+          r => r.id == this.formData.layerName
+        );
+        if (layer) {
+          if (this.formData.serviceList.find(r => r.info.id === layer.id)) {
+            this.$message({ message: "服务已在列表中", type: "error" });
+            return;
+          }
+          debugger;
+          obj.title = layer.name;
+          obj.info.id = layer.id;
+        } else {
+          this.$message({ message: "请先选择服务", type: "error" });
+          return;
+        }
+      } else {
+        obj.title = url;
+        obj.info = { url, layerName, style, tile };
+      }
       const len = this.formData.serviceList.length;
-      this.$set(this.formData.serviceList, len, {
-        url,
-        layerName,
-        style,
-        tile,
-        index: len
-      });
+      obj.index = len;
+      this.$set(this.formData.serviceList, len, obj);
     },
     removeItem(row) {
       const { index } = row;
@@ -218,7 +275,7 @@ export default {
           return val;
         }
       );
-    },
+    }
   },
   watch: {
     isOpen(oldVal, newVal) {

@@ -1,5 +1,5 @@
 <template>
-  <el-container class="login-container">
+  <el-container class="login-container" id="login-container">
     <el-form
       class="login-from"
       ref="loginForm"
@@ -25,7 +25,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleSubmit" type="primary" size="mini" width="150px">登录</el-button>
+        <el-button id="btnLogin" @click="handleSubmit" type="primary" size="mini" width="150px">登录</el-button>
         <!-- <el-button @click="handleRegister">注册</el-button> -->
       </el-form-item>
     </el-form>
@@ -76,9 +76,15 @@ export default {
     handleSubmit() {
       if (!this.form.userName) return this.$message.error("用户名不能为空");
       if (!this.form.password) return this.$message.error("密码不能为空");
+      const loading = this.$loading({
+        lock: true,
+        text: "正在登录...",
+        target: 'btnLogin'
+      });
       api.admin
         .login(this.form.userName, this.form.password, this.form.captcha)
         .then(rlt => {
+          loading.close();
           if (rlt.success) {
             Cookies.set("sid", rlt.sid);
             this.setUser({
@@ -90,6 +96,9 @@ export default {
             });
             this.$router.push({ name: "Home" });
           }
+        })
+        .catch(err => {
+          loading.close();
         });
     },
     handleRegister() {

@@ -172,9 +172,83 @@ export async function rebuildCache(id) {
 
 
 export async function servelog(page = 1, size = 20) {
-    var resp = await http.get(`/servelog/list?page=${page}&size=${size}`)
+    var resp = await http.get(`/service/servelog/list?page=${page}&size=${size}`)
     if (resp.status === 200) {
         return resp.data
     }
     return null;
+}
+
+export async function checkname(name) {
+    var resp = await http.get(`/service/checkname?name=${name}`)
+    if (resp.status === 200) {
+        return resp.data
+    }
+    return true;
+}
+
+export async function create_aggrate_service(serviceInfo, aggrateInfo) {
+    var resp = await http.post(`/service/aggrate`, {
+        service: serviceInfo,
+        aggrate: aggrateInfo
+    })
+    if (resp.status === 200) {
+        return resp.data
+    }
+    return false;
+}
+
+//监控-最近1小时
+export async function monitor1Hour(serviceId) {
+    var resp = await http.get(`/service/servelog/monitor?serviceId=${serviceId}&type=minute`)
+    if (resp.status === 200) {
+        return resp.data
+    }
+    return true;
+}
+
+//监控-最近24小时
+export async function monitor24Hour(serviceId) {
+    var resp = await http.get(`/service/servelog/monitor?serviceId=${serviceId}&type=hour`)
+    if (resp.status === 200) {
+        return resp.data
+    }
+    return true;
+}
+
+
+//流量-type:today|yesterday|week|month  from:时间戳 to:时间戳
+export async function statAmount(type, from, to) {
+    var resp = await http.get(`/service/servelog/amount?type=${type}&from=${from}&to=${to}}`)
+    if (resp.status === 200) {
+        return resp.data
+    }
+    return true;
+}
+
+//访问量-type:today|week|month  from:时间戳 to:时间戳
+export async function statCount(type, from, to) {
+    var resp = await http.get(`/service/servelog/count?type=${type}&from=${from}&to=${to}}`)
+    if (resp.status === 200) {
+        return resp.data
+    }
+    return true;
+}
+
+//警告-type:today|week|month  from:时间戳 to:时间戳
+export async function statWarn(type, from, to) {
+    var resp = await http.get(`/service/servelog/warn?type=${type}&from=${from}&to=${to}}`)
+    if (resp.status === 200) {
+        return resp.data
+    }
+    return true;
+}
+
+//获取时间区间的警告日志
+export async function queryWarnLog(from, to, page, size) {
+    var resp = await http.get(`/service/servelog/warn?type=${type}&from=${from}&to=${to}}&page=${page}&size=${size}`)
+    if (resp.status === 200) {
+        return resp.data
+    }
+    return true;
 }

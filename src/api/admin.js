@@ -46,3 +46,9 @@ export async function getLogList(page, size) {
     }
 }
 
+export async function auth(auth, userId) {
+    let resp = await http.post(`/admin/auth`, { access: JSON.stringify(auth || []), to: userId })
+    if (resp && resp.status == 200) {
+        return resp.data
+    }
+}

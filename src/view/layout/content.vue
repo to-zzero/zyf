@@ -6,9 +6,7 @@
         class="current-tag"
         @click="clearSearch"
       >{{currentSelect.name || '全部'}} {{ currentSelect.name ? '×' : '' }}</div>
-      <el-tooltip
-        style="margin-left: auto;"
-        placement="bottom">
+      <el-tooltip style="margin-left: auto;" placement="bottom">
         <div slot="content">包含聚合服务</div>
         <el-checkbox v-model="with_aggrate" @change="handleAggrateChanged">聚合</el-checkbox>
       </el-tooltip>
@@ -77,6 +75,7 @@
                 <span v-else style="color: #b1b1b1;cursor:not-allowed">查看</span>
               </span>
               <span
+                v-if="canDelete"
                 class="control-item flex-box"
                 style="color: #696969;"
                 @click="deleteService(service)"
@@ -88,7 +87,7 @@
                 />
                 删除
               </span>
-              <span class="control-item flex-box" style="color: #696969;">
+              <span v-if="canEdit" class="control-item flex-box" style="color: #696969;">
                 <router-link
                   class="flex-box"
                   :to="{path :'/info_edit', query: { id: service.id } }"
@@ -104,15 +103,16 @@
               </span>
               <div class="switch-wrap control-item">
                 <el-switch
+                  :disabled="!canStop"
                   :width="50"
                   size="small"
                   active-color="#13ce66"
                   inactive-color="#ff4949"
                   :value="service.status"
-                  @change="val =>val?startService(service): stopService(service)"
+                  @change="start_stop_Service(service,val)"
                 ></el-switch>
                 <span
-                  @click="service.status?stopService(service):startService(service)"
+                  @click="start_stop_Service(service,!service.status)"
                   :style="service.status ? 'left: 15%;top:58%; right: unset;' : 'right:15%;top:58%;'"
                   class="text"
                 >{{ !service.status ? '开' : '关' }}</span>
@@ -147,6 +147,7 @@
 <script>
 import api from "../../api";
 import { Loading } from "element-ui";
+import { mapState } from "vuex";
 
 export default {
   name: "LayoutContent",
@@ -162,6 +163,18 @@ export default {
     };
   },
   mounted() {},
+  computed: {
+    ...mapState(["access"]),
+    canDelete() {
+      return this.access.find(r => r.code == 101).visible;
+    },
+    canStop() {
+      return this.access.find(r => r.code == 102).visible;
+    },
+    canEdit() {
+      return this.access.find(r => r.code == 103).visible;
+    }
+  },
   inject: ["reload"],
   methods: {
     openDialog(name) {
@@ -194,6 +207,10 @@ export default {
             });
         })
         .catch(() => {});
+    },
+    async start_stop_Service(service) {
+      if (canStop) {
+      }
     },
     async startService(service) {
       let loading = this.$loading({
