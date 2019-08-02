@@ -202,7 +202,7 @@ export async function create_aggrate_service(serviceInfo, aggrateInfo) {
 export async function monitor1Hour(serviceId) {
     var resp = await http.get(`/service/servelog/monitor?serviceId=${serviceId}&type=minute`)
     if (resp.status === 200) {
-        return resp.data
+        return resp.data//[{time:'2019-08-01 01:00:00',count:1}]
     }
     return true;
 }
@@ -211,17 +211,20 @@ export async function monitor1Hour(serviceId) {
 export async function monitor24Hour(serviceId) {
     var resp = await http.get(`/service/servelog/monitor?serviceId=${serviceId}&type=hour`)
     if (resp.status === 200) {
-        return resp.data
+        return resp.data//[{time:'2019-08-01 00:00:00',count:2,duration:100}]
     }
     return true;
 }
 
 
-//流量-type:today|yesterday|week|month  from:时间戳 to:时间戳
-export async function statAmount(type, from, to) {
-    var resp = await http.get(`/service/servelog/amount?type=${type}&from=${from}&to=${to}}`)
+//流量-type:today|yesterday|week|month  from:时间戳 to:时间戳 prop:all service user
+export async function statAmount(type, prop, from, to) {
+    var resp = await http.get(`/service/servelog/amount?type=${type}&prop=${prop}&from=${from}&to=${to}}`)
     if (resp.status === 200) {
         return resp.data
+        //[{time:'2019-08-01 00:00:00',datasize:100}]--all
+        //[{name:'xxxx',datasize:100}]--service
+        //[{name:'xxxx',datasize:100}]--user
     }
     return true;
 }
