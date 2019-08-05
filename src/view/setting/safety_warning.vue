@@ -24,7 +24,7 @@
             }"
             class="mg-r16 pd-tb4 pd-lr8 cursor"
             @click="changeTime('yesterday')">
-            今日
+            昨日
           </li>
           <li
             :class="{
