@@ -20,6 +20,8 @@ import SafetyWarning from '../view/setting/safety_warning.vue'
 import DischargeCount from '../view/setting/discharge_count.vue'
 import AccessLog from '../view/setting/access_log.vue'
 
+import Test from '../view/test/index.vue'
+
 const COOKIE_KEY_TOKEN = "sid"
 const LOGIN_PAGE_NAME = 'login'
 
@@ -109,6 +111,11 @@ const routes = [
     meta: { title: '编辑服务信息' },
     name: 'InfoEdit',
     component: InfoEdit
+  }, {
+    path: '/test',
+    meta: { title: '测试' },
+    name: 'Test',
+    component: Test
   }, {
     path: '*',
     redirect: '/'
