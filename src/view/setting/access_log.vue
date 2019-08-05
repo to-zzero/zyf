@@ -82,13 +82,13 @@
       </h4>
 
       <ul class="flex-box ul-reset">
-        <li style="border-right: 1px dashed #ccc; width: 150px; height: 400px;">
+        <li style="border-right: 1px dashed #ccc; width: 150px; height: 280px;">
           <div class="ts-12 color-999">访问累计数量</div>
           <h5 class="ts-20 mg-t0 mg-b0">123123</h5>
         </li>
 
         <li style="min-height: 128px;" class="flex-1">
-          <div style="height: 400px;" id="echart"></div>
+          <div style="height: 280px;" id="echart"></div>
         </li>
       </ul>
     </div>
@@ -143,7 +143,7 @@
           yData.push(Math.ceil(Math.random() * 10) * 111)
         }
 
-        const minSpan = xData.length > 7 ? 7 : 100
+        // const minSpan = xData.length > 7 ? 7 : 100
         const option = {
           color: ['rgba(72, 116, 237, 1)'],
           tooltip : {
@@ -181,14 +181,14 @@
               data: yData
             }
           ],
-          dataZoom: [
-            {
-              type: 'inside',
-              minSpan: minSpan,
-              start: 100 - minSpan,
-              zoomLock: true
-            }
-          ]
+          // dataZoom: [
+          //   {
+          //     type: 'inside',
+          //     minSpan: minSpan,
+          //     start: 100 - minSpan,
+          //     zoomLock: true
+          //   }
+          // ]
         };
 
       myChart.setOption(option);

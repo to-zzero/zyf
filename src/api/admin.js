@@ -52,3 +52,96 @@ export async function auth(auth, userId) {
         return resp.data
     }
 }
+
+export async function getStatusMonitorAPI(params = {}) {
+    return [
+        {
+            date_time: new Date().getTime(),
+            times: 3
+        },
+        {
+            date_time: new Date().getTime() + 100,
+            times: 1
+        },
+        {
+            date_time: new Date().getTime() + 300,
+            times: 6
+        },
+        {
+            date_time: new Date().getTime() + 500,
+            times: 4
+        },
+        {
+            date_time: new Date().getTime() + 600,
+            times: 2
+        },
+        {
+            date_time: new Date().getTime() + 700,
+            times: 5
+        }
+    ]
+    const result = await http.get(`/api/service/servelog/monitor?serviceId=${params.serviceId}&type=${params.type}`)
+    return result
+}
+
+export async function getSafetyWarningAPI(params) {
+    return [
+        {
+            date_time: new Date().getTime(),
+            ip_number: 3
+        },
+        {
+            date_time: new Date().getTime() + 100,
+            ip_number: 1
+        },
+        {
+            date_time: new Date().getTime() + 300,
+            ip_number: 6
+        },
+        {
+            date_time: new Date().getTime() + 500,
+            ip_number: 4
+        },
+        {
+            date_time: new Date().getTime() + 600,
+            ip_number: 2
+        },
+        {
+            date_time: new Date().getTime() + 700,
+            ip_number: 5
+        }
+    ]
+    const result = await http.get(`/api/service/servelog/amount?type=${params.type}&from=${params.from}&to=${params.to}`)
+    return result
+}
+
+export async function getDiachargeAPI(params) {
+    return [
+        {
+            date_time: new Date().getTime(),
+            count: 3
+        },
+        {
+            date_time: new Date().getTime() + 100,
+            count: 1
+        },
+        {
+            date_time: new Date().getTime() + 300,
+            count: 6
+        },
+        {
+            date_time: new Date().getTime() + 500,
+            count: 4
+        },
+        {
+            date_time: new Date().getTime() + 600,
+            count: 2
+        },
+        {
+            date_time: new Date().getTime() + 700,
+            count: 5
+        }
+    ]
+    const result = await http.get(`/api/service/servelog/count?type=${params.type}&from=${params.from}&to=${params.to}`)
+    return result
+}

@@ -12,30 +12,42 @@
           <!-- 这些选中的时候 time 是字符串 D W M -->
           <li
             :class="{
-              'time-active': time === 'D'
+              'time-active': time === 'today'
             }"
             class="mg-r16 pd-tb4 pd-lr8 cursor"
-            @click="changeTime('D')">今日</li>
-          <li>
-            <li
-            :class="{
-              'time-active': time === 'W'
-            }"
-            class="mg-r16 pd-tb4 pd-lr8 cursor"
-            @click="changeTime('W')">本周</li>
-          <li>
+            @click="changeTime('today')">
+            今日
+          </li>
           <li
             :class="{
-              'time-active': time === 'M'
+              'time-active': time === 'yesterday'
             }"
             class="mg-r16 pd-tb4 pd-lr8 cursor"
-            @click="changeTime('M')">本月</li>
+            @click="changeTime('yesterday')">
+            昨日
+          </li>
+          <li
+            :class="{
+              'time-active': time === 'week'
+            }"
+            class="mg-r16 pd-tb4 pd-lr8 cursor"
+            @click="changeTime('week')">
+            本周
+          </li>
+          <li
+            :class="{
+              'time-active': time === 'month'
+            }"
+            class="mg-r16 pd-tb4 pd-lr8 cursor"
+            @click="changeTime('month')">
+            本月
+          </li>
           <li>
             <!-- 这个选中的时候 time 是个数组 [startTime, endTime] -->
             <el-date-picker
               v-model="time"
               :clearable="false"
-              type="datetimerange"
+              type="daterange"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期">
@@ -85,6 +97,7 @@
 </template>
 
 <script>
+  import api from '@/api'
   import echarts from 'echarts'
 
   export default {
@@ -98,20 +111,26 @@
         time: 'D'
       }
     },
+    watch: {
+      time(v) {
+        this.getData(v)
+      }
+    },
     mounted() {
-      this.draw(document.getElementById('echart'))
+      this.getData(this.time)
     },
     methods: {
-      draw(el) {
+      draw(el, data) {
         const myChart = echarts.init(el)
-        const xData = []
-        for (let i = 0; i < 100; i++) {
-          xData.push(new Date(new Date().getTime() + i * 1000 * 60 * 60 * 24).getDay() + ' 号')
-        }
-        const yData = []
-        for (let i = 0; i < 100; i++) {
-          yData.push(Math.ceil(Math.random() * 10) * 111)
-        }
+        const xData = [];
+        const yData = [];
+        data.forEach((v, i) => {
+          xData.push(
+            new Date(new Date(v.date_time).getTime() + i * 1000 * 60 * 60 * 24).getDate() +
+              " 日"
+          );
+          yData.push(v.ip_number);
+        })
         const option = {
           grid: {
             left: '5%',
@@ -147,20 +166,29 @@
               color: 'rgba(72, 116, 237, .8)'
             }
           }],
-          dataZoom: [
-            {
-              type: 'inside',
-              minSpan: 6,
-              start: 94,
-              zoomLock: true
-            }
-          ]
+          // dataZoom: [
+          //   {
+          //     type: 'inside',
+          //     minSpan: 6,
+          //     start: 94,
+          //     zoomLock: true
+          //   }
+          // ]
         }
 
         myChart.setOption(option)
       },
       changeTime(time) {
         this.time = time
+      },
+      getData(v) {
+        return api.admin.getSafetyWarningAPI({
+          type: typeof v === 'string' ? v : '',
+          from: typeof v === 'string' ? '' : new Date(v[0]).getTime(),
+          to: typeof v === 'string' ? '' : new Date(v[1]).getTime()
+        }).then(res => {
+          this.draw(document.getElementById('echart'), res)
+        })
       }
     }
   }
