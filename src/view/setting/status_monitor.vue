@@ -71,10 +71,31 @@
       </div>
 
       <div class="shadow pd-lr12 pd-tb12 mg-t16">
-        <h4 class="mg-t0 mg-b16">服务监控</h4>
+        <h4 class="mg-t0 mg-b16 flex-box space-between">
+          <span>
+            服务监控
+          </span>
+
+          <ul class="flex-box ul-reset tw-n ts-14">
+          <!-- 这些选中的时候 time 是字符串 D W M -->
+            <li
+              :class="{
+                'time-active': time === 'hour'
+              }"
+              class="mg-r16 pd-tb4 pd-lr8 cursor"
+              @click="changeTime('hour')">最近1小时</li>
+            <li>
+              <li
+              :class="{
+                'time-active': time === 'day'
+              }"
+              class="mg-r16 pd-tb4 pd-lr8 cursor"
+              @click="changeTime('day')">最近24小时</li>
+          </ul>
+        </h4>
 
         <ul class="flex-box ul-reset">
-          <li style="border-right: 1px dashed #ccc; width: 150px; height: 400px;">
+          <li style="border-right: 1px dashed #ccc; width: 150px; height: 280px;">
             <div class="ts-12 color-999">系统平均响应时间</div>
             <h5 class="ts-20 mg-t0 mg-b32">500 MS</h5>
 
@@ -83,7 +104,7 @@
           </li>
 
           <li style="min-height: 128px;" class="flex-1">
-            <div style="height: 400px;" ref="echart" id="echart"></div>
+            <div style="height: 280px;" ref="echart" id="echart"></div>
           </li>
         </ul>
       </div>
@@ -100,6 +121,7 @@ export default {
     return {
       selectId: "",
       searchList: [],
+      time: 'day',
       currentService: {
         id: "",
         name: "",
@@ -109,6 +131,19 @@ export default {
         metadata: ""
       }
     };
+  },
+  watch: {
+    time(v) {
+      this.timer && clearInterval(this.timer)
+      this.timer = setInterval(() => {
+        api.admin.getStatusMonitorAPI({
+          type: this.time,
+          serviceId: this.selectId
+        }).then(res => {
+          this.draw(this.$refs.echart, res);
+        })
+      }, 3600 * (v === 'day' ? 24 : 1));
+    }
   },
   mounted() {
     api.catalog.catalog_services({size:1000}).then(cataloglist => {
@@ -121,32 +156,47 @@ export default {
         this.searchList.push(searchListItem);
       }
     });
+
+    this.timer = setInterval(() => {
+      api.admin.getStatusMonitorAPI({
+        type: this.time,
+        serviceId: this.selectId
+      }).then(res => {
+        this.draw(this.$refs.echart, res);
+      })
+    }, 3600);
+  },
+  beforeDestroy() {
+    this.timer && clearInterval(this.timer)
   },
   methods: {
+    changeTime(time) {
+      this.time = time
+    },
     changeSelect(service) {
       this.selectId = service.id;
       if (typeof service.metadata === "string" && service.metadata) {
         service.metadata = JSON.parse(service.metadata);
       }
       this.currentService = service;
-      this.$nextTick().then(()=>{
-        this.draw(this.$refs.echart);
+      api.admin.getStatusMonitorAPI({
+        type: this.time,
+        serviceId: this.selectId
+      }).then(res => {
+        this.draw(this.$refs.echart, res);
       })
     },
-    draw(el) {
-      const myChart = echarts.init(el);
+    draw(el, data) {
+      const myChart = echarts.init(el)
       const xData = [];
-      for (let i = 10; i >= 0; i--) {
+      const yData = [];
+      data.forEach((v, i) => {
         xData.push(
-          new Date(new Date().getTime() - i * 1000 * 60 * 60 * 24).getDate() +
+          new Date(new Date(v.date_time).getTime() + i * 1000 * 60 * 60 * 24).getDate() +
             " 日"
         );
-      }
-      debugger
-      const yData = [];
-      for (let i = 10; i >= 0; i--) {
-        yData.push(Math.ceil(Math.random() * 10) * 111);
-      }
+        yData.push(v.times);
+      })
       const option = {
         xAxis: {
           type: "category",
@@ -178,14 +228,14 @@ export default {
             }
           }
         ],
-        dataZoom: [
-          {
-            type: "inside",
-            minSpan: 1,
-            start: 1,
-            zoomLock: true
-          }
-        ]
+        // dataZoom: [
+        //   {
+        //     type: "inside",
+        //     minSpan: 1,
+        //     start: 1,
+        //     zoomLock: true
+        //   }
+        // ]
       };
 
       myChart.setOption(option);
@@ -211,5 +261,10 @@ export default {
   border-left: 4px solid #4874ed;
   color: #292929;
   margin-bottom: 24px;
+}
+.time-active {
+  background: rgb(72, 116, 237);
+  color: #fff;
+  border-radius: 4px;
 }
 </style>
