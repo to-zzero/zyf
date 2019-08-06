@@ -72,35 +72,35 @@
 
       <div class="shadow pd-lr12 pd-tb12 mg-t16">
         <h4 class="mg-t0 mg-b16 flex-box space-between">
-          <span>
-            服务监控
-          </span>
+          <span>服务监控</span>
 
           <ul class="flex-box ul-reset tw-n ts-14">
-          <!-- 这些选中的时候 time 是字符串 D W M -->
+            <!-- 这些选中的时候 time 是字符串 D W M -->
+            <li
+              :class="{
+                'time-active': time === 'minute'
+              }"
+              class="mg-r16 pd-tb4 pd-lr8 cursor"
+              @click="changeTime('minute')"
+            >最近1小时</li>
+            <li></li>
             <li
               :class="{
                 'time-active': time === 'hour'
               }"
               class="mg-r16 pd-tb4 pd-lr8 cursor"
-              @click="changeTime('hour')">最近1小时</li>
-            <li>
-              <li
-              :class="{
-                'time-active': time === 'day'
-              }"
-              class="mg-r16 pd-tb4 pd-lr8 cursor"
-              @click="changeTime('day')">最近24小时</li>
+              @click="changeTime('hour')"
+            >最近24小时</li>
           </ul>
         </h4>
 
         <ul class="flex-box ul-reset">
           <li style="border-right: 1px dashed #ccc; width: 150px; height: 280px;">
             <div class="ts-12 color-999">系统平均响应时间</div>
-            <h5 class="ts-20 mg-t0 mg-b32">500 MS</h5>
+            <h5 class="ts-20 mg-t0 mg-b32">{{time_avg}} MS</h5>
 
             <div class="ts-12 color-999">峰值响应时间</div>
-            <h5 class="ts-20 mg-tb0">5000 MS</h5>
+            <h5 class="ts-20 mg-tb0">{{time_max}} MS</h5>
           </li>
 
           <li style="min-height: 128px;" class="flex-1">
@@ -119,9 +119,11 @@ export default {
   name: "status_monitor",
   data() {
     return {
+      time_avg: "--",
+      time_max: "--",
       selectId: "",
       searchList: [],
-      time: 'day',
+      time: "minute",
       currentService: {
         id: "",
         name: "",
@@ -134,19 +136,13 @@ export default {
   },
   watch: {
     time(v) {
-      this.timer && clearInterval(this.timer)
-      this.timer = setInterval(() => {
-        api.admin.getStatusMonitorAPI({
-          type: this.time,
-          serviceId: this.selectId
-        }).then(res => {
-          this.draw(this.$refs.echart, res);
-        })
-      }, 3600 * (v === 'day' ? 24 : 1));
+      this.showStat();
+      this.timer && clearInterval(this.timer);
+      this.timer = setInterval(this.showStat, 10 * 1000);
     }
   },
   mounted() {
-    api.catalog.catalog_services({size:1000}).then(cataloglist => {
+    api.catalog.catalog_services({ size: 1000 }).then(cataloglist => {
       for (const catalog of cataloglist) {
         var searchListItem = {
           id: catalog.id,
@@ -158,20 +154,27 @@ export default {
     });
 
     this.timer = setInterval(() => {
-      api.admin.getStatusMonitorAPI({
-        type: this.time,
-        serviceId: this.selectId
-      }).then(res => {
-        this.draw(this.$refs.echart, res);
-      })
-    }, 3600);
+      this.showStat();
+    }, 10 * 1000);
   },
   beforeDestroy() {
-    this.timer && clearInterval(this.timer)
+    this.timer && clearInterval(this.timer);
   },
   methods: {
     changeTime(time) {
-      this.time = time
+      this.time = time;
+    },
+    showStat() {
+      api.admin
+        .getStatusMonitorAPI({
+          type: this.time,
+          serviceId: this.selectId
+        })
+        .then(res => {
+          this.time_avg = res.avg || "--";
+          this.time_max = res.max || "--";
+          this.draw(this.$refs.echart, res.items);
+        });
     },
     changeSelect(service) {
       this.selectId = service.id;
@@ -179,24 +182,20 @@ export default {
         service.metadata = JSON.parse(service.metadata);
       }
       this.currentService = service;
-      api.admin.getStatusMonitorAPI({
-        type: this.time,
-        serviceId: this.selectId
-      }).then(res => {
-        this.draw(this.$refs.echart, res);
-      })
+      this.showStat();
     },
     draw(el, data) {
-      const myChart = echarts.init(el)
+      const myChart = echarts.init(el);
       const xData = [];
       const yData = [];
       data.forEach((v, i) => {
         xData.push(
-          new Date(new Date(v.date_time).getTime() + i * 1000 * 60 * 60 * 24).getDate() +
-            " 日"
+          new Date(
+            new Date(v.date_time).getTime() + i * 1000 * 60 * 60 * 24
+          ).getDate() + " 日"
         );
         yData.push(v.times);
-      })
+      });
       const option = {
         xAxis: {
           type: "category",
@@ -227,7 +226,7 @@ export default {
               color: "rgba(72, 116, 237, .8)"
             }
           }
-        ],
+        ]
         // dataZoom: [
         //   {
         //     type: "inside",
