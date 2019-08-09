@@ -11,7 +11,7 @@
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">今日</p>
-            <h6 class="ts-20 mg-t0 mg-b0">500 MB</h6>
+            <h6 class="ts-20 mg-t0 mg-b0">{{ summary.today }}</h6>
           </div>
         </li>
 
@@ -20,7 +20,7 @@
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">昨日</p>
-            <h6 class="ts-20 mg-t0 mg-b0">500 MB</h6>
+            <h6 class="ts-20 mg-t0 mg-b0">{{summary.yesterday}}</h6>
           </div>
         </li>
 
@@ -29,7 +29,7 @@
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">本月</p>
-            <h6 class="ts-20 mg-t0 mg-b0">500 MB</h6>
+            <h6 class="ts-20 mg-t0 mg-b0">{{summary.month}}</h6>
           </div>
         </li>
 
@@ -38,7 +38,7 @@
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">今年</p>
-            <h6 class="ts-20 mg-t0 mg-b0">500 MB</h6>
+            <h6 class="ts-20 mg-t0 mg-b0">{{summary.year}}</h6>
           </div>
         </li>
       </ul>
@@ -130,6 +130,7 @@ export default {
   name: "discharge_count",
   data() {
     return {
+      summary: {},
       time: "today",
       timeRange: [],
       type: "all",
@@ -153,6 +154,8 @@ export default {
     }
   },
   mounted() {
+    api.admin.getDiachargeSmmary().then(res => {});
+
     this.getData();
     this.timer = setInterval(() => {
       this.getData();
@@ -244,7 +247,7 @@ export default {
       }
 
       return api.admin.getDiachargeAPI(param).then(res => {
-        this.draw(document.getElementById("echart"), res);
+        this.draw(document.getElementById("echart"), res.items);
       });
     }
   }

@@ -39,7 +39,7 @@
           <li>
             <!-- 这个选中的时候 time 是个数组 [startTime, endTime] -->
             <el-date-picker
-              v-model="time"
+              v-model="timeRange"
               :clearable="false"
               type="daterange"
               range-separator="至"
@@ -90,16 +90,27 @@ export default {
       total: 0,
       page: 0,
       size: 10,
-      time: "today"
+      time: "today",
+      timeRange: [undefined, undefined]
     };
   },
   watch: {
     time(v) {
-      this.getData(v);
+      if (!v) {
+        return;
+      }
+      this.getData();
+    },
+    timeRange() {
+      if (this.time == "custom") {
+        this.getData();
+      } else {
+        this.time = "custom";
+      }
     }
   },
   mounted() {
-    this.getData(this.time);
+    this.getData();
   },
   methods: {
     draw(el, data) {
@@ -166,20 +177,19 @@ export default {
     changeTime(time) {
       this.time = time;
     },
-    getData(v) {
-      return api.admin
-        .getSafetyWarningAPI({
-          type: typeof v === "string" ? v : "",
-          from: typeof v === "string" ? "" : new Date(v[0]).getTime(),
-          to: typeof v === "string" ? "" : new Date(v[1]).getTime()
-        })
-        .then(res => {
-          this.total = res.total;
-          this.page = res.page;
-          this.size = res.size;
-          this.tableData = res.list;
-          this.draw(document.getElementById("echart"), res.stat_list);
-        });
+    getData() {
+      var param = { type: this.time };
+      if (this.time === "custom") {
+        param.from = this.timeRange[0];
+        param.to = this.timeRange[1];
+      }
+      return api.admin.getSafetyWarningAPI(param).then(res => {
+        this.total = res.total;
+        this.page = res.page;
+        this.size = res.size;
+        this.tableData = res.list;
+        this.draw(document.getElementById("echart"), res.stat_list);
+      });
     }
   }
 };

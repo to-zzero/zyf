@@ -75,11 +75,11 @@ export async function getStatusMonitorAPI(params = {}) {
 export async function getSafetyWarningAPI(params) {
     var paramArr = []
     if (params.from) {
-        paramArr.push(`from=${params.from}`)
+        paramArr.push(`from=${date2str(params.from)}`)
     }
 
     if (params.to) {
-        paramArr.push(`to=${params.to}`)
+        paramArr.push(`to=${date2str(params.to)}`)
     }
 
 
@@ -100,6 +100,14 @@ export async function getSafetyWarningAPI(params) {
 function date2str(d) {
     return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`
     // return d.toISOString();
+}
+
+export async function getDiachargeSmmary() {
+    const resp = await http.get(`/service/servelog/amount/summary`)
+    if (resp && resp.status == 200) {
+        return resp.data
+    }
+    return {}
 }
 
 export async function getDiachargeAPI(params) {
@@ -124,12 +132,8 @@ export async function getDiachargeAPI(params) {
                 date_time: r.time,
                 count: r.count
             }
-        })
-        result.today = resp.data.today || 0
-        result.yesterday = resp.data.yesterday || 0
-        result.month = resp.data.month || 0
-        result.year = resp.data.year || 0
+        })    
         return result
     }
-    return []
+    return {}
 }
