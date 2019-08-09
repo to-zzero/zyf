@@ -157,9 +157,9 @@ export default {
     api.admin.getDiachargeSmmary().then(res => {});
 
     this.getData();
-    this.timer = setInterval(() => {
-      this.getData();
-    }, 10 * 1000);
+    // this.timer = setInterval(() => {
+    //   this.getData();
+    // }, 10 * 1000);
   },
   beforeDestroy() {
     this.timer && clearInterval(this.timer);

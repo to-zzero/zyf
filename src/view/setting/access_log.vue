@@ -1,49 +1,8 @@
 <template>
   <div class="access-log">
     <div class="title">访问日志</div>
-    <h3 class="mg-t0 flex-box">
-      <ul class="flex-box ul-reset tw-n ts-14">
-        <!-- 这些选中的时候 time 是字符串 D W M -->
-        <li
-          :class="{
-            'time-active': time === 'D'
-          }"
-          class="mg-r16 pd-tb4 pd-lr8 cursor"
-          @click="changeTime('D')"
-        >今日</li>
-        <li></li>
-        <li
-          :class="{
-            'time-active': time === 'W'
-          }"
-          class="mg-r16 pd-tb4 pd-lr8 cursor"
-          @click="changeTime('W')"
-        >本周</li>
-        <li></li>
-        <li
-          :class="{
-            'time-active': time === 'M'
-          }"
-          class="mg-r16 pd-tb4 pd-lr8 cursor"
-          @click="changeTime('M')"
-        >本月</li>
-        <li>
-          <!-- 这个选中的时候 time 是个数组 [startTime, endTime] -->
-          <el-date-picker
-            v-model="time"
-            :clearable="false"
-            type="datetimerange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          ></el-date-picker>
-        </li>
-      </ul>
-    </h3>
-
     <div class="shadow pd-lr12 pd-tb12 mg-t16">
       <h4 class="mg-t0 mg-b16 flex-box space-between">
-        <span>日志分析</span>
 
         <ul class="flex-box ul-reset tw-n ts-14">
           <!-- 这些选中的时候 time 是字符串 D W M -->
@@ -70,7 +29,7 @@
           <li>
             <!-- 这个选中的时候 time 是个数组 [startTime, endTime] -->
             <el-date-picker
-              v-model="time"
+              v-model="timeRange"
               :clearable="false"
               type="datetimerange"
               range-separator="至"
