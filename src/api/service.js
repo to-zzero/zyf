@@ -187,10 +187,15 @@ export async function checkname(name) {
     return true;
 }
 
-export async function create_aggrate_service(serviceInfo, aggrateInfo) {
+export async function create_aggrate_service(serviceInfo, aggrateInfo, subjects) {
+    console.log(serviceInfo)
+    console.log(aggrateInfo)
+    console.log(subjects)
+    return
     var resp = await http.post(`/service/aggrate`, {
-        service: serviceInfo,
-        aggrate: aggrateInfo
+        subjects: (subjects || []).join(','),
+        service: JSON.stringify(serviceInfo),
+        aggrate: JSON.stringify(aggrateInfo)
     })
     if (resp.status === 200) {
         return resp.data

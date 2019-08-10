@@ -135,7 +135,8 @@ router.beforeEach((to, from, next) => {
   if (!token) { // 未登录且要跳转的页面不是登录页
     if (to.name != LOGIN_PAGE_NAME) {
       next({
-        name: LOGIN_PAGE_NAME
+        name: LOGIN_PAGE_NAME,
+        params: { url: to }
       })
     } else {// 未登陆且要跳转的页面是登录页
       next()

@@ -1,5 +1,6 @@
 'use strict'
 import http from 'axios'
+import { async } from 'q';
 
 export async function login(userName, password, captcha) {
     let resp = await http.post('/admin/login', {
@@ -132,8 +133,38 @@ export async function getDiachargeAPI(params) {
                 date_time: r.time,
                 count: r.count
             }
-        })    
+        })
         return result
+    }
+    return {}
+}
+
+/**
+ * 
+ * @param { {from:Date,to:Date,type:'today'|'week'|'month',page:Number,size:Number,logOnly:Boolean} param 
+ */
+export async function getAccessLog(param) {
+    var paramArr = []
+
+    paramArr.push(`type=${param.type}`)
+    paramArr.push(`page=${param.page}`)
+    paramArr.push(`size=${param.size}`)
+
+    if (param.from) {
+        paramArr.push(`from=${date2str(param.from)}`)
+    }
+
+    if (param.to) {
+        paramArr.push(`to=${date2str(param.to)}`)
+    }
+
+    if (param.logOnly) {
+        paramArr.push(`queryOnly=true`)
+    }
+
+    const resp = await http.get(`/service/servelog/visit?${paramArr.join("&")}`)
+    if (resp && resp.status == 200) {
+        return resp.data
     }
     return {}
 }
