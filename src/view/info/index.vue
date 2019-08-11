@@ -147,7 +147,7 @@ import dayjs from "dayjs";
 // import api from "@/api";
 import api from "../../api";
 import LayoutHeader from "../layout/header";
-import Map from "../map";
+// import Map from "../map";
 
 export default {
   name: "info",
@@ -171,7 +171,7 @@ export default {
   },
   components: {
     LayoutHeader,
-    Map
+    // Map
   },
   computed: {
     serviceUrl() {

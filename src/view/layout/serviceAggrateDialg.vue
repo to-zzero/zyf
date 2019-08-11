@@ -25,6 +25,7 @@
           style="width: 460px;"
           v-model="layerInfo.url"
           size="mini"
+          @change="readMapInfo"
         ></el-input>
         <el-select
           v-else
@@ -40,15 +41,6 @@
             :value="subject.id"
           ></el-option>
         </el-select>
-      </li>
-
-      <li class="flex-box mg-b16" v-if="layerInfo.type === 1">
-        <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">服务参数</div>
-        <div style="width: 460px;" class="flex-box space-between">
-          <el-input size="mini" v-model="layerInfo.layer" class="mg-r8" placeholder="图层名"></el-input>
-          <el-input size="mini" v-model="layerInfo.style" class="mg-r8" placeholder="样式"></el-input>
-          <el-input size="mini" v-model="layerInfo.tile" placeholder="瓦片方案"></el-input>
-        </div>
       </li>
 
       <li class="flex-box space-end mg-b16">
@@ -139,6 +131,8 @@
 
 <script>
 import api from "../../api";
+import WMTSCapabilities from "ol/format/WMTSCapabilities";
+import http from "axios";
 const SERVIE_TYPE_SYSTEM = 0;
 const SERVIE_TYPE_WMTS = 1;
 export default {
@@ -150,11 +144,7 @@ export default {
       layerInfo: {
         type: SERVIE_TYPE_SYSTEM,
         id: "", //系统服务ID
-
-        url: "", //wmts地址
-        layer: "",
-        style: "",
-        tile: ""
+        url: "" //wmts地址
       },
       layer_list: [],
       catalog_list: [],
@@ -177,7 +167,7 @@ export default {
     for (let index = 1; index <= 20; index++) {
       this.tileRange[index] = index.toString();
     }
-    api.service.servie_list({ size: 1000 }).then(services => {
+    api.service.servie_list({ size: 1000, aggrate: false }).then(services => {
       this.$set(this, "system_layers", services.list);
     });
 
@@ -214,7 +204,7 @@ export default {
           });
           return;
         }
-
+        debugger;
         var createOk = await api.service.create_aggrate_service(
           this.service_info,
           this.layer_list,
@@ -246,7 +236,6 @@ export default {
       this.$emit("change", false);
     },
     addToServiceList() {
-      const { url, layer, style, tile } = this.layerInfo;
       var obj = {};
       if (this.layerInfo.type === SERVIE_TYPE_SYSTEM) {
         //系统服务
@@ -267,12 +256,9 @@ export default {
       } else {
         //外部wmts服务
         obj.type = SERVIE_TYPE_WMTS;
-        obj.title = url;
+        obj.title = this.layerInfo.url;
 
-        obj.url = url;
-        obj.layer = layer;
-        obj.style = style;
-        obj.tile = tile;
+        obj.url = obj.title;
       }
       const len = this.layer_list.length;
       obj.index = len;
@@ -299,7 +285,50 @@ export default {
         val.index = index;
         return val;
       });
-    }
+    },
+    readMapInfo() {
+      var mapInfo = {
+        tileInfo: {
+          origin: {
+            x: -400,
+            y: 400
+          },
+          spatialReference: {
+            wkt: "4326"
+          },
+          lods: [
+            {
+              level: 0,
+              resolution: 0.15228550437313793,
+              scale: 64000000
+            }
+          ]
+        },
+        fullExtent: {
+          xmin: 73.49896224071769,
+          ymin: 3.83384347545325,
+          xmax: 135.087387119284,
+          ymax: 53.5584983458525,
+          spatialReference: {
+            wkt: "4326"
+          }
+        }
+      };
+      var wmts_url = this.layerInfo.url;
+      http
+        .get(`${wmts_url}?SREVICE=wmts&REQUEST=GetCapabilities`)
+        .then(resp => {
+          var wmts = new WMTSCapabilities().read(resp.data);
+          mapInfo.tileInfo.origin.x =
+            wmts.Contents.TileMatrixSet[0].TileMatrix[0].TopLeftCorner[0];
+          mapInfo.tileInfo.origin.y =
+            wmts.Contents.TileMatrixSet[0].TileMatrix[0].TopLeftCorner[1];
+mapInfo.tileInfo.lods=
+
+        });
+    },
+
+    readWmts() {}
   },
   watch: {
     isOpen(oldVal, newVal) {
