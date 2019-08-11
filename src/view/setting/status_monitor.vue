@@ -43,7 +43,10 @@
     <div v-if="currentService && currentService.id">
       <div class="shadow pd-lr12 pd-tb12 mg-t16 flex-box">
         <!-- 把这个div换成img 👇 -->
-        <div class="mg-r16" style="width: 80px; height: 80px; background: #000;"></div>
+        <!-- <div class="mg-r16" style="width: 80px; height: 80px; background: #000;"></div> -->
+        <div style="width: 110px; height: 110px;">
+          <img :src="`/api/service/thumbnail/${currentService.id}`" style="width:100%;height:100%" />
+        </div>
 
         <div>
           <div class="mg-b8 ts-20 tw-b flex-box">
@@ -139,7 +142,7 @@ export default {
       this.showStat();
       this.timer && clearInterval(this.timer);
       this.timer = setInterval(this.showStat, 10 * 1000);
-    },
+    }
     // selectId(id) {
     //   this.showStat()
     // }
@@ -152,10 +155,13 @@ export default {
           name: catalog.name,
           children: catalog.items.filter(r => r)
         };
-        searchListItem.children && searchListItem.children[0] && !this.selectId && (() => {
-          this.selectId = searchListItem.children[0].id
-          this.changeSelect(searchListItem.children[0])
-        })()
+        searchListItem.children &&
+          searchListItem.children[0] &&
+          !this.selectId &&
+          (() => {
+            this.selectId = searchListItem.children[0].id;
+            this.changeSelect(searchListItem.children[0]);
+          })();
         this.searchList.push(searchListItem);
       }
     });
@@ -197,7 +203,9 @@ export default {
       const yData = [];
       data.forEach((v, i) => {
         xData.push(
-          time !== 'minute' ? `${new Date(v.date_time).getHours()}:00` : `${new Date(v.date_time).getMinutes()} 分`
+          time !== "minute"
+            ? `${new Date(v.date_time).getHours()}:00`
+            : `${new Date(v.date_time).getMinutes()} 分`
         );
         yData.push(v.times);
       });

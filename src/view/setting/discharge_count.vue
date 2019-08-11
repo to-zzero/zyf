@@ -7,9 +7,7 @@
 
       <ul class="ul-reset flex-box space-between">
         <li class="view-item flex-box">
-          <div
-            style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6; text-align: center; line-height: 48px; color: #999;"
-          >今</div>
+          <div class="single-text">今</div>
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">今日</p>
@@ -18,9 +16,7 @@
         </li>
 
         <li class="view-item flex-box">
-          <div
-            style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6; text-align: center; line-height: 48px; color: #999;"
-          >昨</div>
+          <div class="single-text">昨</div>
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">昨日</p>
@@ -29,9 +25,7 @@
         </li>
 
         <li class="view-item flex-box">
-          <div
-            style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6; text-align: center; line-height: 48px; color: #999;"
-          >月</div>
+          <div class="single-text">月</div>
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">本月</p>
@@ -40,9 +34,7 @@
         </li>
 
         <li class="view-item flex-box">
-          <div
-            style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6; text-align: center; line-height: 48px; color: #999;"
-          >年</div>
+          <div class="single-text">年</div>
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">今年</p>
@@ -300,5 +292,16 @@ export default {
   border-left: 4px solid #4874ed;
   color: #292929;
   margin-bottom: 24px;
+}
+
+.single-text {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  background: #efefef;
+  text-align: center;
+  line-height: 48px;
+  color: #5280ff;
+  font-size: 35px;
 }
 </style>
