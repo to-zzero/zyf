@@ -1,10 +1,20 @@
 <template>
   <div>
     <div class="title">系统日志</div>
+
+    <div style="margin: 8px 0;">
+      <el-input v-model="username" style="width: 400px; margin-right: 16px;" placeholder="请输入要查询的用户名"></el-input>
+      <el-button
+        @click="handlePageChange(1)" 
+        type="primary">
+        查询
+      </el-button>
+    </div>
+
     <el-table :data="logList" size="mini">
       <el-table-column label="编号" type="index"></el-table-column>
-      <el-table-column label="日志名" prop="username"></el-table-column>
-      <el-table-column label="用户" prop="function"></el-table-column>
+      <el-table-column label="日志名" prop="function"></el-table-column>
+      <el-table-column label="用户" prop="username"></el-table-column>
       <el-table-column label="IP地址" prop="ip">
         <!-- <template slot-scope="scope">
           <el-tag type="error" size="mini" v-if="scope.row.status==0">失败</el-tag>
@@ -32,7 +42,8 @@ export default {
       total: 0,
       page: 1,
       size: 10,
-      logList: []
+      logList: [],
+      username: ''
     };
   },
   mounted() {
@@ -40,7 +51,7 @@ export default {
   },
   methods: {
     handlePageChange(page) {
-      api.admin.getLogList(page, this.size).then(data => {
+      api.admin.getLogList(page, this.size, this.username).then(data => {
         this.total = data.total;
         this.page = data.page;
         // this.size = data.size;

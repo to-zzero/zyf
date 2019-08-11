@@ -40,7 +40,7 @@ export async function userList() {
     }
 }
 
-export async function getLogList(page, size) {
+export async function getLogList(page, size, username) {
     let resp = await http.get(`/admin/log?page=${page}&size=${size}`)
     if (resp && resp.status == 200) {
         return resp.data
@@ -160,6 +160,42 @@ export async function getAccessLog(param) {
 
     if (param.logOnly) {
         paramArr.push(`queryOnly=true`)
+    }
+
+    return {
+        total: 100,
+        page: 1,
+        size: 10,
+        stat_list: [
+            {
+                time: '2019-1-1 0:0:0',
+                count: 13
+            },
+            {
+                time: '2019-1-1 0:0:0',
+                count: 12
+            },
+            {
+                time: '2019-1-1 0:0:0',
+                count: 32
+            },
+            {
+                time: '2019-1-1 0:0:0',
+                count: 11
+            },
+            {
+                time: '2019-1-1 0:0:0',
+                count: 43
+            },
+            {
+                time: '2019-1-1 0:0:0',
+                count: 21
+            },
+            {
+                time: '2019-1-1 0:0:0',
+                count: 63
+            }
+        ]
     }
 
     const resp = await http.get(`/service/servelog/visit?${paramArr.join("&")}`)

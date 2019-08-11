@@ -3,6 +3,7 @@
     <div class="title">访问日志</div>
     <div class="shadow pd-lr12 pd-tb12 mg-t16">
       <h4 class="mg-t0 mg-b16 flex-box space-between">
+        <div></div>
         <ul class="flex-box ul-reset tw-n ts-14">
           <!-- 这些选中的时候 time 是字符串 D W M -->
           <li
@@ -111,16 +112,15 @@ export default {
       console.log(data);
       const myChart = echarts.init(el);
       const xData = [];
-      for (let i = 0; i < 100; i++) {
-        xData.push(
-          new Date(new Date().getTime() + i * 1000 * 60 * 60 * 24).getDay() +
-            " 号"
-        );
-      }
       const yData = [];
-      for (let i = 0; i < 100; i++) {
-        yData.push(Math.ceil(Math.random() * 10) * 111);
-      }
+      data.forEach((v, i) => {
+        xData.push(
+          // new Date(new Date().getTime() + i * 1000 * 60 * 60 * 24).getDay() +
+          //   " 号"
+          ['today', 'yesterday'].includes(this.time) ? `${new Date(v.time).getHours()}:00` : `${new Date(v.time).getMonth() + 1}/${new Date(v.time).getDate()}`
+        );
+        yData.push(v.count);
+      })
 
       // const minSpan = xData.length > 7 ? 7 : 100
       const option = {

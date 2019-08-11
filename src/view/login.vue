@@ -94,7 +94,11 @@ export default {
               sid: rlt.sid,
               access: JSON.parse(rlt.access || "[]")
             });
-            this.$router.push({ name: "Home" });
+            if (this.$route.query.redirect) {
+              this.$router.push({ path: this.$route.query.redirect });
+            } else {
+              this.$router.push({ name: "Home" });
+            }
           }
         })
         .catch(err => {

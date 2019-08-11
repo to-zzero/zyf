@@ -139,7 +139,10 @@ export default {
       this.showStat();
       this.timer && clearInterval(this.timer);
       this.timer = setInterval(this.showStat, 10 * 1000);
-    }
+    },
+    // selectId(id) {
+    //   this.showStat()
+    // }
   },
   mounted() {
     api.catalog.catalog_services({ size: 1000 }).then(cataloglist => {
@@ -149,6 +152,10 @@ export default {
           name: catalog.name,
           children: catalog.items.filter(r => r)
         };
+        searchListItem.children && searchListItem.children[0] && !this.selectId && (() => {
+          this.selectId = searchListItem.children[0].id
+          this.changeSelect(searchListItem.children[0])
+        })()
         this.searchList.push(searchListItem);
       }
     });
@@ -177,7 +184,7 @@ export default {
         });
     },
     changeSelect(service) {
-      this.selectId = service.id;
+      this.selectId = service.id || service;
       if (typeof service.metadata === "string" && service.metadata) {
         service.metadata = JSON.parse(service.metadata);
       }
@@ -190,9 +197,7 @@ export default {
       const yData = [];
       data.forEach((v, i) => {
         xData.push(
-          new Date(
-            new Date(v.date_time).getTime() + i * 1000 * 60 * 60 * 24
-          ).getDate() + " 日"
+          time !== 'minute' ? `${new Date(v.date_time).getHours()}:00` : `${new Date(v.date_time).getMinutes()} 分`
         );
         yData.push(v.times);
       });

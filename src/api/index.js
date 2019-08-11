@@ -42,7 +42,9 @@ axios.interceptors.response.use(
         if (response.data.code === errors.NOT_LOGIN) {
           // vue.prototype.$message({ message: response.data.error, type: 'error' })
           Cookies.remove('sid')
-          router.push({ name: 'login' })
+          router.push({ path: '/login', query: {
+            redirect: router.currentRoute.path
+          } })
         } else {
           vue.prototype.$message({ message: response.data.error, type: 'error' })
           return Promise.reject(response.data.error);

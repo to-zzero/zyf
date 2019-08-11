@@ -119,9 +119,7 @@ export default {
       const yData = [];
       data.forEach((v, i) => {
         xData.push(
-          new Date(
-            new Date(v.date_time).getTime() + i * 1000 * 60 * 60 * 24
-          ).getDate() + " 日"
+          ['today', 'yesterday'].includes(this.time) ? `${new Date(v.date_time).getHours()}:00` : `${new Date(v.date_time).getMonth() + 1}/${new Date(v.date_time).getDate()}`
         );
         yData.push(v.ip_number);
       });

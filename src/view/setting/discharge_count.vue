@@ -7,7 +7,9 @@
 
       <ul class="ul-reset flex-box space-between">
         <li class="view-item flex-box">
-          <div style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6;"></div>
+          <div style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6; text-align: center; line-height: 48px; color: #999;">
+            今
+          </div>
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">今日</p>
@@ -16,7 +18,9 @@
         </li>
 
         <li class="view-item flex-box">
-          <div style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6;"></div>
+          <div style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6; text-align: center; line-height: 48px; color: #999;">
+            昨
+          </div>
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">昨日</p>
@@ -25,7 +29,9 @@
         </li>
 
         <li class="view-item flex-box">
-          <div style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6;"></div>
+          <div style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6; text-align: center; line-height: 48px; color: #999;">
+            月
+          </div>
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">本月</p>
@@ -34,7 +40,9 @@
         </li>
 
         <li class="view-item flex-box">
-          <div style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6;"></div>
+          <div style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6; text-align: center; line-height: 48px; color: #999;">
+            年
+          </div>
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">今年</p>
@@ -171,9 +179,10 @@ export default {
       const yData = [];
       data.forEach((v, i) => {
         xData.push(
-          new Date(
-            new Date(v.date_time).getTime() + i * 1000 * 60 * 60 * 24
-          ).getDate() + " 日"
+          // new Date(
+          //   new Date(v.date_time).getTime() + i * 1000 * 60 * 60 * 24
+          // ).getDate() + " 日"
+          ['today', 'yesterday'].includes(this.time) ? `${new Date(v.date_time).getHours()}:00` : `${new Date(v.date_time).getMonth() + 1}/${new Date(v.date_time).getDate()}`
         );
         yData.push(v.count);
       });
