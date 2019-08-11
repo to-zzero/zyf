@@ -64,15 +64,10 @@
           </ul>
 
           <div style="width: 574px; height: 370px; background-color: #d8d8d8;">
-            <!-- <Map
-              v-if="map_load"
-              :url="`${proxy}/arcgis/rest/services/${serviceName}/MapServer`"
-              :name="serviceName"
-            ></Map>-->
             <!-- iframe 直接放这里面 -->
             <iframe
               v-if="map_load"
-              :src="`./map.html?proxy=${proxy}&service=${serviceName}`"
+              :src="`./map.html?service=${info.id}`"
               width="100%"
               height="100%"
             ></iframe>
@@ -159,7 +154,6 @@ export default {
   data() {
     return {
       id: "",
-      proxy: "",
       info: {
         keyword: "",
         metadata: {
@@ -195,10 +189,6 @@ export default {
       if (this.info) return dayjs(this.info.createdAt).format("YYYY-MM-DD");
       return "--";
     },
-    serviceName() {
-      if (this.info.serviceName) return this.info.serviceName;
-      return `${this.info.name}_${this.info.id}`;
-    },
     cacheStatus() {
       if (!this.cacheInfo || !this.cacheInfo.cacheExecutionStatus) return null;
       switch (this.cacheInfo.cacheExecutionStatus) {
@@ -215,12 +205,10 @@ export default {
     const { id } = this.$route.query || {};
     this.id = id;
 
-    const [data, capabilities, proxy] = await Promise.all([
+    const [data, capabilities] = await Promise.all([
       api.service.get(id),
-      api.service.getCapabilities(id),
-      api.service.getProxy()
+      api.service.getCapabilities(id)
     ]);
-    this.proxy = proxy;
     data.metadata = JSON.parse(data.metadata || "{}");
     data.metadata.customize = data.metadata.customize || [];
     // api.service.visit(id);

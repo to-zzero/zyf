@@ -30,14 +30,14 @@
                 params[pair[0]] = pair[1]
             })
             var url = `${params.proxy}/arcgis/rest/services/${params.service}/MapServer`
-            $.get(`${url}?f=json`).then(data => {
-                debugger
-
-                var map = L.map('map').setView([33, 108], 1);
-                L.esri.tiledMapLayer({
-                    url: url
-                }).addTo(map);
-            })
+            // $.get(`${url}?f=json`).then(data => {
+            // debugger
+            console.log(url)
+            var map = L.map('map').setView([33, 108], 1);
+            L.esri.tiledMapLayer({
+                url: url
+            }).addTo(map);
+            // })
         })
     </script>
 </body>

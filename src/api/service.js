@@ -188,11 +188,7 @@ export async function checkname(name) {
 }
 
 export async function create_aggrate_service(serviceInfo, aggrateInfo, subjects) {
-    console.log(serviceInfo)
-    console.log(aggrateInfo)
-    console.log(subjects)
-    return
-    var resp = await http.post(`/service/aggrate`, {
+    var resp = await http.post(`/service/aggregate`, {
         subjects: (subjects || []).join(','),
         service: JSON.stringify(serviceInfo),
         aggrate: JSON.stringify(aggrateInfo)

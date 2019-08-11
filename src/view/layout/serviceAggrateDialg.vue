@@ -87,6 +87,22 @@
       </li>
 
       <li class="flex-box mg-b16">
+        <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">所属分组</div>
+        <el-select size="mini" multiple style="width: 460px;" v-model="subjects" placeholder="请选择">
+          <template v-for="(catalog, index) in catalog_list">
+            <!-- 循环template -->
+            <div :key="index" style="padding: 8px 12px;">{{catalog.name}}</div>
+            <el-option
+              v-for="subject in catalog.subject"
+              :key="subject.id"
+              :label="subject.name"
+              :value="subject.id"
+            ></el-option>
+          </template>
+        </el-select>
+      </li>
+
+      <li class="flex-box mg-b16">
         <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">瓦片级别</div>
         <el-slider
           style="width: 460px;"
@@ -105,7 +121,12 @@
 
       <li class="flex-box mg-b16">
         <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">关键字</div>
-        <el-input style="width: 460px;" size="mini" v-model="service_info.keyword"></el-input>
+        <el-input
+          style="width: 460px;"
+          size="mini"
+          placeholder="(可选)多个之间分号分隔;"
+          v-model="service_info.keyword"
+        ></el-input>
       </li>
 
       <li class="flex-box" style="justify-content: flex-end;">
@@ -136,6 +157,7 @@ export default {
         tile: ""
       },
       layer_list: [],
+      catalog_list: [],
       system_layers: [],
       tileRange: {},
       bntOKLoading: false,
@@ -158,6 +180,10 @@ export default {
     api.service.servie_list({ size: 1000 }).then(services => {
       this.$set(this, "system_layers", services.list);
     });
+
+    api.catalog.catalog_list().then(data => {
+      this.catalog_list = data;
+    });
   },
   methods: {
     handleCancel() {
@@ -166,6 +192,11 @@ export default {
     async handleOK() {
       if (this.layer_list.length === 0) {
         this.$message({ message: "服务列表为空，不能进行聚合", type: "error" });
+        return;
+      }
+
+      if (this.layer_list.length < 2) {
+        this.$message({ message: "至少需要添加2个服务", type: "error" });
         return;
       }
 

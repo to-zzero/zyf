@@ -83,16 +83,24 @@ export async function getSafetyWarningAPI(params) {
         paramArr.push(`to=${date2str(params.to)}`)
     }
 
+    paramArr.push(`page=${params.page}`)
+    paramArr.push(`size=${params.size}`)
+    if (params.logOnly) {
+        paramArr.push(`queryOnly=${!!params.page}`)
+    }
+
 
     const resp = await http.get(`/service/servelog/warn?type=${params.type}&${paramArr.join('&')}`)
     if (resp && resp.status == 200) {
         var result = { ...resp.data }
-        result.stat_list = resp.data.stat_list.map(r => {
-            return {
-                date_time: r.time,
-                ip_number: r.count
-            }
-        })
+        if (!params.logOnly) {
+            result.stat_list = resp.data.stat_list.map(r => {
+                return {
+                    date_time: r.time,
+                    ip_number: r.count
+                }
+            })
+        }
         return result
     }
     return []
