@@ -71,6 +71,7 @@
           :total="total"
           :current-page.sync="page"
           :page-size="size"
+          @current-change="getData(true)"
         ></el-pagination>
         <!-- @current-change="handlePageChange" -->
       </div>
@@ -88,7 +89,7 @@ export default {
     return {
       tableData: [],
       total: 0,
-      page: 0,
+      page: 1,
       size: 10,
       time: "today",
       timeRange: [undefined, undefined]
@@ -177,8 +178,13 @@ export default {
     changeTime(time) {
       this.time = time;
     },
-    getData() {
-      var param = { type: this.time };
+    getData(logOnly) {
+      var param = {
+        type: this.time,
+        page: this.page,
+        size: this.size,
+        logOnly: !!logOnly
+      };
       if (this.time === "custom") {
         param.from = this.timeRange[0];
         param.to = this.timeRange[1];
@@ -188,7 +194,9 @@ export default {
         this.page = res.page;
         this.size = res.size;
         this.tableData = res.list;
-        this.draw(document.getElementById("echart"), res.stat_list);
+        if (!logOnly) {
+          this.draw(document.getElementById("echart"), res.stat_list);
+        }
       });
     }
   }

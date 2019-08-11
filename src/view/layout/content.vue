@@ -14,7 +14,10 @@
     <ul class="layout-content pd-lr16 pd-tb16 ul-reset">
       <li class="list-item_wrap" v-for="service in serviceQueryResult.list" :key="service.id">
         <div class="flex-box space-between item-header">
-          <span style="font-size: 16px; font-weight: 600;">{{service.name}}</span>
+          <span style="font-size: 16px; font-weight: 600;" v-if="service.type==0">{{service.name}}</span>
+          <el-badge value="聚" type="primary" v-else>
+            <span style="font-size: 16px; font-weight: 600;margin-right:6px">{{service.name}}</span>
+          </el-badge>
           <!-- <router-link :to="{path :'/info', query: { id: service.id } }" target="_blank">详细信息</router-link> -->
           <!-- <span style="font-size: 14px; color: #696969">访问次数: {{service.visit}}</span> -->
         </div>
@@ -208,8 +211,14 @@ export default {
         })
         .catch(() => {});
     },
-    async start_stop_Service(service) {
-      if (canStop) {
+    start_stop_Service(service, start) {
+      if (this.canStop) {
+        debugger;
+        if (start) {
+          this.startService(service);
+        } else {
+          this.stopService(service);
+        }
       }
     },
     async startService(service) {

@@ -2,6 +2,9 @@
 <html>
 
 <head>
+    <!-- <link href="./arcgis_js_api/4.5/esri/css/main.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="./arcgis_js_api/4.5/init.js"></script> -->
+
     <link href="./arcgis_js_api/4.5/esri/css/main.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="./arcgis_js_api/4.5/init.js"></script>
     <style>
@@ -43,20 +46,31 @@
                 container: "map",
                 map: map
             });
+            window.view = view
             var homeBtn = new Home({
                 view: view
             });
             view.ui.add(homeBtn, "top-left");
-            // var layer = new WMTSLayer({ url: params.url });
-            // map.layers.add(layer);
-            // view.whenLayerView(layer).then((layerView) => {
-            //     debugger
-            //     console.log(layer.fullExtent)
-            //     view.extent = layer.fullExtent;
-            // })
+            // var url = `${params.proxy}/arcgis/rest/services/${params.service}/MapServer/WMTS`
+            // var layer = new WMTSLayer({
+            //     url: url,
+            //     activeLayer: {
+            //         id: params.service,
+            //     }
+            // });
+
+            //proxy
+            var url = `/api/service/${params.service}/MapServer`
             var layer = null,
-                layerUrl = `${params.proxy}/arcgis/rest/services/${params.service}/MapServer`,
+                layerUrl = url,
                 layer = new TileLayer(layerUrl, null);
+
+            // //direct
+            // var url = `${params.proxy}/arcgis/rest/services/${params.service}/MapServer`
+            // var layer = null,
+            //     layerUrl = url,
+            //     layer = new TileLayer(layerUrl, null);
+
             map.layers.add(layer);
         });
     </script>

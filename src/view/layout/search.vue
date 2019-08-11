@@ -236,8 +236,6 @@ export default {
     api.catalog.catalog_list().then(data => {
       this.catalog_list = data;
     });
-
-
   },
   computed: {
     ...mapState(["access"]),
