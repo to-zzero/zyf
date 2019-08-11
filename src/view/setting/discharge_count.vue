@@ -7,46 +7,46 @@
 
       <ul class="ul-reset flex-box space-between">
         <li class="view-item flex-box">
-          <div style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6; text-align: center; line-height: 48px; color: #999;">
-            今
-          </div>
+          <div
+            style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6; text-align: center; line-height: 48px; color: #999;"
+          >今</div>
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">今日</p>
-            <h6 class="ts-20 mg-t0 mg-b0">{{ summary.today }}</h6>
+            <h6 class="ts-20 mg-t0 mg-b0">{{ summary.today||0 }}</h6>
           </div>
         </li>
 
         <li class="view-item flex-box">
-          <div style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6; text-align: center; line-height: 48px; color: #999;">
-            昨
-          </div>
+          <div
+            style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6; text-align: center; line-height: 48px; color: #999;"
+          >昨</div>
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">昨日</p>
-            <h6 class="ts-20 mg-t0 mg-b0">{{summary.yesterday}}</h6>
+            <h6 class="ts-20 mg-t0 mg-b0">{{summary.yesterday||0}}</h6>
           </div>
         </li>
 
         <li class="view-item flex-box">
-          <div style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6; text-align: center; line-height: 48px; color: #999;">
-            月
-          </div>
+          <div
+            style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6; text-align: center; line-height: 48px; color: #999;"
+          >月</div>
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">本月</p>
-            <h6 class="ts-20 mg-t0 mg-b0">{{summary.month}}</h6>
+            <h6 class="ts-20 mg-t0 mg-b0">{{summary.month||0}}</h6>
           </div>
         </li>
 
         <li class="view-item flex-box">
-          <div style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6; text-align: center; line-height: 48px; color: #999;">
-            年
-          </div>
+          <div
+            style="width: 48px; height: 48px; border-radius: 4px; background:#e6e6e6; text-align: center; line-height: 48px; color: #999;"
+          >年</div>
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">今年</p>
-            <h6 class="ts-20 mg-t0 mg-b0">{{summary.year}}</h6>
+            <h6 class="ts-20 mg-t0 mg-b0">{{summary.year||0}}</h6>
           </div>
         </li>
       </ul>
@@ -162,7 +162,9 @@ export default {
     }
   },
   mounted() {
-    api.admin.getDiachargeSmmary().then(res => {});
+    api.admin.getDiachargeSmmary().then(data => {
+      this.summary = data;
+    });
 
     this.getData();
     // this.timer = setInterval(() => {
@@ -174,18 +176,30 @@ export default {
   },
   methods: {
     draw(el, data) {
+      console.log(data);
       const myChart = echarts.init(el);
       const xData = [];
       const yData = [];
-      data.forEach((v, i) => {
-        xData.push(
-          // new Date(
-          //   new Date(v.date_time).getTime() + i * 1000 * 60 * 60 * 24
-          // ).getDate() + " 日"
-          ['today', 'yesterday'].includes(this.time) ? `${new Date(v.date_time).getHours()}:00` : `${new Date(v.date_time).getMonth() + 1}/${new Date(v.date_time).getDate()}`
-        );
-        yData.push(v.count);
-      });
+      if (this.type == "all") {
+        data.forEach((v, i) => {
+          xData.push(
+            // new Date(
+            //   new Date(v.date_time).getTime() + i * 1000 * 60 * 60 * 24
+            // ).getDate() + " 日"
+            ["today", "yesterday"].includes(this.time)
+              ? `${new Date(v.date_time).getHours()}:00`
+              : `${new Date(v.date_time).getMonth() + 1}/${new Date(
+                  v.date_time
+                ).getDate()}`
+          );
+          yData.push(v.count);
+        });
+      } else {
+        data.forEach((v, i) => {
+          xData.push(v.name);
+          yData.push(v.count);
+        });
+      }
       const option = {
         grid: {
           left: "5%",

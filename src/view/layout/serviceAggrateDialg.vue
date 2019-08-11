@@ -323,12 +323,9 @@ export default {
             wmts.Contents.TileMatrixSet[0].TileMatrix[0].TopLeftCorner[0];
           mapInfo.tileInfo.origin.y =
             wmts.Contents.TileMatrixSet[0].TileMatrix[0].TopLeftCorner[1];
-mapInfo.tileInfo.lods=
-
+          // mapInfo.tileInfo.lods=
         });
-    },
-
-    readWmts() {}
+    }
   },
   watch: {
     isOpen(oldVal, newVal) {

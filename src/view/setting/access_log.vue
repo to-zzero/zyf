@@ -181,7 +181,7 @@ export default {
           to: this.timeRange[1],
           page: this.page,
           size: this.size,
-          logOnly: true
+          logOnly: !!logOnly
         })
         .then(data => {
           this.logList = data.list;
