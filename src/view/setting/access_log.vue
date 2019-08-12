@@ -113,7 +113,7 @@ export default {
       const myChart = echarts.init(el);
       const xData = [];
       const yData = [];
-      data.forEach((v, i) => {
+      data.sort((f, b) => new Date(f.time).getTime() - new Date(b.time).getTime()).forEach((v, i) => {
         xData.push(
           // new Date(new Date().getTime() + i * 1000 * 60 * 60 * 24).getDay() +
           //   " 号"
