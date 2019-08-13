@@ -32,10 +32,10 @@
     >
       <ul class="ul-reset">
         <li class="flex-box mg-b16">
-          <div
-            class="flex-1 mg-r16"
-            style="font-size: 14px; color: #7f8fa4; text-align: right;"
-          >选择.sd文件(*):</div>
+          <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">
+            选择.sd文件
+            <span style="color:red;font-weight: bold;">*</span>
+          </div>
           <el-input disabled :value="fileName" style="width: 440px;" size="mini">
             <el-upload
               :show-file-list="false"
@@ -56,18 +56,18 @@
         </li>
 
         <li class="flex-box mg-b16">
-          <div
-            class="flex-1 mg-r16"
-            style="font-size: 14px; color: #7f8fa4; text-align: right;"
-          >服务名称(*):</div>
+          <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">
+            服务名称
+            <span style="color:red;font-weight: bold;">*</span>
+          </div>
           <el-input style="width: 440px;" v-model="service_info.name" size="mini"></el-input>
         </li>
 
         <li class="flex-box mg-b16">
-          <div
-            class="flex-1 mg-r16"
-            style="font-size: 14px; color: #7f8fa4; text-align: right;"
-          >所属分组(*):</div>
+          <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">
+            所属分组
+            <span style="color:red;font-weight: bold;">*</span>
+          </div>
           <el-select
             size="mini"
             multiple
@@ -185,6 +185,23 @@ export default {
       this.service_info.file = file;
     },
     async doPublish() {
+      if (!this.service_info.file) {
+        return this.$message({ message: "请选择sd文件", type: "error" });
+      }
+
+      if (!this.service_info.name) {
+        return this.$message({ message: "请输入服务名称", type: "error" });
+      }
+
+      var nameOK = await api.service.checkname(this.service_info.name);
+      if (nameOK == false) {
+        return this.$message({ message: "服务名称已经被使用", type: "error" });
+      }
+
+      if (this.service_info.service_catalog.length < 1) {
+        return this.$message({ message: "请选择所属分组", type: "error" });
+      }
+
       let loading;
       loading = this.$loading({
         lock: true,

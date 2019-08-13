@@ -1,15 +1,29 @@
 <template>
   <div class="user-management">
-    <div class="title">服务目录</div>
+    <div class="title">
+      服务目录
+      <el-button
+        icon="el-icon-plus"
+        type="primary"
+        size="small"
+        style="float:right"
+        @click="addCatalog"
+      >新建</el-button>
+    </div>
 
-    <div class="flex-box add">
+    <!--<div class="flex-box add">
       <span @click="addCatalog">
         <i class="el-icon-plus"></i>
         添加目录
       </span>
-    </div>
+    </div>-->
 
-    <el-dialog width="610px" :visible.sync="show_edit_dlg" :title="current.id?'修改目录':'新建目录'">
+    <el-dialog
+      width="610px"
+      :close-on-click-modal="false"
+      :visible.sync="show_edit_dlg"
+      :title="current.id?'修改目录':'新建目录'"
+    >
       <ul class="ul-reset">
         <li class="flex-box mg-b16">
           <div
@@ -33,11 +47,6 @@
         </li>
 
         <li class="flex-box mg-b16">
-          <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">排序</div>
-          <el-input type="number" style="width: 440px;" v-model="current.order"></el-input>
-        </li>
-
-        <li class="flex-box mg-b16">
           <div
             class="flex-1 mg-r16"
             style="font-size: 14px; color: #7f8fa4; text-align: right;"
@@ -47,10 +56,16 @@
             style="width: 440px;"
             v-model="current.pid"
             clearable
+            @change="onCategroyChanged"
             placeholder="请选择"
           >
             <el-option v-for="item in tableData" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
+        </li>
+
+        <li class="flex-box mg-b16">
+          <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">排序</div>
+          <el-input type="number" style="width: 440px;" v-model="current.order"></el-input>
         </li>
 
         <li class="flex-box" style="justify-content: flex-end;">
@@ -65,6 +80,7 @@
         @row-click="expandRow"
         ref="mainTable"
         :border="false"
+        :default-expand-all="true"
         size="medium"
         :data="tableData"
         row-class-name="custom-tr"
@@ -92,10 +108,9 @@
         <el-table-column label="目录名称" width="180">
           <div slot-scope="props" style="font-weight: 600;">{{ props.row.name }}</div>
         </el-table-column>
-        <!-- <el-table-column label="目录编码" prop="code" width="100"></el-table-column> -->
         <el-table-column label="描述" prop="desc" width="200"></el-table-column>
         <el-table-column label="排序" prop="order" width="60"></el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
             <el-button @click="editCatalog(scope.row)" type="text" size="small">编辑</el-button>
             <el-button @click="deleteCatalog(scope.row)" type="text" size="small">删除</el-button>
@@ -130,34 +145,55 @@ export default {
     },
     addCatalog() {
       this.show_edit_dlg = true;
-      this.current = { order: 0 };
+      this.current = {
+        name: "",
+        pid: "",
+        order: Math.max(...this.tableData.map(r => r.order || 0), 0) + 1
+      };
     },
     editCatalog(row) {
       this.show_edit_dlg = true;
-      this.current = row;
-      // console.log(row);
+      this.current = JSON.parse(JSON.stringify(row));
     },
     deleteCatalog(row) {
       this.$confirm(`是否删除 ${row.name}?`, "提示", {
         type: "warning"
-        // roundButton: true
       })
         .then(async () => {
           await api.catalog.delCatalog(row.id);
-          this.$message("删除成功");
+          this.$message({ message: "删除成功", type: "success" });
+          this.getList();
         })
         .catch(() => {});
     },
+    onCategroyChanged(item) {
+      var order = 0;
+      if (!item) {
+        order = Math.max(...this.table.map(r => r.order || 0), 0);
+      } else {
+        order = Math.max(
+          ...this.tableData.find(r => r.id === item).subject.map(r => r.order),
+          0
+        );
+      }
+      this.current.order = (order || 0) + 1;
+    },
     async save_catalog() {
       if (!this.current.id) {
-        await api.catalog.create(this.current);
-        this.show_edit_dlg = false;
-        this.getList();
+        try {
+          await api.catalog.create(this.current);
+          this.show_edit_dlg = false;
+          this.$message({ message: "添加成功", type: "success" });
+          this.getList();
+        } catch (err) {
+          this.$message({ message: "添加失败", type: "error" });
+        }
       } else {
         let result = await api.catalog.update(this.current);
         if (result === "success") {
           this.$message({ message: "修改成功", type: "success" });
           this.show_edit_dlg = false;
+          this.getList();
         } else {
           this.$message({ message: "修改失败", type: "error" });
         }
@@ -165,7 +201,6 @@ export default {
     },
 
     expandRow(row, col, evt) {
-      debugger;
       this.$refs.mainTable.toggleRowExpansion(row, true);
     }
   }

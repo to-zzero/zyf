@@ -66,6 +66,7 @@
           <div style="width: 574px; height: 370px; background-color: #d8d8d8;">
             <!-- iframe 直接放这里面 -->
             <iframe
+              style="border: 1px solid #ebeef5;"
               v-if="map_load"
               :src="`./map.html?service=${info.id}`"
               width="100%"
@@ -170,7 +171,7 @@ export default {
     };
   },
   components: {
-    LayoutHeader,
+    LayoutHeader
     // Map
   },
   computed: {

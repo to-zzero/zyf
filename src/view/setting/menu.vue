@@ -6,13 +6,13 @@
     text-color="#696969"
     style="width: 260px; height: calc(100vh - 60px); overflow-y: auto;"
   >
-    <img
+    <!-- <img
       style="display: block; margin: 64px auto 24px; width: 80px; height: auto;"
       src="../../assets/setting-illustration@2x.png"
       alt="setting"
-    />
+    /> -->
     <div
-      style="font-weight: 600; color: #292929; font-size: 20px; text-align: center; margin-bottom: 32px;"
+      style="font-weight: 600; color: #292929; font-size: 20px; text-align: center; margin-bottom: 16px;margin-top: 16px;"
     >系统配置</div>
     <el-submenu index="1" v-if="canMgrDic">
       <template slot="title">
@@ -124,7 +124,6 @@ export default {
   computed: {
     ...mapState(["access"]),
     canMgrDic() {
-      console.log(JSON.stringify(this.access, null, 2));
       return this.access.find(r => r.code == 105).visible;
     },
     canMgrAuth() {
