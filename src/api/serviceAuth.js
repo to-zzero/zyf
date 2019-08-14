@@ -8,3 +8,11 @@ export async function list(page = 1, size = 20) {
     }
     return []
 }
+
+export async function auth(params) {
+    var resp = await http.post(`/auth/set`, params)
+    if (resp.status === 200) {
+        return resp.data
+    }
+    return false
+}

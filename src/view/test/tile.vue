@@ -29,7 +29,7 @@
           <el-option
             v-for="auth in auth_list"
             :key="auth.id"
-            :label="auth.name+(auth.islocked==1?'(锁定)':'')"
+            :label="auth.userName+(auth.islocked==1?'(锁定)':'')"
             :value="auth.oid"
           ></el-option>
         </el-select>
@@ -49,8 +49,14 @@
 
       <el-form-item>
         <el-image style="width:256px;height:256px;border:1px solid #dcdfe6;" :src="url_admin"></el-image>
-        <el-image style="width:256px;height:256px;border:1px solid #dcdfe6;margin-left:12px;" :src="url_kvp"></el-image>
-        <el-image style="width:256px;height:256px;border:1px solid #dcdfe6;margin-left:12px;" :src="url_rest"></el-image>
+        <el-image
+          style="width:256px;height:256px;border:1px solid #dcdfe6;margin-left:12px;"
+          :src="url_kvp"
+        ></el-image>
+        <el-image
+          style="width:256px;height:256px;border:1px solid #dcdfe6;margin-left:12px;"
+          :src="url_rest"
+        ></el-image>
       </el-form-item>
     </el-form>
   </el-container>
@@ -68,8 +74,8 @@ export default {
       service_list: [],
       cur_service_id: "",
       z: 3,
-      x: 74,
-      y: 105
+      x: 2,
+      y: 7
     };
   },
   mounted() {
@@ -107,7 +113,7 @@ export default {
     },
     url_rest() {
       if (this.cur_service_id) {
-        var url = `rest/services/${this.cur_service_id}/tile/${this.z}/${this.x}/${this.y}?token=`;
+        var url = `rest/services/${this.cur_service_id}/wmts/tile/1.0.0/default/default028mm/${this.z}/${this.x}/${this.y}.png?token=`;
         var auth = this.auth_list.find(r => r.oid === this.cur_auth_oid);
         if (auth.token) {
           url += `${auth.token}`;
@@ -120,7 +126,7 @@ export default {
     url_kvp() {
       if (this.cur_service_id) {
         var service = this.service_list.find(r => r.id === this.cur_service_id);
-        var url = `rest/services/${this.cur_service_id}/wmts?REQUEST=GetTile&LAYER=${service.id}&TILEMATRIX=${this.z}&TILEROW=${this.x}&TILECOL=${this.y}&token=`;
+        var url = `rest/services/${this.cur_service_id}/wmts?REQUEST=GetTile&LAYER=${service.id}&TILEMATRIXSET=default028mm&TILEMATRIX=${this.z}&TILEROW=${this.x}&TILECOL=${this.y}&token=`;
         var auth = this.auth_list.find(r => r.oid === this.cur_auth_oid);
         if (auth.token) {
           url += `${auth.token}`;
