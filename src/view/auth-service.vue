@@ -145,6 +145,12 @@ export default {
       formData: {
         ip_list: [],
         coord_list: []
+      },
+      ip_parts: {
+        part_1: 0,
+        part_2: 0,
+        part_3: 0,
+        part_4: '0-0'
       }
     };
   },
@@ -164,7 +170,7 @@ export default {
       this.set_auth_dlg = true;
     },
     ip_addr_change(v) {
-      debugger;
+      console.log(v)
     },
     handleSetAuth() {
       var { xmin, xmax, ymin, ymax } = this.extent_parts;
@@ -189,16 +195,18 @@ export default {
     }
   },
   computed: {
-    ip_parts() {
-      var ips = (this.current.ip || "0.0.0.0-0").split(".");
-      var parts = {
-        part_1: ips[0],
-        part_2: ips[1],
-        part_3: ips[2],
-        part_4: ips[3]
-      };
-      return parts;
-    },
+    // ip_parts: {
+    //   get () {
+    //     var ips = (this.current.ip || "0.0.0.0-0").split(".");
+    //     var parts = {
+    //       part_1: ips[0],
+    //       part_2: ips[1],
+    //       part_3: ips[2],
+    //       part_4: ips[3]
+    //     };
+    //     return parts;
+    //   }
+    // },
     extent_parts() {
       var extent = (this.current.extent || "").split(",");
       var obj = {
@@ -208,6 +216,20 @@ export default {
         ymax: extent[3] || 90
       };
       return obj;
+    }
+  },
+  watch: {
+    'current.ip' (val) {
+      if (val) {
+        var ips = val.split(".");
+        var parts = {
+          part_1: ips[0],
+          part_2: ips[1],
+          part_3: ips[2],
+          part_4: ips[3]
+        };
+        this.ip_parts = parts
+      }
     }
   }
 };
