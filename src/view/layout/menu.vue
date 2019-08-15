@@ -16,7 +16,11 @@
             v-for="subject in (!catalog.showMore ? catalog.subject.slice(0, 5) : catalog.subject)"
             :key="subject.id"
             @click="onSubjectClick(subject.id, subject)"
-          >{{subject.name}}({{subject.count}})</li>
+          >
+            <span
+              :style="current_catalog.id===subject.id?'color: #4874ed;':''"
+            >{{subject.name}}({{subject.count}})</span>
+          </li>
           <li
             v-if="catalog.subject.length > 5"
             @click="showMore(catalog)"
@@ -43,13 +47,13 @@ export default {
     this.queryCatalog();
   },
   computed: {
-    ...vuex.mapState(["catalog_list"])
+    ...vuex.mapState(["catalog_list", "current_catalog"])
   },
   methods: {
     ...vuex.mapActions(["queryCatalog", "queryService"]),
-  ...vuex.mapMutations(['']),
-    onSubjectClick(id, subject) {
-      this
+    ...vuex.mapMutations(["setCatalog"]),
+    onSubjectClick(id, catalog) {
+      this.setCatalog(catalog);
       this.queryService({ catalogId: id });
     },
     showMore(catalog) {

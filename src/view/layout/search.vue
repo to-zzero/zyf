@@ -147,8 +147,6 @@ const default_info = JSON.stringify({
 });
 export default {
   name: "Search",
-  props: ["catalog"],
-  inject: ["reload"],
   components: {
     serviceAggrateDialg
   },
@@ -179,7 +177,6 @@ export default {
       this["dlg_" + name] = true;
     },
     onSearch(val) {
-      debugger;
       this.queryService({ name: this.searchContent });
     },
     selectFile(file) {
@@ -232,7 +229,8 @@ export default {
               loading.close();
               this.$message({ message: "发布成功", type: "success" });
               this.dlg_publish_service = false;
-              this.reload();
+              this.queryService();
+              this.queryCatalog();
               return;
             }
             setTimeout(() => {
@@ -240,10 +238,6 @@ export default {
             }, 1000);
           };
           checkStatus();
-
-          // this.$message({ message: "发布成功", type: "success" });
-          // this.dlg_publish_service = false;
-          // this.reload();
         })
         .catch(err => {
           loading.close();
@@ -252,10 +246,10 @@ export default {
     }
   },
   mounted() {
-    this.queryCatalog();
+    this.queryService();
   },
   computed: {
-    ...vuex.mapState(["access", "catalog_list"]),
+    ...vuex.mapState(["access", "catalog_list", "current_catalog"]),
     canPublish() {
       return this.access.find(r => r.code == 100).visible;
     }
@@ -266,11 +260,9 @@ export default {
         this.service_info.name = newVal.substr(0, newVal.lastIndexOf("."));
       }
     },
-    catalog(newVal, oldVal) {
-      if (newVal) {
-        this.service_info.service_catalog = [newVal];
-      } else {
-        this.service_info.service_catalog = [];
+    current_catalog(val) {
+      if (val.id) {
+        this.service_info.service_catalog = [val.id];
       }
     }
   }

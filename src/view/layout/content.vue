@@ -5,14 +5,14 @@
       <div
         class="current-tag"
         @click="clearSearch"
-      >{{currentSelect.name || '全部'}} {{ currentSelect.name ? '×' : '' }}</div>
+      >{{current_catalog.name || '全部'}} {{ current_catalog.name ? '×' : '' }}</div>
       <el-tooltip style="margin-left: auto;" placement="bottom">
         <div slot="content">包含聚合服务</div>
         <el-checkbox v-model="with_aggrate" @change="handleAggrateChanged">聚合</el-checkbox>
       </el-tooltip>
     </div>
     <ul class="layout-content pd-lr16 pd-tb16 ul-reset">
-      <li class="list-item_wrap" v-for="service in serviceQueryResult.list" :key="service.id">
+      <li class="list-item_wrap" v-for="service in service_list.list" :key="service.id">
         <div class="flex-box space-between item-header">
           <span style="font-size: 16px; font-weight: 600;" v-if="service.type==0">{{service.name}}</span>
           <el-badge value="聚" type="primary" v-else>
@@ -112,7 +112,7 @@
                   active-color="#13ce66"
                   inactive-color="#ff4949"
                   :value="service.status"
-                  @change="start_stop_Service(service,val)"
+                  @change="start_stop_Service(service)"
                 ></el-switch>
                 <span
                   @click="start_stop_Service(service,!service.status)"
@@ -128,47 +128,44 @@
       <li
         style="text-align: center; font-weight: 600;"
         class="list-item_wrap"
-        v-if="!serviceQueryResult.list.length"
+        v-if="!service_list.list.length"
       >暂无服务</li>
 
       <li class="flex-box" style="justify-content: flex-end;">
         <el-pagination
           background
           layout="prev, pager, next"
-          :total="serviceQueryResult.total"
-          :page-size="serviceQueryResult.size"
+          :total="service_list.total"
+          :page-size="service_filter.size"
           @current-change="currentChange"
         ></el-pagination>
       </li>
     </ul>
-
-    <el-dialog :visible.sync="dlg_view" title="查看服务"></el-dialog>
-    <el-dialog :visible.sync="dlg_edit" title="修改服务"></el-dialog>
   </div>
 </template>
 
 <script>
 import api from "../../api";
 import { Loading } from "element-ui";
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 
 export default {
   name: "LayoutContent",
-  props: ["serviceQueryResult", "currentSelect"],
   data() {
     return {
-      with_aggrate: true,
-      service: this.$props.serviceInfo,
-      dlg_publish_service: false,
-      dlg_service_aggrate: false,
-      dlg_view: false,
-      dlg_edit: false
+      with_aggrate: true
     };
   },
-  mounted() {},
+  mounted() {
+    this.queryService();
+  },
   computed: {
-    ...mapState(["access", "service_list", "service_filter"]),
-
+    ...mapState([
+      "access",
+      "service_list",
+      "service_filter",
+      "current_catalog"
+    ]),
     canDelete() {
       return this.access.find(r => r.code == 101).visible;
     },
@@ -180,7 +177,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions("queryCatalog", ["queryService"]),
+    ...mapActions(["queryCatalog", "queryService"]),
+    ...mapMutations(["setCatalog"]),
     openDialog(name) {
       this["dlg_" + name] = true;
       // console.log(this);
@@ -214,6 +212,7 @@ export default {
         .catch(() => {});
     },
     start_stop_Service(service, start) {
+      console.log(service.name);
       if (this.canStop) {
         if (start) {
           this.startService(service);
@@ -230,7 +229,7 @@ export default {
       api.service
         .service_action(service.id, "on")
         .then(result => {
-          if (result) {
+          if (result === true) {
             service.status = true;
           }
           loading.close();
@@ -247,7 +246,7 @@ export default {
       api.service
         .service_action(service.id, "off")
         .then(result => {
-          if (result) {
+          if (result === true) {
             service.status = false;
           }
           loading.close();
@@ -257,18 +256,17 @@ export default {
         });
     },
     onSearch(val) {
-      this.$emit("search", val);
+      this.queryService({ name: val });
     },
     clearSearch() {
-      if (this.currentSelect.name) {
-        this.$emit("clearSearch");
-      }
+      this.setCatalog(null);
+      this.queryService({ catalogId: null });
     },
     currentChange(page) {
-      this.$emit("page-changed", page);
+      this.queryService({ page });
     },
     handleAggrateChanged() {
-      this.$emit("option-changed", this.with_aggrate);
+      this.queryService({ aggrate: this.with_aggrate });
     }
   }
 };

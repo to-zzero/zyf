@@ -21,7 +21,6 @@ export default new Vuex.Store({
             { name: '授权管理', code: 106, visible: false },
             { name: '系统管理', code: 107, visible: false },
             { name: '服务监控', code: 108, visible: false },
-
         ],
         service_list: {
             list: [],
@@ -29,13 +28,15 @@ export default new Vuex.Store({
         },
         service_filter: {
             page: 1,
-            size: 10,
+            size: 5,
             catalogId: null,
             name: null,
             sort_field: null,
-            sort_method: 0
+            sort_method: 0,
+            aggrate: true,
         },
-        catalog_list: []
+        catalog_list: [],
+        current_catalog: {}
     },
     mutations: {
         setUser(state, { userName, userId, userInfo, sid, access }) {
@@ -60,14 +61,21 @@ export default new Vuex.Store({
         },
         setQueryFilter(state, filter) {
             var mix = { ...state.service_filter, ...filter }
-            state.service_filter.option = mix
+            state.service_filter = mix
         },
         setQueryData(state, { list, total }) {
             state.service_list.list = list
             state.service_list.total = total
         },
-        setCatalog(state, data) {
+        setCatalogList(state, data) {
             state.catalog_list = data
+        },
+        setCatalog(state, catalog) {
+            if (!catalog) {
+                state.current_catalog = {}
+            } else {
+                state.current_catalog = catalog
+            }
         }
     },
     actions: {
@@ -102,7 +110,7 @@ export default new Vuex.Store({
         },
         queryCatalog() {
             api.catalog.catalog_list().then(data => {
-                this.commit('setCatalog', data);
+                this.commit('setCatalogList', data);
             });
         }
     },

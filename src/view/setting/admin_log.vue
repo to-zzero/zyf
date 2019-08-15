@@ -13,15 +13,16 @@
 
     <el-table :data="logList" size="mini">
       <el-table-column label="编号" type="index"></el-table-column>
-      <el-table-column label="日志名" prop="function"></el-table-column>
-      <el-table-column label="用户" prop="username"></el-table-column>
+      <el-table-column label="用户" prop="userName"></el-table-column>
+      <el-table-column label="操作" prop="function"></el-table-column>
+      <el-table-column label="名称" prop="refName"></el-table-column>
       <el-table-column label="IP地址" prop="ip">
         <!-- <template slot-scope="scope">
           <el-tag type="error" size="mini" v-if="scope.row.status==0">失败</el-tag>
           <el-tag type="success" size="mini" v-if="scope.row.status==1">成功</el-tag>
         </template> -->
       </el-table-column>
-      <el-table-column label="操作时间" prop="createAt"></el-table-column>
+      <el-table-column label="时间" prop="createAt"></el-table-column>
     </el-table>
     <el-pagination
       background

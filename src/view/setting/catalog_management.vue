@@ -181,20 +181,25 @@ export default {
     async save_catalog() {
       if (!this.current.id) {
         try {
-          await api.catalog.create(this.current);
-          this.show_edit_dlg = false;
-          this.$message({ message: "添加成功", type: "success" });
-          this.getList();
+          var ok = await api.catalog.create(this.current);
+          if (ok == true) {
+            this.$message({ message: "添加成功", type: "success" });
+            this.show_edit_dlg = false;
+            this.getList();
+          }
         } catch (err) {
           this.$message({ message: "添加失败", type: "error" });
         }
       } else {
-        let result = await api.catalog.update(this.current);
-        if (result === "success") {
-          this.$message({ message: "修改成功", type: "success" });
-          this.show_edit_dlg = false;
-          this.getList();
-        } else {
+        try {
+          let result = await api.catalog.update(this.current);
+          if (result === true) {
+            this.$message({ message: "修改成功", type: "success" });
+            this.show_edit_dlg = false;
+            this.getList();
+          }
+        } catch (err) {
+          console.error(err);
           this.$message({ message: "修改失败", type: "error" });
         }
       }
