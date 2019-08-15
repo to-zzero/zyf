@@ -150,7 +150,7 @@
 <script>
 import api from "../../api";
 import { Loading } from "element-ui";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "LayoutContent",
@@ -167,7 +167,8 @@ export default {
   },
   mounted() {},
   computed: {
-    ...mapState(["access"]),
+    ...mapState(["access", "service_list", "service_filter"]),
+
     canDelete() {
       return this.access.find(r => r.code == 101).visible;
     },
@@ -178,8 +179,8 @@ export default {
       return this.access.find(r => r.code == 103).visible;
     }
   },
-  inject: ["reload"],
   methods: {
+    ...mapActions("queryCatalog", ["queryService"]),
     openDialog(name) {
       this["dlg_" + name] = true;
       // console.log(this);
@@ -202,7 +203,8 @@ export default {
             .then(() => {
               loading.close();
               this.$message({ message: "删除成功", type: "success" });
-              this.reload();
+              this.queryCatalog();
+              this.queryService();
             })
             .catch(err => {
               loading.close();
@@ -213,7 +215,6 @@ export default {
     },
     start_stop_Service(service, start) {
       if (this.canStop) {
-        debugger;
         if (start) {
           this.startService(service);
         } else {

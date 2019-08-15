@@ -203,7 +203,7 @@ export default {
       const yData = [];
       data.forEach((v, i) => {
         xData.push(
-          time !== "minute"
+          this.time !== "minute"
             ? `${new Date(v.date_time).getHours()}:00`
             : `${new Date(v.date_time).getMinutes()} 分`
         );

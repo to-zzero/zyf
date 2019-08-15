@@ -124,15 +124,16 @@
     <serviceAggrateDialg
       v-if="dlg_service_aggrate"
       :isOpen="dlg_service_aggrate"
+      :cur_catalog="service_info.service_catalog"
       @change="dlg_service_aggrate=!dlg_service_aggrate"
     ></serviceAggrateDialg>
   </div>
 </template>
 
 <script>
+import vuex from "vuex";
 import api from "../../api";
 import serviceAggrateDialg from "./serviceAggrateDialg";
-import { mapState } from "vuex";
 const default_info = JSON.stringify({
   name: "",
   keyword: "",
@@ -155,7 +156,6 @@ export default {
     return {
       dlg_publish_service: false,
       dlg_service_aggrate: false,
-      catalog_list: [],
       searchContent: "",
       service_info: JSON.parse(default_info),
       fileName: "",
@@ -174,11 +174,13 @@ export default {
     };
   },
   methods: {
+    ...vuex.mapActions(["queryCatalog", "queryService"]),
     openDialog(name) {
       this["dlg_" + name] = true;
     },
     onSearch(val) {
-      this.$emit("search", val);
+      debugger;
+      this.queryService({ name: this.searchContent });
     },
     selectFile(file) {
       this.fileName = file.name;
@@ -250,12 +252,10 @@ export default {
     }
   },
   mounted() {
-    api.catalog.catalog_list().then(data => {
-      this.catalog_list = data;
-    });
+    this.queryCatalog();
   },
   computed: {
-    ...mapState(["access"]),
+    ...vuex.mapState(["access", "catalog_list"]),
     canPublish() {
       return this.access.find(r => r.code == 100).visible;
     }

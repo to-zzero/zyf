@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import api from '../api'
+import dayjs from 'dayjs'
 
 Vue.use(Vuex)
 var CODE = 100;
@@ -20,11 +22,24 @@ export default new Vuex.Store({
             { name: '系统管理', code: 107, visible: false },
             { name: '服务监控', code: 108, visible: false },
 
-        ]
+        ],
+        service_list: {
+            list: [],
+            total: 0
+        },
+        service_filter: {
+            page: 1,
+            size: 10,
+            catalogId: null,
+            name: null,
+            sort_field: null,
+            sort_method: 0
+        },
+        catalog_list: []
     },
     mutations: {
         setUser(state, { userName, userId, userInfo, sid, access }) {
-                if (userName == 'admin') {
+            if (userName == 'admin') {
                 access = "*"
             }
             state.userName = userName
@@ -43,9 +58,53 @@ export default new Vuex.Store({
                 }
             }
         },
+        setQueryFilter(state, filter) {
+            var mix = { ...state.service_filter, ...filter }
+            state.service_filter.option = mix
+        },
+        setQueryData(state, { list, total }) {
+            state.service_list.list = list
+            state.service_list.total = total
+        },
+        setCatalog(state, data) {
+            state.catalog_list = data
+        }
     },
     actions: {
-        //
+        queryService(store, filter) {
+            filter = filter || {}
+            this.commit('setQueryFilter', filter)
+            api.service.servie_list(this.state.service_filter).then(data => {
+                var list = data.list.map(r => {
+                    if (r.metadata) {
+                        r.metadata = JSON.parse(r.metadata);
+                    } else {
+                        r.metadata = {};
+                    }
+
+                    if (r.keyword) {
+                        r.keyword = r.keyword.split(";");
+                    } else {
+                        r.keyword = [];
+                    }
+                    r.pubdate = dayjs(r.createAt).format("YYYY-MM-DD");
+                    r.status = !!r.status;
+                    return r;
+                });
+                this.commit('setQueryData', { list: list, total: data.total })
+                var opt = { ...this.state.service_filter }
+                opt.page = data.pageNum
+                opt.size = data.pageSize;
+                this.commit('setQueryFilter', opt)
+            }).catch(err => {
+                console.error(err)
+            })
+        },
+        queryCatalog() {
+            api.catalog.catalog_list().then(data => {
+                this.commit('setCatalog', data);
+            });
+        }
     },
     modules: {
         app

@@ -48,12 +48,15 @@
       </li>
 
       <li class="flex-box align-start mg-b16">
-        <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">服务列表</div>
+        <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">
+          服务列表
+          <span style="color:red">*</span>
+        </div>
         <div style="width: 80%">
           <el-table size="mini" max-height="300" border style="width: 100%;" :data="layer_list">
             <el-table-column label="服务" align="left" header-align="center" prop="title"></el-table-column>
             <el-table-column width="100" fixed="right" label="操作" align="right" prop="url">
-              <div slot-scope="{row}">
+              <span slot-scope="{row}">
                 <el-button
                   v-show="row.index"
                   @click="moveItem(row, true)"
@@ -72,10 +75,18 @@
                   style="width: 20px; text-align: center; padding-left: 0; padding-right: 0; margin-left: 4px;"
                   size="mini"
                 >X</el-button>
-              </div>
+              </span>
             </el-table-column>
           </el-table>
         </div>
+      </li>
+
+      <li class="flex-box mg-b16">
+        <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">
+          服务名称
+          <span style="color:red">*</span>
+        </div>
+        <el-input style="width: 460px;" size="mini" v-model="service_info.name"></el-input>
       </li>
 
       <li class="flex-box mg-b16">
@@ -107,11 +118,6 @@
       </li>
 
       <li class="flex-box mg-b16">
-        <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">服务名称</div>
-        <el-input style="width: 460px;" size="mini" v-model="service_info.name"></el-input>
-      </li>
-
-      <li class="flex-box mg-b16">
         <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">关键字</div>
         <el-input
           style="width: 460px;"
@@ -123,24 +129,26 @@
 
       <li class="flex-box" style="justify-content: flex-end;">
         <el-button @click="handleCancel" size="mini">取消</el-button>
-        <el-button type="primary" :loading="bntOKLoading" @click="handleOK">确定</el-button>
+        <el-button type="primary" :loading="bntOKLoading" @click="handleOK">发布</el-button>
       </li>
     </ul>
   </el-dialog>
 </template>
 
 <script>
+import { mapActions, mapMutations } from "vuex";
+
 import api from "../../api";
 import WMTSCapabilities from "ol/format/WMTSCapabilities";
 import http from "axios";
 const SERVIE_TYPE_SYSTEM = 0;
 const SERVIE_TYPE_WMTS = 1;
 export default {
-  props: ["isOpen"],
+  props: ["isOpen", "cur_catalog"],
   data() {
     return {
       dlg_service_aggrate: this.isOpen,
-      level: [10, 15],
+      level: [0, 20],
       layerInfo: {
         type: SERVIE_TYPE_SYSTEM,
         id: "", //系统服务ID
@@ -151,7 +159,7 @@ export default {
       system_layers: [],
       tileRange: {},
       bntOKLoading: false,
-      subjects: [],
+      subjects: this.cur_catalog || [],
       service_info: {
         keyword: "",
         name: "",
@@ -176,6 +184,8 @@ export default {
     });
   },
   methods: {
+    ...mapActions(["queryService"]),
+    ...mapMutations(["setQueryFilter"]),
     handleCancel() {
       this.dlg_service_aggrate = false;
     },
@@ -204,19 +214,21 @@ export default {
           });
           return;
         }
-        debugger;
         var createOk = await api.service.create_aggrate_service(
           this.service_info,
           this.layer_list,
-          this.subjects
+          this.subjects,
+          this.level[0],
+          this.level[1]
         );
 
-        if (createOk) {
+        if (createOk == true) {
           this.$message({
             message: "服务创建成功",
             type: "success"
           });
-          return;
+          this.queryService();
+          this.dlg_service_aggrate = false;
         } else {
           this.$message({
             message: "服务创建失败",
@@ -224,10 +236,8 @@ export default {
           });
           return;
         }
-
-        this.dlg_service_aggrate = false;
       } catch (error) {
-        //
+        console.error(error);
       } finally {
         this.bntOKLoading = false;
       }

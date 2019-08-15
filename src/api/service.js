@@ -187,11 +187,11 @@ export async function checkname(name) {
     return true;
 }
 
-export async function create_aggrate_service(serviceInfo, aggrateInfo, subjects) {
+export async function create_aggrate_service(serviceInfo, aggrateInfo, subjects, minZoom, maxZoom) {
     var resp = await http.post(`/service/aggregate`, {
         subjects: (subjects || []).join(','),
         service: JSON.stringify(serviceInfo),
-        aggrate: JSON.stringify(aggrateInfo)
+        aggrate: JSON.stringify({ minZoom, maxZoom, layers: aggrateInfo }),
     })
     if (resp.status === 200) {
         return resp.data

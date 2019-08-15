@@ -2,7 +2,7 @@
   <!-- <basis-scroll height="calc(100vh - 66px)" width="220"> -->
   <ul class="layout-menu ul-reset mg-t24">
     <li class="item-wrap">
-      <ul class="ul-reset item-content" v-for="catalog in menu_data" :key="catalog.id">
+      <ul class="ul-reset item-content" v-for="catalog in catalog_list" :key="catalog.id">
         <li @click="showCatalog(catalog)" class="inner-item relative">
           {{catalog.name}}
           <i
@@ -31,28 +31,26 @@
 </template>
 
 <script>
+import vuex from "vuex";
+
 import api from "../../api";
 export default {
   name: "LayoutMenu",
   data() {
-    return {
-      menu_data: []
-    };
+    return {};
   },
   mounted() {
-    this.loadCatalog();
+    this.queryCatalog();
+  },
+  computed: {
+    ...vuex.mapState(["catalog_list"])
   },
   methods: {
-    loadCatalog() {
-      api.catalog.catalog_list().then(res => {
-        this.menu_data = res;
-      });
-    },
+    ...vuex.mapActions(["queryCatalog", "queryService"]),
+  ...vuex.mapMutations(['']),
     onSubjectClick(id, subject) {
-      this.$emit("onSubjectClick", {
-        id,
-        subject
-      });
+      this
+      this.queryService({ catalogId: id });
     },
     showMore(catalog) {
       if (!catalog.showMore) {

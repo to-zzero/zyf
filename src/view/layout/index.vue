@@ -28,6 +28,7 @@
 
 <script>
 import dayjs from "dayjs";
+import { mapMutations, mapState, mapActions } from "vuex";
 
 import LayoutHeader from "./header";
 import LayoutContent from "./content";
@@ -63,7 +64,11 @@ export default {
   mounted() {
     this.queryServices(this.currentSubject, null);
   },
+  computed: {
+    ...mapState(["service_list"])
+  },
   methods: {
+    ...mapMutations(["setQueryFilter"]),
     async onSubjectClick({ id, subject }) {
       this.currentSubject = id;
       this.currentSelect = subject;
