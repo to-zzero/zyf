@@ -4,7 +4,6 @@
     :visible.sync="dlg_service_aggrate"
     title="服务聚合"
     :close-on-click-modal="false"
-    @close="handleClose"
   >
     <ul class="ul-reset">
       <li class="flex-box mg-b16">
@@ -157,7 +156,6 @@ export default {
       layer_list: [],
       catalog_list: [],
       system_layers: [],
-      tileRange: {},
       bntOKLoading: false,
       subjects: this.cur_catalog || [],
       service_info: {
@@ -172,9 +170,6 @@ export default {
     };
   },
   mounted() {
-    for (let index = 1; index <= 20; index++) {
-      this.tileRange[index] = index.toString();
-    }
     api.service.servie_list({ size: 1000, aggrate: false }).then(services => {
       this.$set(this, "system_layers", services.list);
     });
@@ -241,9 +236,6 @@ export default {
       } finally {
         this.bntOKLoading = false;
       }
-    },
-    handleClose() {
-      this.$emit("change", false);
     },
     addToServiceList() {
       var obj = {};

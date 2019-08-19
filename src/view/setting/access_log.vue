@@ -1,7 +1,7 @@
 <template>
   <div class="access-log">
     <div class="title">访问日志</div>
-    <div class="shadow pd-lr12 pd-tb12 mg-t16">
+    <div class="shadow pd-lr12 pd-tb12 mg-t16" id='accesslog-main'>
       <h4 class="mg-t0 mg-b16 flex-box space-between">
         <div></div>
         <ul class="flex-box ul-reset tw-n ts-14">
@@ -46,7 +46,7 @@
       <ul class="flex-box ul-reset">
         <li style="border-right: 1px dashed #ccc; width: 150px; height: 280px;">
           <div class="ts-12 color-999">访问累计数量</div>
-          <h5 class="ts-20 mg-t0 mg-b0">{{total}}</h5>
+          <h5 class="ts-20 mg-t0 mg-b0">{{total}} 次</h5>
         </li>
 
         <li style="min-height: 128px;" class="flex-1">
@@ -174,6 +174,7 @@ export default {
       myChart.setOption(option);
     },
     query(logOnly) {
+      var loading=this.$loading({text:'正在加载...',target:'#accesslog-main'})
       api.admin
         .getAccessLog({
           type: this.time,
@@ -190,6 +191,11 @@ export default {
           this.total = data.total;
           if (!logOnly)
             this.draw(document.getElementById("echart"), data.stat_list);
+
+          loading.close()
+        }).catch(err=>{
+          console.log(err)
+          loading.close()
         });
     },
     changeTime(time) {
