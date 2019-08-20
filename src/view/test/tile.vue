@@ -102,8 +102,7 @@ export default {
         //http://192.168.0.102:8081/api/service/dd8b3aea052c44a1975ffd52652f7a1b/MapServer/tile/3/74/105
         var url = `api/service/${this.cur_service_id}/MapServer/tile/${this.z}/${this.x}/${this.y}?token=`;
         var auth = this.auth_list.find(r => r.oid === this.cur_auth_oid);
-        debugger;
-        if (auth.token) {
+        if (auth && auth.token) {
           url += `${auth.token}`;
         }
         return url;
@@ -115,7 +114,7 @@ export default {
       if (this.cur_service_id) {
         var url = `rest/services/${this.cur_service_id}/wmts/tile/1.0.0/default/default028mm/${this.z}/${this.x}/${this.y}.png?token=`;
         var auth = this.auth_list.find(r => r.oid === this.cur_auth_oid);
-        if (auth.token) {
+        if (auth && auth.token) {
           url += `${auth.token}`;
         }
         return url;
@@ -128,7 +127,7 @@ export default {
         var service = this.service_list.find(r => r.id === this.cur_service_id);
         var url = `rest/services/${this.cur_service_id}/wmts?REQUEST=GetTile&LAYER=${service.id}&TILEMATRIXSET=default028mm&TILEMATRIX=${this.z}&TILEROW=${this.x}&TILECOL=${this.y}&token=`;
         var auth = this.auth_list.find(r => r.oid === this.cur_auth_oid);
-        if (auth.token) {
+        if (auth && auth.token) {
           url += `${auth.token}`;
         }
         return url;

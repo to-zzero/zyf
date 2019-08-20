@@ -29,17 +29,15 @@
             "esri/widgets/Home",
             "esri/layers/WMTSLayer",
             "esri/layers/TileLayer",
+            'esri/layers/WebTileLayer',
             "dojo/domReady!"
-        ], function (Map, MapView, Home, WMTSLayer, TileLayer) {
+        ], function (Map, MapView, Home, WMTSLayer, TileLayer, WebTileLayer) {
             var search = window.location.search.substr(1)
             var params = {}
             search.split('&').map(r => {
                 var pair = r.split('=')
                 params[pair[0]] = pair[1]
             })
-
-            // console.log(params)
-
             var map = new Map();
             window.map = map
             var view = new MapView({
@@ -51,26 +49,14 @@
                 view: view
             });
             view.ui.add(homeBtn, "top-left");
-            // var url = `${params.proxy}/arcgis/rest/services/${params.service}/MapServer/WMTS`
-            // var layer = new WMTSLayer({
-            //     url: url,
-            //     activeLayer: {
-            //         id: params.service,
-            //     }
-            // });
 
-            //proxy
-            var url = `/api/service/${params.service}/MapServer`
+            var url = `${window.location.origin}/api/service/${params.service}/MapServer/tile/{level}/{col}/{row}`
+            if (params.token) {
+                url += "?token=" + params.token
+            }
             var layer = null,
                 layerUrl = url,
-                layer = new TileLayer(layerUrl, null);
-
-            // //direct
-            // var url = `${params.proxy}/arcgis/rest/services/${params.service}/MapServer`
-            // var layer = null,
-            //     layerUrl = url,
-            //     layer = new TileLayer(layerUrl, null);
-
+                layer = new WebTileLayer({ urlTemplate: layerUrl });
             map.layers.add(layer);
         });
     </script>
