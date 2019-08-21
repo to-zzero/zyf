@@ -8,12 +8,13 @@
           <ul>
             <li class="flex-box item">
               <div class="item-title">服务名称：</div>
-              <el-input class="flex-1" v-model="info.name"></el-input>
+              <el-input size="mini" :disabled="true" class="flex-1" v-model="info.name"></el-input>
             </li>
 
             <li class="flex-box item">
               <div class="item-title">所属分组：</div>
               <el-select
+                size="mini"
                 multiple
                 class="flex-1"
                 v-model="selected_subjects"
@@ -38,32 +39,66 @@
 
             <li class="flex-box item">
               <div class="item-title">关键字：</div>
-              <el-input class="flex-1" placeholder="多个之间用;分隔" v-model="info.keyword"></el-input>
+              <el-input size="mini" class="flex-1" placeholder="多个之间用;分隔" v-model="info.keyword"></el-input>
             </li>
 
             <li class="flex-box item">
               <div class="item-title">提供单位：</div>
-              <el-input class="flex-1" v-model="info.metadata.provider"></el-input>
+              <el-input size="mini" class="flex-1" v-model="info.metadata.provider"></el-input>
             </li>
 
             <li class="flex-box item">
               <div class="item-title">服务摘要：</div>
-              <el-input class="flex-1" v-model="info.metadata.abstract"></el-input>
+              <el-input size="mini" class="flex-1" v-model="info.metadata.abstract"></el-input>
             </li>
 
             <li class="flex-box item">
               <div class="item-title">坐标系统：</div>
-              <el-input class="flex-1" v-model="info.metadata.coord"></el-input>
+              <el-input size="mini" class="flex-1" v-model="info.metadata.coord"></el-input>
             </li>
 
             <li class="flex-box item">
               <div class="item-title">投影类型：</div>
-              <el-input class="flex-1" v-model="info.metadata.proj"></el-input>
+              <el-input size="mini" class="flex-1" v-model="info.metadata.proj"></el-input>
             </li>
             <li class="flex-box item">
-              <div class="item-title">范围范围：</div>
-              <div>
-                <label for="xmin">xmin:</label>
+              <div class="item-title">初始范围：</div>
+              <div style="width: 300px;">
+                <el-row>
+                  <el-col :span="4" :offset="10">
+                    <el-input
+                      style="width:120px"
+                      size="mini"
+                      v-model="info.metadata.init_extent.ymax"
+                    ></el-input>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="4" :offset="0">
+                    <el-input
+                      size="mini"
+                      style="width:120px"
+                      v-model="info.metadata.init_extent.xmin"
+                    ></el-input>
+                  </el-col>
+                  <el-col :span="4" :offset="16">
+                    <el-input
+                      size="mini"
+                      style="width:120px"
+                      v-model="info.metadata.init_extent.xmax"
+                    ></el-input>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="4" :offset="10">
+                    <el-input
+                      size="mini"
+                      style="width:120px"
+                      v-model="info.metadata.init_extent.ymin"
+                    ></el-input>
+                  </el-col>
+                </el-row>
+                <!-- <label for="xmin">xmin:</label>
                 <el-input
                   id="xmin"
                   style="width:80px"
@@ -87,8 +122,97 @@
                   style="width:80px"
                   class="flex-1"
                   v-model="info.metadata.init_extent.ymax"
-                ></el-input>
+                ></el-input>-->
               </div>
+            </li>
+          </ul>
+        </el-collapse-item>
+        <el-collapse-item title="聚合信息" v-if="info.type == 1">
+          <ul>
+            <li class="flex-box item">
+              <div class="item-title">服务类型</div>
+              <el-select v-model="layerInfo.type" style="width: 460px;" size="mini">
+                <el-option label="系统服务" :value="0"></el-option>
+                <el-option label="外部服务" :value="1"></el-option>
+              </el-select>
+            </li>
+
+            <li class="flex-box item">
+              <div class="item-title">{{ layerInfo.type ? '服务链接' : '选择服务' }}</div>
+              <el-input
+                v-if="layerInfo.type === 1"
+                style="width: 460px;"
+                v-model="layerInfo.url"
+                size="mini"
+              ></el-input>
+              <!-- @change="readMapInfo" -->
+              <el-select
+                v-else
+                v-model="layerInfo.id"
+                style="width: 460px;"
+                placeholder="请选择"
+                size="mini"
+              >
+                <el-option
+                  v-for="subject in system_layers"
+                  :key="subject.id"
+                  :label="subject.name"
+                  :value="subject.id"
+                ></el-option>
+              </el-select>
+            </li>
+
+            <li class="flex-box item">
+              <el-button @click="addToServiceList" title="添加到服务列表" size="mini">添加</el-button>
+            </li>
+
+            <li class="flex-box item">
+              <div class="item-title">服务列表</div>
+              <div style="width: 80%">
+                <el-table
+                  size="mini"
+                  max-height="300"
+                  border
+                  style="width: 100%;"
+                  :data="layer_list"
+                >
+                  <el-table-column label="服务" align="left" header-align="center" prop="title"></el-table-column>
+                  <el-table-column width="100" fixed="right" label="操作" align="right" prop="url">
+                    <span slot-scope="{row}">
+                      <el-button
+                        v-show="row.index"
+                        @click="moveItem(row, true)"
+                        style="width: 20px; text-align: center; padding-left: 0; padding-right: 0;"
+                        size="mini"
+                      >↑</el-button>
+                      <el-button
+                        v-show="row.index + 1 !== layer_list.length"
+                        @click="moveItem(row, false)"
+                        style="width: 20px; text-align: center; padding-left: 0; padding-right: 0; margin-left: 4px;"
+                        size="mini"
+                      >↓</el-button>
+                      <el-button
+                        @click="removeItem(row)"
+                        type="danger"
+                        style="width: 20px; text-align: center; padding-left: 0; padding-right: 0; margin-left: 4px;"
+                        size="mini"
+                      >X</el-button>
+                    </span>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </li>
+
+            <li class="flex-box item">
+              <div class="item-title">瓦片级别</div>
+              <el-slider
+                style="width: 460px;"
+                range
+                :max="20"
+                :min="1"
+                v-model="level"
+                :show-stops="true"
+              ></el-slider>
             </li>
           </ul>
         </el-collapse-item>
@@ -96,45 +220,51 @@
           <ul>
             <li class="flex-box item">
               <div class="item-title">发布机构：</div>
-              <el-input class="flex-1" v-model="info.metadata.organization"></el-input>
+              <el-input size="mini" class="flex-1" v-model="info.metadata.organization"></el-input>
             </li>
 
             <li class="flex-box item">
               <div class="item-title">地址：</div>
-              <el-input class="flex-1" v-model="info.metadata.address"></el-input>
+              <el-input size="mini" class="flex-1" v-model="info.metadata.address"></el-input>
             </li>
 
             <li class="flex-box item">
               <div class="item-title">联系人：</div>
-              <el-input class="flex-1" v-model="info.metadata.contact"></el-input>
+              <el-input size="mini" class="flex-1" v-model="info.metadata.contact"></el-input>
             </li>
 
             <li class="flex-box item">
               <div class="item-title">联系人电话：</div>
-              <el-input class="flex-1" v-model="info.metadata.contact_phone"></el-input>
+              <el-input size="mini" class="flex-1" v-model="info.metadata.contact_phone"></el-input>
             </li>
 
             <li class="flex-box item">
               <div class="item-title">联系人邮箱：</div>
-              <el-input class="flex-1" v-model="info.metadata.contact_mail"></el-input>
+              <el-input size="mini" class="flex-1" v-model="info.metadata.contact_mail"></el-input>
             </li>
           </ul>
         </el-collapse-item>
         <el-collapse-item title="扩展信息" name="extend">
           <ul>
             <li v-for="(item, index) in customArr" :key="index" class="flex-box item">
-              <el-input style="width: 116px;text-align:right" v-model="item.key"></el-input>
-              <el-input class="flex-1" style="margin: 0 16px;" v-model="item.value"></el-input>
-              <el-button type="warning" @click="remove(index)">删除</el-button>
+              <el-input size="mini" style="width: 116px;text-align:right" v-model="item.key"></el-input>
+              <el-input size="mini" class="flex-1" style="margin: 0 16px;" v-model="item.value"></el-input>
+              <el-button size="mini" type="warning" @click="remove(index)">删除</el-button>
             </li>
 
             <li class="flex-box item">
               <el-input
+                size="mini"
                 style="width: 116px;text-align:right"
                 v-model="editingPair.key"
                 placeholder="自定义名称"
               ></el-input>
-              <el-input class="flex-1" v-model="editingPair.value" style="margin: 0 16px;"></el-input>
+              <el-input
+                size="mini"
+                class="flex-1"
+                v-model="editingPair.value"
+                style="margin: 0 16px;"
+              ></el-input>
               <el-button type="primary" @click="add">添加</el-button>
             </li>
           </ul>
@@ -151,12 +281,12 @@
         :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload"
       >
-        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+        <img v-if="imageUrl" :src="imageUrl" class="avatar" />
         <img
           v-else-if="info.hasThunmbnail"
           :src="`/api/service/thumbnail/${info.id}`"
           class="avatar"
-        >
+        />
         <span v-else>
           <i class="el-icon-plus avatar-uploader-icon"></i>
           <span style="position: absolute;left:37%;top:60%">预览图</span>
@@ -172,6 +302,9 @@ import api from "../../api";
 import LayoutHeader from "../layout/header";
 
 const MIME = ["image/png", "image/jpg", "image/jpeg"];
+const SERVIE_TYPE_SYSTEM = 0;
+const SERVIE_TYPE_WMTS = 1;
+
 export default {
   name: "InfoEdit",
   components: {
@@ -186,7 +319,16 @@ export default {
       customArr: [],
       editingPair: { key: "", value: "" },
       imageUrl: "",
-      fileInfo: null
+      fileInfo: null,
+      system_layers: [],
+      level: [0, 20],
+      layer_list: [],
+      layerInfo: {
+        type: SERVIE_TYPE_SYSTEM,
+        id: "", //系统服务ID
+        url: "" //wmts地址
+      },
+      subjects: this.cur_catalog || []
     };
   },
   methods: {
@@ -214,6 +356,57 @@ export default {
       }
 
       return false;
+    },
+    addToServiceList() {
+      var obj = {};
+      if (this.layerInfo.type === SERVIE_TYPE_SYSTEM) {
+        //系统服务
+        var lyr = this.system_layers.find(r => r.id == this.layerInfo.id);
+        if (lyr) {
+          if (this.layer_list.find(r => r.id === lyr.id)) {
+            this.$message({ message: "服务已在列表中", type: "error" });
+            return;
+          }
+          obj.type = SERVIE_TYPE_SYSTEM;
+          obj.title = lyr.name;
+
+          obj.id = lyr.id;
+        } else {
+          this.$message({ message: "请先选择服务", type: "error" });
+          return;
+        }
+      } else {
+        //外部wmts服务
+        obj.type = SERVIE_TYPE_WMTS;
+        obj.title = this.layerInfo.url;
+
+        obj.url = obj.title;
+      }
+      const len = this.layer_list.length;
+      obj.index = len;
+      this.$set(this.layer_list, len, obj);
+    },
+    removeItem(row) {
+      const { index } = row;
+      this.layer_list.splice(index, 1);
+      this.layer_list = this.layer_list.map((val, index) => {
+        val.index = index;
+        return val;
+      });
+    },
+    moveItem(row, type) {
+      const { index } = row;
+      this.layer_list.splice(index, 1);
+      if (type) {
+        this.layer_list.splice(index - 1 > -1 ? index - 1 : 0, 0, row);
+      } else {
+        this.layer_list.splice(index + 1, 0, row);
+      }
+
+      this.layer_list = this.layer_list.map((val, index) => {
+        val.index = index;
+        return val;
+      });
     },
     add() {
       this.customArr.push({
@@ -251,6 +444,10 @@ export default {
     }
   },
   mounted() {
+    api.service.servie_list({ size: 1000, aggrate: false }).then(services => {
+      this.$set(this, "system_layers", services.list);
+    });
+
     const { id } = this.$route.query || {};
 
     api.catalog.catalog_list().then(data => {
@@ -271,7 +468,6 @@ export default {
       this.customArr = data.metadata.customize || [];
       this.selected_subjects = (data.groupIdList || "").split(",");
     });
-
 
     // api.service.getThumbnail(id).then(buffer => {
     //   console.log(buffer);

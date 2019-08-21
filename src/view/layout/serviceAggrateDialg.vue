@@ -155,7 +155,6 @@ export default {
       },
       layer_list: [],
       system_layers: [],
-      tileRange: {},
       bntOKLoading: false,
       subjects: this.current_catalog ? [this.current_catalog.id] : [],
       service_info: {
@@ -170,9 +169,6 @@ export default {
     };
   },
   mounted() {
-    for (let index = 1; index <= 20; index++) {
-      this.tileRange[index] = index.toString();
-    }
     api.service.servie_list({ size: 1000, aggrate: false }).then(services => {
       this.$set(this, "system_layers", services.list);
     });

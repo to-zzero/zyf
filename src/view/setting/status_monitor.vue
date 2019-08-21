@@ -73,7 +73,7 @@
         </div>
       </div>
 
-      <div class="shadow pd-lr12 pd-tb12 mg-t16">
+      <div class="shadow pd-lr12 pd-tb12 mg-t16" id="monitor-main">
         <h4 class="mg-t0 mg-b16 flex-box space-between">
           <span>服务监控</span>
 
@@ -99,11 +99,11 @@
 
         <ul class="flex-box ul-reset">
           <li style="border-right: 1px dashed #ccc; width: 150px; height: 280px;">
-            <div class="ts-12 color-999">系统平均响应时间</div>
-            <h5 class="ts-20 mg-t0 mg-b32">{{time_avg}} MS</h5>
+            <div class="ts-12 color-999">系统平均响应时间(毫秒)</div>
+            <h5 class="ts-20 mg-t0 mg-b32">{{time_avg}} ms</h5>
 
-            <div class="ts-12 color-999">峰值响应时间</div>
-            <h5 class="ts-20 mg-tb0">{{time_max}} MS</h5>
+            <div class="ts-12 color-999">峰值响应时间(毫秒)</div>
+            <h5 class="ts-20 mg-tb0">{{time_max}} ms</h5>
           </li>
 
           <li style="min-height: 128px;" class="flex-1">
@@ -118,6 +118,7 @@
 <script>
 import echarts from "echarts";
 import api from "../../api";
+const REFRESH_INTEVAL = 50 * 1000;
 export default {
   name: "status_monitor",
   data() {
@@ -141,34 +142,44 @@ export default {
     time(v) {
       this.showStat();
       this.timer && clearInterval(this.timer);
-      this.timer = setInterval(this.showStat, 10 * 1000);
+      this.timer = setInterval(this.showStat, REFRESH_INTEVAL);
     }
     // selectId(id) {
     //   this.showStat()
     // }
   },
   mounted() {
-    api.catalog.catalog_services({ size: 1000 }).then(cataloglist => {
-      for (const catalog of cataloglist) {
-        var searchListItem = {
-          id: catalog.id,
-          name: catalog.name,
-          children: catalog.items.filter(r => r)
-        };
-        searchListItem.children &&
-          searchListItem.children[0] &&
-          !this.selectId &&
-          (() => {
-            this.selectId = searchListItem.children[0].id;
-            this.changeSelect(searchListItem.children[0]);
-          })();
-        this.searchList.push(searchListItem);
-      }
+    var loading = this.$loading({
+      text: "正在加载...",
+      target: "#monitor-main"
     });
+    api.catalog
+      .catalog_services({ size: 1000 })
+      .then(cataloglist => {
+        for (const catalog of cataloglist) {
+          var searchListItem = {
+            id: catalog.id,
+            name: catalog.name,
+            children: catalog.items.filter(r => r)
+          };
+          searchListItem.children &&
+            searchListItem.children[0] &&
+            !this.selectId &&
+            (() => {
+              this.selectId = searchListItem.children[0].id;
+              this.changeSelect(searchListItem.children[0]);
+            })();
+          this.searchList.push(searchListItem);
+        }
+        loading.close();
+      })
+      .catch(() => {
+        loading.close();
+      });
 
     this.timer = setInterval(() => {
       this.showStat();
-    }, 10 * 1000);
+    }, REFRESH_INTEVAL);
   },
   beforeDestroy() {
     this.timer && clearInterval(this.timer);
@@ -178,15 +189,24 @@ export default {
       this.time = time;
     },
     showStat() {
+      var loading = this.$loading({
+        text: "正在加载...",
+        target: "#monitor-main"
+      });
       api.admin
         .getStatusMonitorAPI({
           type: this.time,
           serviceId: this.selectId
         })
         .then(res => {
-          this.time_avg = res.avg || "--";
-          this.time_max = res.max || "--";
+          this.time_avg = Math.round(res.avg) || "--";
+          this.time_max = Math.round(res.max) || "--";
           this.draw(this.$refs.echart, res.items);
+          loading.close();
+        })
+        .catch(err => {
+          console.log(err);
+          loading.close();
         });
     },
     changeSelect(service) {
@@ -202,10 +222,11 @@ export default {
       const xData = [];
       const yData = [];
       data.forEach((v, i) => {
+        var date_time = new Date(v.date_time);
         xData.push(
           this.time !== "minute"
-            ? `${new Date(v.date_time).getHours()}:00`
-            : `${new Date(v.date_time).getMinutes()} 分`
+            ? `${date_time.getMonth()}-${date_time.getDate()} ${date_time.getHours()}:00`
+            : `${date_time.getHours()}:${date_time.getMinutes()} `
         );
         yData.push(v.times);
       });

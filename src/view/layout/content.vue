@@ -11,7 +11,7 @@
         <el-checkbox v-model="with_aggrate" @change="handleAggrateChanged">聚合</el-checkbox>
       </el-tooltip>
     </div>
-    <ul class="layout-content pd-lr16 pd-tb16 ul-reset">
+    <ul class="layout-content pd-lr16 pd-tb16 ul-reset" id="content_list_item">
       <li class="list-item_wrap" v-for="service in service_list.list" :key="service.id">
         <div class="flex-box space-between item-header">
           <span style="font-size: 16px; font-weight: 600;" v-if="service.type==0">{{service.name}}</span>
@@ -22,7 +22,7 @@
           <!-- <span style="font-size: 14px; color: #696969">访问次数: {{service.visit}}</span> -->
         </div>
 
-        <div class="flex-box align-start" id="content_list_item">
+        <div class="flex-box align-start" >
           <div style="width: 110px; height: 110px;">
             <img :src="`/api/service/thumbnail/${service.id}`" style="width:100%;height:100%" />
           </div>
@@ -112,7 +112,7 @@
                   active-color="#13ce66"
                   inactive-color="#ff4949"
                   :value="service.status"
-                  @change="start_stop_Service(service)"
+                  @change="start_stop_Service(service,!service.status)"
                 ></el-switch>
                 <span
                   @click="start_stop_Service(service,!service.status)"
@@ -212,7 +212,7 @@ export default {
         .catch(() => {});
     },
     start_stop_Service(service, start) {
-      console.log(service.name);
+      console.log(service.name + "--" + start);
       if (this.canStop) {
         if (start) {
           this.startService(service);
@@ -230,7 +230,7 @@ export default {
         .service_action(service.id, "on")
         .then(result => {
           if (result === true) {
-            service.status = true;
+            this.queryService();
           }
           loading.close();
         })
@@ -247,7 +247,7 @@ export default {
         .service_action(service.id, "off")
         .then(result => {
           if (result === true) {
-            service.status = false;
+            this.queryService();
           }
           loading.close();
         })
@@ -371,6 +371,10 @@ export default {
   margin-left: 16px;
   font-size: 14px;
   cursor: pointer;
+}
+
+.control-item:hover{
+  color:#4874ed;
 }
 
 .tw-b {

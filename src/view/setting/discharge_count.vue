@@ -11,7 +11,7 @@
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">今日</p>
-            <h6 class="ts-20 mg-t0 mg-b0">{{ summary.today||0 }}</h6>
+            <h6 class="ts-20 mg-t0 mg-b0">{{ summaryToday }}</h6>
           </div>
         </li>
 
@@ -20,7 +20,7 @@
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">昨日</p>
-            <h6 class="ts-20 mg-t0 mg-b0">{{summary.yesterday||0}}</h6>
+            <h6 class="ts-20 mg-t0 mg-b0">{{summaryYesterday}}</h6>
           </div>
         </li>
 
@@ -29,7 +29,7 @@
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">本月</p>
-            <h6 class="ts-20 mg-t0 mg-b0">{{summary.month||0}}</h6>
+            <h6 class="ts-20 mg-t0 mg-b0">{{summaryMonth}}</h6>
           </div>
         </li>
 
@@ -38,7 +38,7 @@
 
           <div class="mg-l8">
             <p class="mg-tb0 ts-14 color-999">今年</p>
-            <h6 class="ts-20 mg-t0 mg-b0">{{summary.year||0}}</h6>
+            <h6 class="ts-20 mg-t0 mg-b0">{{summaryYear}}</h6>
           </div>
         </li>
       </ul>
@@ -125,6 +125,7 @@
 <script>
 import api from "@/api";
 import echarts from "echarts";
+const UNITS = ["K", "M", "G", "T"];
 
 export default {
   name: "discharge_count",
@@ -264,6 +265,29 @@ export default {
       return api.admin.getDiachargeAPI(param).then(res => {
         this.draw(document.getElementById("echart"), res.items);
       });
+    },
+    amount2unit(num_amount = 0, unit = "K") {
+      num_amount = num_amount || 0;
+      var unit_index = UNITS.indexOf(unit);
+      if (num_amount > 1024) {
+        return amount2unit(num_amount / 1024.0, UNITS[unit_index + 1]);
+      } else {
+        return `${num_amount.toFixed(1)} ${unit}`;
+      }
+    }
+  },
+  computed: {
+    summaryToday() {
+      return this.amount2unit(this.summary.today);
+    },
+    summaryYesterday() {
+      return this.amount2unit(this.summary.yesterday);
+    },
+    summaryMonth() {
+      return this.amount2unit(this.summary.month);
+    },
+    summaryYear() {
+      return this.amount2unit(this.summary.year);
     }
   }
 };

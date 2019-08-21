@@ -110,7 +110,7 @@
           </li>
         </ul>
       </div>
-      <div class="connect style">
+      <div class="connect style" v-if="info.type!=1">
         <div class="title">
           缓存状态信息
           <el-button size="mini" type="primary" @click="loadCacheStatus">刷新</el-button>

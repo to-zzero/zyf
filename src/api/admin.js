@@ -40,7 +40,7 @@ export async function userList() {
 }
 
 export async function getLogList(page, size, username) {
-    let resp = await http.get(`/admin/log?page=${page}&size=${size}`)
+    let resp = await http.get(`/admin/log?page=${page}&size=${size}&userName=`+username)
     if (resp && resp.status == 200) {
         return resp.data
     }
@@ -62,7 +62,7 @@ export async function getStatusMonitorAPI(params = {}) {
         result.items = resp.data.items.map(r => {
             return {
                 date_time: r.time,
-                times: r.count
+                times: r.duration
             }
         })
         result.avg = resp.data.avg
