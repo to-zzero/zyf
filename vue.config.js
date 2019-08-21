@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 const path = require('path')
 // const proxy_path = 'http://120.27.63.240:8082/' // 线上环境
-const proxy_path = process.env.NODE_ENV === 'prod' ? 'http://120.27.63.240:8082/' : 'http://127.0.0.1:8082/'
+const proxy_path = process.env.NODE_ENV === 'prod' ? 'http://120.27.63.240:8082/' : 'http://127.0.0.1:8083/'
 module.exports = {
   devServer: {
     port: 8081,

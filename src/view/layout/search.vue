@@ -13,14 +13,14 @@
         v-if="canPublish"
         class="mg-l16"
         type="primary"
-        @click="openDialog('publish_service')"
+        @click="dlg_publish_service=true"
       >发布服务</el-button>
 
       <el-button
         v-if="canPublish"
         class="mg-l16"
         type="primary"
-        @click="openDialog('service_aggrate')"
+        @click="serviceAggrateDialgOpen"
       >服务聚合</el-button>
     </div>
 
@@ -121,19 +121,14 @@
       </ul>
     </el-dialog>
 
-    <serviceAggrateDialg
-      v-if="dlg_service_aggrate"
-      :isOpen="dlg_service_aggrate"
-      :cur_catalog="service_info.service_catalog"
-      @change="dlg_service_aggrate=!dlg_service_aggrate"
-    ></serviceAggrateDialg>
+    <ServiceAggrateDialg :visible.sync="dlg_service_aggrate"/>
   </div>
 </template>
 
 <script>
 import vuex from "vuex";
 import api from "../../api";
-import serviceAggrateDialg from "./serviceAggrateDialg";
+import ServiceAggrateDialg from "./serviceAggrateDialg";
 const default_info = JSON.stringify({
   name: "",
   keyword: "",
@@ -148,7 +143,7 @@ const default_info = JSON.stringify({
 export default {
   name: "Search",
   components: {
-    serviceAggrateDialg
+    ServiceAggrateDialg
   },
   data() {
     return {
@@ -156,26 +151,11 @@ export default {
       dlg_service_aggrate: false,
       searchContent: "",
       service_info: JSON.parse(default_info),
-      fileName: "",
-      options: [],
-      formData: {
-        type: 1,
-        level: 0,
-        url: "",
-        group: [],
-        layerName: "",
-        style: "",
-        tile: "",
-        serviceList: [],
-        service_catalog: []
-      }
+      fileName: ""
     };
   },
   methods: {
     ...vuex.mapActions(["queryCatalog", "queryService"]),
-    openDialog(name) {
-      this["dlg_" + name] = true;
-    },
     onSearch(val) {
       this.queryService({ name: this.searchContent });
     },
@@ -243,6 +223,12 @@ export default {
           loading.close();
           this.$message({ message: "发布失败:" + err, type: "error" });
         });
+    },
+    serviceAggrateDialgOpen() {
+      this.dlg_service_aggrate = false;
+      this.$nextTick(() => {
+        this.dlg_service_aggrate = true;
+      });
     }
   },
   mounted() {

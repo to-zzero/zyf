@@ -2,100 +2,115 @@
   <div>
     <dir class="title">服务授权</dir>
     <el-dialog :visible.sync="set_auth_dlg" title="服务授权" :close-on-click-modal="false">
-      <el-form label-width="120px">
-        <el-form-item label="启用IP限制">
-          <el-checkbox v-model="current.enableIp"></el-checkbox>
-        </el-form-item>
-        <el-form-item :inline="true" label="IP地址">
-          <el-row>
-            <el-col :span="3">
-              <el-input-number
-                size="mini"
-                :controls="false"
-                :min="0"
-                style="width:60px"
-                :max="255"
-                @change="ip_addr_change"
-                v-model="ip_parts.part_1"
-              ></el-input-number>-
-            </el-col>
-            <el-col :span="3">
-              <el-input-number
-                size="mini"
-                :controls="false"
-                @change="ip_addr_change"
-                style="width:60px"
-                v-model="ip_parts.part_2"
-              ></el-input-number>-
-            </el-col>
-            <el-col :span="3">
-              <el-input-number
-                size="mini"
-                :controls="false"
-                @change="ip_addr_change"
-                style="width:60px"
-                v-model="ip_parts.part_3"
-              ></el-input-number>-
-            </el-col>
-            <el-col :span="8">
-              <el-tooltip content="任意地址:*, 地址区间:a-b, 多个IP:a,b,c">
-                <el-input size="mini" v-model="ip_parts.part_4" @change="ip_addr_change"></el-input>
-              </el-tooltip>
-            </el-col>
-          </el-row>
-        </el-form-item>
-        <el-form-item label="启用范围限制">
-          <el-checkbox v-model="current.enableExtent"></el-checkbox>
-        </el-form-item>
-        <el-form-item label="范围">
-          <el-row>
-            <el-col :span="2" :offset="7">ymax</el-col>
-            <el-col :span="4">
-              <el-input-number
-                :controls="false"
-                :min="-90"
-                :max="90"
-                v-model="extent_parts.ymax"
-                size="mini"
-              ></el-input-number>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="2" :offset="2">xmin</el-col>
-            <el-col :span="4">
-              <el-input
-                size="mini"
-                :controls="false"
-                :min="-180"
-                :max="180"
-                v-model="extent_parts.xmin"
-              ></el-input>
-            </el-col>
-            <el-col :span="2" :offset="5">xmax</el-col>
-            <el-col :span="4">
-              <el-input
-                size="mini"
-                :controls="false"
-                :min="-180"
-                :max="180"
-                v-model="extent_parts.xmax"
-              ></el-input>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="2" :offset="7">ymin</el-col>
-            <el-col :span="4">
-              <el-input
-                size="mini"
-                :controls="false"
-                :min="-90"
-                :max="90"
-                v-model="extent_parts.ymin"
-              ></el-input>
-            </el-col>
-          </el-row>
-        </el-form-item>
-      </el-form>
+      <el-tabs>
+        <el-tab-pane label="基本设置">
+          <el-form label-width="120px">
+            <el-form-item label="启用IP限制">
+              <el-checkbox v-model="current.enableIp"></el-checkbox>
+            </el-form-item>
+            <el-form-item :inline="true" label="IP地址">
+              <el-row>
+                <el-col :span="3">
+                  <el-input-number
+                    size="mini"
+                    :controls="false"
+                    :min="0"
+                    style="width:60px"
+                    :max="255"
+                    @change="ip_addr_change"
+                    v-model="ip_parts.part_1"
+                  ></el-input-number>-
+                </el-col>
+                <el-col :span="3">
+                  <el-input-number
+                    size="mini"
+                    :controls="false"
+                    @change="ip_addr_change"
+                    style="width:60px"
+                    v-model="ip_parts.part_2"
+                  ></el-input-number>-
+                </el-col>
+                <el-col :span="3">
+                  <el-input-number
+                    size="mini"
+                    :controls="false"
+                    @change="ip_addr_change"
+                    style="width:60px"
+                    v-model="ip_parts.part_3"
+                  ></el-input-number>-
+                </el-col>
+                <el-col :span="8">
+                  <el-tooltip content="任意地址:*, 地址区间:a-b, 多个IP:a,b,c">
+                    <el-input size="mini" v-model="ip_parts.part_4" @change="ip_addr_change"></el-input>
+                  </el-tooltip>
+                </el-col>
+              </el-row>
+            </el-form-item>
+            <el-form-item label="启用范围限制">
+              <el-checkbox v-model="current.enableExtent"></el-checkbox>
+            </el-form-item>
+            <el-form-item label="范围">
+              <el-row>
+                <el-col :span="2" :offset="7">ymax</el-col>
+                <el-col :span="4">
+                  <el-input-number
+                    :controls="false"
+                    :min="-90"
+                    :max="90"
+                    v-model="extent_parts.ymax"
+                    size="mini"
+                  ></el-input-number>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="2" :offset="2">xmin</el-col>
+                <el-col :span="4">
+                  <el-input
+                    size="mini"
+                    :controls="false"
+                    :min="-180"
+                    :max="180"
+                    v-model="extent_parts.xmin"
+                  ></el-input>
+                </el-col>
+                <el-col :span="2" :offset="5">xmax</el-col>
+                <el-col :span="4">
+                  <el-input
+                    size="mini"
+                    :controls="false"
+                    :min="-180"
+                    :max="180"
+                    v-model="extent_parts.xmax"
+                  ></el-input>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="2" :offset="7">ymin</el-col>
+                <el-col :span="4">
+                  <el-input
+                    size="mini"
+                    :controls="false"
+                    :min="-90"
+                    :max="90"
+                    v-model="extent_parts.ymin"
+                  ></el-input>
+                </el-col>
+              </el-row>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="授权列表" style="text-align:center;">
+          <el-transfer
+            style="text-align: left; display: inline-block"
+            v-model="authed_servies"
+            :data="system_layers"
+            :titles="['所有服务','授权服务']"
+            :props="{key:'id',label:'name'}"
+            :button-texts="['移除','授权']"
+          ></el-transfer>
+        </el-tab-pane>
+      </el-tabs>
+
       <div slot="footer">
         <el-button @click="set_auth_dlg=false" size="mini">取 消</el-button>
         <el-button type="primary" @click="handleSetAuth">确 定</el-button>
@@ -139,6 +154,7 @@ import api from "../api";
 export default {
   data() {
     return {
+      system_layers: [],
       set_auth_dlg: false,
       authList: [],
       current: {},
@@ -150,12 +166,16 @@ export default {
         part_1: 0,
         part_2: 0,
         part_3: 0,
-        part_4: '0-0'
-      }
+        part_4: "0-0"
+      },
+      authed_servies: []
     };
   },
   mounted() {
     this.loadData();
+    api.service.servie_list({ size: 1000, aggrate: false }).then(services => {
+      this.system_layers = services.list;
+    });
   },
   methods: {
     loadData() {
@@ -165,12 +185,18 @@ export default {
     },
     handleOpenDlg(auth) {
       this.current = JSON.parse(JSON.stringify(auth));
+      this.authed_servies = [];
+      if (this.current.services) {
+        this.authed_servies = this.current.services
+          .split(",")
+          .filter(r => this.system_layers.find(q => q.id === r));
+      }
       this.$set(this.current, "enableIp", !!this.current.enableIp);
       this.$set(this.current, "enableExtent", !!this.current.enableExtent);
       this.set_auth_dlg = true;
     },
     ip_addr_change(v) {
-      console.log(v)
+      // console.log(v);
     },
     handleSetAuth() {
       var { xmin, xmax, ymin, ymax } = this.extent_parts;
@@ -179,6 +205,7 @@ export default {
       this.current.ip = `${part_1}.${part_2}.${part_3}.${part_4}`;
       delete this.current.authTime;
       delete this.current.islocked;
+      this.current.services = this.authed_servies.join(",");
 
       api.serviceAuth
         .auth(this.current)
@@ -195,18 +222,6 @@ export default {
     }
   },
   computed: {
-    // ip_parts: {
-    //   get () {
-    //     var ips = (this.current.ip || "0.0.0.0-0").split(".");
-    //     var parts = {
-    //       part_1: ips[0],
-    //       part_2: ips[1],
-    //       part_3: ips[2],
-    //       part_4: ips[3]
-    //     };
-    //     return parts;
-    //   }
-    // },
     extent_parts() {
       var extent = (this.current.extent || "").split(",");
       var obj = {
@@ -219,7 +234,7 @@ export default {
     }
   },
   watch: {
-    'current.ip' (val) {
+    "current.ip"(val) {
       if (val) {
         var ips = val.split(".");
         var parts = {
@@ -228,7 +243,7 @@ export default {
           part_3: ips[2],
           part_4: ips[3]
         };
-        this.ip_parts = parts
+        this.ip_parts = parts;
       }
     }
   }

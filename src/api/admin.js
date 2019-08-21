@@ -1,6 +1,5 @@
 'use strict'
 import http from 'axios'
-import { async } from 'q';
 
 export async function login(userName, password, captcha) {
     let resp = await http.post('/admin/login', {

@@ -4,7 +4,6 @@
     :visible.sync="dlg_service_aggrate"
     title="服务聚合"
     :close-on-click-modal="false"
-    @close="handleClose"
   >
     <ul class="ul-reset">
       <li class="flex-box mg-b16">
@@ -128,7 +127,7 @@
       </li>
 
       <li class="flex-box" style="justify-content: flex-end;">
-        <el-button @click="handleCancel" size="mini">取消</el-button>
+        <el-button @click="dlg_service_aggrate=false" size="mini">取消</el-button>
         <el-button type="primary" :loading="bntOKLoading" @click="handleOK">发布</el-button>
       </li>
     </ul>
@@ -136,7 +135,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 
 import api from "../../api";
 import WMTSCapabilities from "ol/format/WMTSCapabilities";
@@ -144,10 +143,10 @@ import http from "axios";
 const SERVIE_TYPE_SYSTEM = 0;
 const SERVIE_TYPE_WMTS = 1;
 export default {
-  props: ["isOpen", "cur_catalog"],
+  props: ["visible"],
   data() {
     return {
-      dlg_service_aggrate: this.isOpen,
+      dlg_service_aggrate: this.visible,
       level: [0, 20],
       layerInfo: {
         type: SERVIE_TYPE_SYSTEM,
@@ -155,11 +154,10 @@ export default {
         url: "" //wmts地址
       },
       layer_list: [],
-      catalog_list: [],
       system_layers: [],
       tileRange: {},
       bntOKLoading: false,
-      subjects: this.cur_catalog || [],
+      subjects: this.current_catalog ? [this.current_catalog.id] : [],
       service_info: {
         keyword: "",
         name: "",
@@ -178,17 +176,13 @@ export default {
     api.service.servie_list({ size: 1000, aggrate: false }).then(services => {
       this.$set(this, "system_layers", services.list);
     });
-
-    api.catalog.catalog_list().then(data => {
-      this.catalog_list = data;
-    });
+  },
+  computed: {
+    ...mapState(["catalog_list", "current_catalog"])
   },
   methods: {
     ...mapActions(["queryService"]),
     ...mapMutations(["setQueryFilter"]),
-    handleCancel() {
-      this.dlg_service_aggrate = false;
-    },
     async handleOK() {
       if (this.layer_list.length === 0) {
         this.$message({ message: "服务列表为空，不能进行聚合", type: "error" });
@@ -241,9 +235,6 @@ export default {
       } finally {
         this.bntOKLoading = false;
       }
-    },
-    handleClose() {
-      this.$emit("change", false);
     },
     addToServiceList() {
       var obj = {};
@@ -338,8 +329,8 @@ export default {
     }
   },
   watch: {
-    isOpen(oldVal, newVal) {
-      this.dlg_service_aggrate = newVal;
+    visible(val) {
+      this.dlg_service_aggrate = val;
     }
   }
 };
