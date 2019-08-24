@@ -32,5 +32,9 @@ module.exports = {
     'copy-webpack-plugin': {
       ignore: ['arcgis_js_api']
     }
-  }
+  },
+  css: {
+    sourceMap: false
+  },
+  productionSourceMap: false
 };
