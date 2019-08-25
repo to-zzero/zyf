@@ -270,7 +270,7 @@ export default {
       num_amount = num_amount || 0;
       var unit_index = UNITS.indexOf(unit);
       if (num_amount > 1024) {
-        return amount2unit(num_amount / 1024.0, UNITS[unit_index + 1]);
+        return this.amount2unit(num_amount / 1024.0, UNITS[unit_index + 1]);
       } else {
         return `${num_amount.toFixed(1)} ${unit}`;
       }

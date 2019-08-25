@@ -1,6 +1,16 @@
 // 'use strict'
 import http from 'axios'
 
+
+export async function getSiteInfo() {
+    let url = "/service/siteinfo"
+    let rlt = await http.get(url)
+    if (rlt && rlt.status == 200) {
+        return rlt.data
+    }
+    return {}
+}
+
 /**
  * 
  * @param {*} catalogId 

@@ -17,21 +17,30 @@
             height: 100%;
             background: white;
         }
+
+        #level {
+            position: absolute;
+            left: 15px;
+            top: 130px;
+            color: #aaa;
+        }
     </style>
 </head>
 
 <body>
-    <div id="map"></div>
+    <div id="map">
+        <div id="level"></div>
+    </div>
     <script>
         require([
             "esri/Map",
             "esri/views/MapView",
             "esri/widgets/Home",
-            "esri/layers/WMTSLayer",
-            "esri/layers/TileLayer",
+            // "esri/layers/WMTSLayer",
+            // "esri/layers/TileLayer",
             'esri/layers/WebTileLayer',
             "dojo/domReady!"
-        ], function (Map, MapView, Home, WMTSLayer, TileLayer, WebTileLayer) {
+        ], function (Map, MapView, Home,/* WMTSLayer, TileLayer,*/ WebTileLayer) {
             var search = window.location.search.substr(1)
             var params = {}
             search.split('&').map(r => {
@@ -39,6 +48,7 @@
                 params[pair[0]] = pair[1]
             })
             var map = new Map();
+
             window.map = map
             var view = new MapView({
                 container: "map",
@@ -49,9 +59,14 @@
                 view: view
             });
             view.ui.add(homeBtn, "top-left");
-
-            var url = `${window.location.origin}/api/service/${params.service}/MapServer/tile/{level}/{col}/{row}`
+            view.watch('zoom', function (args) {
+                if (args % 1 == 0) {
+                    document.getElementById('level').innerText = args + " 级"
+                }
+            })
+            var url = `${window.location.origin}/api/service/${params.service}/MapServer/tile/{level}/{row}/{col}/`
             if (params.token) {
+                url = `${window.location.origin}/rest/services/${params.service}/wmts/tile/1.0.0/default/default/{level}/{row}/{col}.png`
                 url += "?token=" + params.token
             }
             var layer = null,

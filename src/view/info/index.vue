@@ -13,7 +13,7 @@
             <li class="flex-box item">
               <div class="inner-title">服务地址：</div>
               <div class="inner-info">
-                <a :href="GetCapabilitiesUrl" target="about_blank">{{serviceUrl}}</a>
+                <span :href="GetCapabilitiesUrl" target="about_blank">{{GetCapabilitiesUrl}}</span>
               </div>
             </li>
             <li class="flex-box item">
@@ -63,7 +63,7 @@
             </li>
           </ul>
 
-          <div style="width: 574px; height: 370px; background-color: #d8d8d8;">
+          <div style="width: 574px; height: 370px; background-color: #d8d8d8;position: absolute;right: 180px;top: 230px;">
             <!-- iframe 直接放这里面 -->
             <iframe
               style="border: 1px solid #ebeef5;"
@@ -73,6 +73,28 @@
               height="100%"
             ></iframe>
           </div>
+        </div>
+      </div>
+      <div class="connect style" v-if="info.aggregate">
+        <div class="title">聚合信息</div>
+        <div style="padding: 0 16px; margin-top: 40px;" class="flex-box space-between">
+          <ul class="ul-reset">
+            <li class="flex-box item">
+              <div class="inner-title">服务列表：</div>
+              <div class="inner-info">
+                <el-table :data="info.aggregate.layers" border :show-header="false">
+                  <el-table-column prop="title" width="400px"></el-table-column>
+                </el-table>
+              </div>
+            </li>
+
+            <li class="flex-box item">
+              <div class="inner-title">瓦片级别：</div>
+              <div class="inner-info">
+                <span>{{info.aggregate.minZoom}}级 - {{info.aggregate.maxZoom}}级</span>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
       <div class="connect style">
@@ -167,7 +189,8 @@ export default {
         status: "EXISTS"
       },
       cache_loading: false,
-      map_load: false
+      map_load: false,
+      siteInfo: null
     };
   },
   components: {
@@ -179,7 +202,13 @@ export default {
       return `/rest/services/${this.info.id}`;
     },
     GetCapabilitiesUrl() {
-      return `/rest/services/${this.info.id}/WMTS/1.0.0/WMTSCapabilities.xml`;
+      console.log(this.siteInfo.addr);
+      if (this.siteInfo)
+        return (
+          this.siteInfo.addr +
+          `/rest/services/${this.info.id}/wmts/tile/1.0.0/default/default028mm/{level}/{row}/{col}.png?token=`
+        );
+      return `/rest/services/${this.info.id}/wmts/tile/1.0.0/default/default028mm/{level}/{row}/{col}.png?token=`;
     },
     initExtent() {
       if (this.info && this.info.metadata)
@@ -206,17 +235,18 @@ export default {
     const { id } = this.$route.query || {};
     this.id = id;
 
-    const [data, capabilities] = await Promise.all([
-      api.service.get(id),
-      api.service.getCapabilities(id)
-    ]);
+    this.siteInfo = await api.service.getSiteInfo();
+    const data = await api.service.get(id);
+    data.aggregate = JSON.parse(data.aggregate);
     data.metadata = JSON.parse(data.metadata || "{}");
     data.metadata.customize = data.metadata.customize || [];
     // api.service.visit(id);
     this.map_load = true;
     this.info = data;
 
-    this.loadCacheStatus();
+    if (this.info.type === 0) {
+      this.loadCacheStatus();
+    }
   },
   methods: {
     loadCacheStatus() {
@@ -268,6 +298,7 @@ export default {
   background-color: #ffffff;
   padding: 32px;
   box-sizing: border-box;
+  margin-bottom: 6px;
 }
 .title {
   font-size: 20px;

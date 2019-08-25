@@ -167,13 +167,12 @@ export default {
         part_2: 0,
         part_3: 0,
         part_4: "0-0"
-      },
-      authed_servies: []
+      }
     };
   },
   mounted() {
     this.loadData();
-    api.service.servie_list({ size: 1000, aggrate: false }).then(services => {
+    api.service.servie_list({ size: 1000, aggrate: true }).then(services => {
       this.system_layers = services.list;
     });
   },

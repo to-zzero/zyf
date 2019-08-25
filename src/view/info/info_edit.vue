@@ -98,31 +98,6 @@
                     ></el-input>
                   </el-col>
                 </el-row>
-                <!-- <label for="xmin">xmin:</label>
-                <el-input
-                  id="xmin"
-                  style="width:80px"
-                  class="flex-1"
-                  v-model="info.metadata.init_extent.xmin"
-                ></el-input>
-                <label for="xmax">xmax:</label>
-                <el-input
-                  style="width:80px"
-                  class="flex-1"
-                  v-model="info.metadata.init_extent.xmax"
-                ></el-input>
-                <label for="ymin">ymin:</label>
-                <el-input
-                  style="width:80px"
-                  class="flex-1"
-                  v-model="info.metadata.init_extent.ymin"
-                ></el-input>
-                <label for="ymax">ymax:</label>
-                <el-input
-                  style="width:80px"
-                  class="flex-1"
-                  v-model="info.metadata.init_extent.ymax"
-                ></el-input>-->
               </div>
             </li>
           </ul>
@@ -163,7 +138,12 @@
             </li>
 
             <li class="flex-box item">
-              <el-button @click="addToServiceList" title="添加到服务列表" size="mini">添加</el-button>
+              <el-button
+                @click="addToServiceList"
+                title="添加到服务列表"
+                size="mini"
+                style="margin-left: 132px;"
+              >添加</el-button>
             </li>
 
             <li class="flex-box item">
@@ -174,7 +154,7 @@
                   max-height="300"
                   border
                   style="width: 100%;"
-                  :data="layer_list"
+                  :data="info.aggregate.layers"
                 >
                   <el-table-column label="服务" align="left" header-align="center" prop="title"></el-table-column>
                   <el-table-column width="100" fixed="right" label="操作" align="right" prop="url">
@@ -186,7 +166,7 @@
                         size="mini"
                       >↑</el-button>
                       <el-button
-                        v-show="row.index + 1 !== layer_list.length"
+                        v-show="row.index + 1 !== info.aggregate.layers.length"
                         @click="moveItem(row, false)"
                         style="width: 20px; text-align: center; padding-left: 0; padding-right: 0; margin-left: 4px;"
                         size="mini"
@@ -249,7 +229,7 @@
             <li v-for="(item, index) in customArr" :key="index" class="flex-box item">
               <el-input size="mini" style="width: 116px;text-align:right" v-model="item.key"></el-input>
               <el-input size="mini" class="flex-1" style="margin: 0 16px;" v-model="item.value"></el-input>
-              <el-button size="mini" type="warning" @click="remove(index)">删除</el-button>
+              <el-button size="mini" type="warning" @click="removeProps(index)">删除</el-button>
             </li>
 
             <li class="flex-box item">
@@ -265,7 +245,7 @@
                 v-model="editingPair.value"
                 style="margin: 0 16px;"
               ></el-input>
-              <el-button type="primary" @click="add">添加</el-button>
+              <el-button type="primary" @click="addProps">添加</el-button>
             </li>
           </ul>
         </el-collapse-item>
@@ -322,7 +302,6 @@ export default {
       fileInfo: null,
       system_layers: [],
       level: [0, 20],
-      layer_list: [],
       layerInfo: {
         type: SERVIE_TYPE_SYSTEM,
         id: "", //系统服务ID
@@ -363,7 +342,7 @@ export default {
         //系统服务
         var lyr = this.system_layers.find(r => r.id == this.layerInfo.id);
         if (lyr) {
-          if (this.layer_list.find(r => r.id === lyr.id)) {
+          if (this.info.aggregate.layers.find(r => r.id === lyr.id)) {
             this.$message({ message: "服务已在列表中", type: "error" });
             return;
           }
@@ -382,40 +361,48 @@ export default {
 
         obj.url = obj.title;
       }
-      const len = this.layer_list.length;
+      const len = this.info.aggregate.layers.length;
       obj.index = len;
-      this.$set(this.layer_list, len, obj);
+      this.$set(this.info.aggregate.layers, len, obj);
     },
     removeItem(row) {
       const { index } = row;
-      this.layer_list.splice(index, 1);
-      this.layer_list = this.layer_list.map((val, index) => {
-        val.index = index;
-        return val;
-      });
+      this.info.aggregate.layers.splice(index, 1);
+      this.info.aggregate.layers = this.info.aggregate.layers.map(
+        (val, index) => {
+          val.index = index;
+          return val;
+        }
+      );
     },
     moveItem(row, type) {
       const { index } = row;
-      this.layer_list.splice(index, 1);
+      this.info.aggregate.layers.splice(index, 1);
       if (type) {
-        this.layer_list.splice(index - 1 > -1 ? index - 1 : 0, 0, row);
+        this.info.aggregate.layers.splice(
+          index - 1 > -1 ? index - 1 : 0,
+          0,
+          row
+        );
       } else {
-        this.layer_list.splice(index + 1, 0, row);
+        this.info.aggregate.layers.splice(index + 1, 0, row);
       }
 
-      this.layer_list = this.layer_list.map((val, index) => {
-        val.index = index;
-        return val;
-      });
+      this.info.aggregate.layers = this.info.aggregate.layers.map(
+        (val, index) => {
+          val.index = index;
+          return val;
+        }
+      );
     },
-    add() {
+    addProps() {
       this.customArr.push({
         ...this.editingPair
       });
       this.editingPair.key = "";
       this.editingPair.value = "";
     },
-    remove(index) {
+    removeProps(index) {
       this.customArr.splice(index, 1);
     },
     async update() {
@@ -426,6 +413,9 @@ export default {
       info.metadata = JSON.stringify(info.metadata);
       info.groupIdList = this.selected_subjects.join(",");
       info.file = this.fileInfo;
+      info.aggregate.minZoom = this.level[0];
+      info.aggregate.maxZoom = this.level[1];
+      info.aggregate = JSON.stringify(info.aggregate);
       var success = await api.service
         .update(info)
         .then(() => {
@@ -465,13 +455,17 @@ export default {
           ymax: ""
         });
       }
+      if (data.aggregate) {
+        this.info.aggregate = JSON.parse(data.aggregate);
+        this.level = [this.info.aggregate.minZoom, this.info.aggregate.maxZoom];
+      } else {
+        this.info.aggregate = { minZoom: 1, maxZoom: 20, layers: [] };
+      }
+      console.log(this.info);
+
       this.customArr = data.metadata.customize || [];
       this.selected_subjects = (data.groupIdList || "").split(",");
     });
-
-    // api.service.getThumbnail(id).then(buffer => {
-    //   console.log(buffer);
-    // });
   }
 };
 </script>
