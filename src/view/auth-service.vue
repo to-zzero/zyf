@@ -154,6 +154,7 @@ import api from "../api";
 export default {
   data() {
     return {
+      authed_servies:[],
       system_layers: [],
       set_auth_dlg: false,
       authList: [],
