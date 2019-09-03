@@ -117,16 +117,35 @@
       </div>
     </el-dialog>
     <el-table :data="authList" border>
-      <el-table-column type="index" label="序号" width="60" header-align="center"></el-table-column>
-      <el-table-column prop="userName" label="用户" header-align="center"></el-table-column>
-      <el-table-column label="状态" width="60" align="center">
+      <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
+      <el-table-column prop="userName" label="授权用户" width="150" header-align="center"></el-table-column>
+      <el-table-column prop="authorizer" label="授权人" width="150"  header-align="center"></el-table-column>
+      <el-table-column label="用户状态" width="60" align="center">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.islocked == 1" size="mini" type="danger">锁定</el-tag>
           <el-tag v-else size="mini" type="success">正常</el-tag>
         </template>
       </el-table-column>
+      
+      <el-table-column prop="state" label="授权状态" width="150" align="center" header-align="center">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.state==1" size="mini" type="success" >通过</el-tag>
+          <el-tag v-else-if="scope.row.state==2" size="mini" type="danger">未通过</el-tag>
+          <!-- <el-tag v-else size="mini" type="info">申请中</el-tag> -->
+          <span v-else>
+            <el-button type="success" size="mini" @click="handleApprove(scope.row.id,true)">同意</el-button>
+            <el-button type="danger" size="mini" @click="handleApprove(scope.row.id,false)">拒绝</el-button>
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column prop="token" label="令牌" width="280" header-align="center"></el-table-column>
-      <el-table-column prop="authTime" label="更新时间" width="160" header-align="center"></el-table-column>
+      <el-table-column prop="updateAt" label="更新时间" width="160" header-align="center"></el-table-column>
+      <el-table-column prop="expiresAt" label="到期时间" width="280" header-align="center">
+        <template slot-scope="scope">
+          <span v-if="scope.row.expiresAt">{{scope.row.expiresAt}}</span>
+          <el-tag v-else size="mini" type="success">长期有效</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column prop="ip" label="IP限制" width="150">
         <template slot-scope="scope">
           <span v-if="scope.row.enableIp && scope.row.ip">{{scope.row.ip}}</span>
@@ -140,6 +159,7 @@
         </template>
       </el-table-column>
 
+      <el-table-column prop="comment" label="备注" width="280" header-align="center"></el-table-column>
       <el-table-column width="100" fixed="right" label="操作" align="center">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleOpenDlg(scope.row)">服务授权</el-button>
@@ -154,7 +174,7 @@ import api from "../api";
 export default {
   data() {
     return {
-      authed_servies:[],
+      authed_servies: [],
       system_layers: [],
       set_auth_dlg: false,
       authList: [],
@@ -197,6 +217,11 @@ export default {
     },
     ip_addr_change(v) {
       // console.log(v);
+    },
+    handleApprove(id,approved){
+      api.serviceAuth.approve(id,approved).then(()=>{
+        this.loadData();
+      })
     },
     handleSetAuth() {
       var { xmin, xmax, ymin, ymax } = this.extent_parts;

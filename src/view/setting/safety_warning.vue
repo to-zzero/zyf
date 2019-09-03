@@ -4,7 +4,7 @@
 
     <div class="shadow pd-lr12 pd-tb12">
       <h4 class="mg-t0 mg-b16 border-bottom flex-box space-between pd-b8">
-        <span>新增非法访问IP</span>
+        <span>新增非法IP访问</span>
 
         <ul class="flex-box ul-reset tw-n ts-14">
           <!-- 这些选中的时候 time 是字符串 D W M -->

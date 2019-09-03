@@ -16,3 +16,11 @@ export async function auth(params) {
     }
     return false
 }
+
+export async function approve(id, approved) {
+    var resp = await http.post(`/auth/approve`, { id, approved })
+    if (resp.status === 200) {
+        return resp.data
+    }
+    return false
+}

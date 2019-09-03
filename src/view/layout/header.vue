@@ -1,7 +1,7 @@
 <template>
   <header class="layout-header">
     <div class="content flex-box space-between pd-lr8">
-      <span class="title" @click="$router.push('/')">海图服务发布系统</span>
+      <span class="title" style="border-left:none" @click="$router.push('/')">海图服务发布系统</span>
       <div style="margin-left: auto;">
         欢迎:{{userName}}
         <el-button v-if="sid" size="mini" @click="onLogout">退出</el-button>

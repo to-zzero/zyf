@@ -93,7 +93,7 @@ export async function getSafetyWarningAPI(params) {
     if (resp && resp.status == 200) {
         var result = { ...resp.data }
         if (!params.logOnly) {
-            result.stat_list = resp.data.stat_list.map(r => {
+            result.stat_list = resp.data.stat_list.reverse().map(r => {
                 return {
                     date_time: r.time,
                     ip_number: r.count
