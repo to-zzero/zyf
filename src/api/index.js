@@ -11,7 +11,7 @@ window.vue = Vue
 // import cookie from '../../static/js/cookie.js'
 
 axios.defaults.timeout = 10000;   // 超时时间
-axios.defaults.baseURL = '/api';
+axios.defaults.baseURL = './api';
 // axios.defaults.baseURL = '/v1/api';
 
 const multipart_posts = ['/service/publish', '/service/update']

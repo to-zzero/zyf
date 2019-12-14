@@ -125,15 +125,17 @@ export default {
   background-image: url("../assets/login_bg.jpg");
   background-position: center;
   background-repeat: no-repeat;
+  position: relative;
 }
 
 .login-from {
   width: 200px;
   margin: 0 auto;
   position: absolute;
-  left: 43%;
+  left: 50%;
   top: 50%;
   margin-top: -50px;
+  margin-left: -100px;
 }
 
 .title {

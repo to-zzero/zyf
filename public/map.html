@@ -64,9 +64,14 @@
                     document.getElementById('level').innerText = args + " 级"
                 }
             })
-            var url = `${window.location.origin}/api/service/${params.service}/MapServer/tile/{level}/{row}/{col}/`
+
+            var sub=window.location.href.substr(window.location.origin.length+1)
+            var base=window.location.origin+'/'+sub.substr(0,sub.indexOf('/'))
+            // var url = `${window.location.origin}/api/service/${params.service}/MapServer/tile/{level}/{row}/{col}/`
+            var url = `${base}/api/service/${params.service}/MapServer/tile/{level}/{row}/{col}/`
             if (params.token) {
-                url = `${window.location.origin}/rest/services/${params.service}/wmts/tile/1.0.0/default/default/{level}/{row}/{col}.png`
+                // url = `${window.location.origin}/rest/services/${params.service}/wmts/tile/1.0.0/default/default/{level}/{row}/{col}.png`
+                url = `${base}/rest/services/${params.service}/wmts/tile/1.0.0/default/default/{level}/{row}/{col}.png`
                 url += "?token=" + params.token
             }
             var layer = null,

@@ -264,7 +264,7 @@
         <img v-if="imageUrl" :src="imageUrl" class="avatar" />
         <img
           v-else-if="info.hasThunmbnail"
-          :src="`/api/service/thumbnail/${info.id}`"
+          :src="`./api/service/thumbnail/${info.id}`"
           class="avatar"
         />
         <span v-else>

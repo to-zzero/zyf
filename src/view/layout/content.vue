@@ -24,7 +24,7 @@
 
         <div class="flex-box align-start" >
           <div style="width: 110px; height: 110px;">
-            <img :src="`/api/service/thumbnail/${service.id}`" style="width:100%;height:100%" />
+            <img :src="`./api/service/thumbnail/${service.id}`" style="width:100%;height:100%" />
           </div>
           <ul class="ul-reset mg-l16 relative flex-1">
             <li class="flex-box mg-b8">

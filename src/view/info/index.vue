@@ -6,7 +6,16 @@
 
     <div class="content" v-if="map_load">
       <div class="basis style mg-b16">
-        <div class="title">服务基本信息</div>
+        <div class="title">
+          服务基本信息
+          <el-button
+            type="warning"
+            size="small"
+            :loading="deleting_cache"
+            @click="deleteCache"
+            v-if="info.type ==1"
+          >清空缓存</el-button>
+        </div>
 
         <div style="padding: 0 16px; margin-top: 40px;" class="flex-box space-between">
           <ul class="ul-reset">
@@ -58,12 +67,16 @@
               <div class="inner-info">{{info.metadata.provider}}</div>
             </li>
             <li class="flex-box item">
+              <div class="inner-title">发布人：</div>
+              <div class="inner-info">{{info.publisher}}</div>
+            </li>
+            <li class="flex-box item">
               <div class="inner-title">预览图：</div>
-              <img class="inner-info" :src="`/api/service/thumbnail/${info.id}`" />
+              <img class="inner-info" :src="`./api/service/thumbnail/${info.id}`" />
             </li>
           </ul>
 
-          <div style="width: 574px; height: 370px; background-color: #d8d8d8;position: absolute;right: 180px;top: 230px;">
+          <div class="map-container">
             <!-- iframe 直接放这里面 -->
             <iframe
               style="border: 1px solid #ebeef5;"
@@ -170,6 +183,7 @@ import dayjs from "dayjs";
 // import api from "@/api";
 import api from "../../api";
 import LayoutHeader from "../layout/header";
+import { type } from "os";
 // import Map from "../map";
 
 export default {
@@ -190,7 +204,8 @@ export default {
       },
       cache_loading: false,
       map_load: false,
-      siteInfo: null
+      siteInfo: null,
+      deleting_cache: false
     };
   },
   components: {
@@ -279,6 +294,18 @@ export default {
             this.$message(err);
           });
       });
+    },
+    async deleteCache() {
+      this.$confirm("确定要清除本服务缓存？", "清空缓存").then(() => {
+        try {
+          this.deleting_cache = true;
+          api.service.deleteAggrateCache(this.id);
+          this.$message({ type: "success", message: "缓存已清空" });
+        } catch (error) {
+          this.$message({ type: "error", message: "清空缓存失败，请稍后重试" });
+        }
+        this.deleting_cache = false;
+      });
     }
   }
 };
@@ -313,16 +340,27 @@ export default {
   color: #828282;
   font-size: 14px;
   text-align: right;
+  white-space: nowrap;
 }
 .inner-info {
   font-size: 14px;
   font-weight: 600;
   color: #292929;
+  word-break: break-all;
 }
 .item {
   &:not(:last-of-type) {
     margin-bottom: 16px;
   }
+}
+
+.map-container {
+  min-width: 500px;
+  height: 400px;
+  background-color: rgb(216, 216, 216);
+  right: 180px;
+  top: 230px;
+  flex: 1;
 }
 </style>
 

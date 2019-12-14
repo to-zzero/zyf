@@ -6,7 +6,7 @@
         欢迎:{{userName}}
         <el-button v-if="sid" size="mini" @click="onLogout">退出</el-button>
       </div>
-      <el-button v-if="canConfig" class="mg-l16" size="mini" @click="routerTo('/#/setting')">系统配置</el-button>
+      <el-button v-if="canConfig" class="mg-l16" size="mini" @click="routerTo('./#/setting')">系统配置</el-button>
     </div>
   </header>
 </template>

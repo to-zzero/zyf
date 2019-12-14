@@ -166,6 +166,13 @@ export async function getThumbnail(id) {
     return null
 }
 
+export async function deleteAggrateCache(id) {
+    var resp = await http.post(`/service/aggregate/clear_cache/${id}`)
+    if (resp && resp.data)
+        return resp.data
+    return false
+}
+
 export async function getTileCacheStatus(id) {
     var resp = await http.get(`/service/cacheStatus/${id}`)
     if (resp && resp.data)
