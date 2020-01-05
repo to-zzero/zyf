@@ -149,7 +149,7 @@
         <el-button type="primary" @click="handleSetAuth">确 定</el-button>
       </div>
     </el-dialog>
-    <el-table :data="authList" border>
+    <el-table :data="authList.list" border>
       <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
       <el-table-column prop="userName" label="授权用户" width="150" header-align="center"></el-table-column>
       <el-table-column prop="authorizer" label="授权人" width="150" header-align="center"></el-table-column>
@@ -171,11 +171,11 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="token" label="令牌" width="280" header-align="center"></el-table-column>
+      <el-table-column prop="token" label="令牌" width="320" header-align="center"></el-table-column>
       <el-table-column prop="updateAt" label="更新时间" width="160" header-align="center"></el-table-column>
       <el-table-column prop="expiresAt" label="到期时间" width="280" header-align="center">
         <template slot-scope="scope">
-          <el-tag  type="success" v-if="scope.row.expiresAt">{{date2str(scope.row.expiresAt,false)}}</el-tag>
+          <el-tag type="success" v-if="scope.row.expiresAt">{{date2str(scope.row.expiresAt,false)}}</el-tag>
           <el-tag v-else size="mini" type="success">长期有效</el-tag>
         </template>
       </el-table-column>
@@ -195,10 +195,24 @@
       <el-table-column prop="comment" label="备注" width="280" header-align="center"></el-table-column>
       <el-table-column width="100" fixed="right" label="操作" align="center">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleOpenDlg(scope.row)">服务授权</el-button>
+          <el-button
+            size="mini"
+            v-if="scope.row.state == 1"
+            style="padding:6px"
+            @click="handleOpenDlg(scope.row)"
+          >服务授权</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <li class="flex-box" style="justify-content: flex-end;">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="authList.total"
+        :page-size="authList.size"
+        @current-change="currentChange"
+      ></el-pagination>
+    </li>
   </div>
 </template>
 
@@ -210,7 +224,7 @@ export default {
       authed_servies: [],
       system_layers: [],
       set_auth_dlg: false,
-      authList: [],
+      authList: { list: [] },
       current: {},
       ip_parts_list: [],
       ip_parts: {
@@ -234,9 +248,9 @@ export default {
     });
   },
   methods: {
-    loadData() {
-      api.serviceAuth.list().then(data => {
-        this.authList = data.list;
+    loadData(page = 1, size = 20) {
+      api.serviceAuth.list(page, size).then(data => {
+        this.authList = data;
       });
     },
     handleOpenDlg(auth) {
@@ -250,6 +264,9 @@ export default {
       this.$set(this.current, "enableIp", !!this.current.enableIp);
       this.$set(this.current, "enableExtent", !!this.current.enableExtent);
       this.set_auth_dlg = true;
+    },
+    currentChange(page) {
+      loadData(page);
     },
     ip_addr_change() {
       // console.log(v);

@@ -113,7 +113,7 @@
             </li>
 
             <li class="flex-box item">
-              <div class="item-title">{{ layerInfo.type ? '服务链接' : '选择服务' }}</div>
+              <div class="item-title">{{ layerInfo.type ? '服务地址' : '选择服务' }}</div>
               <el-input
                 v-if="layerInfo.type === 1"
                 style="width: 460px;"
@@ -355,6 +355,8 @@ export default {
           return;
         }
       } else {
+        if (!this.layerInfo.url)
+          return this.$message({ message: "服务地址不能为空", type: "error" });
         //外部wmts服务
         obj.type = SERVIE_TYPE_WMTS;
         obj.title = this.layerInfo.url;
@@ -406,6 +408,33 @@ export default {
       this.customArr.splice(index, 1);
     },
     async update() {
+      this.info.keyword = this.info.keyword.replace(/；/g, ";");
+      if (this.info.keyword.replace(/;/g, "").length > 20) {
+        this.$message({ message: "关键字不能超过20个字", type: "error" });
+        return false;
+      }
+
+      if (this.info.metadata.abstract.length > 20) {
+        return this.$message({
+          message: "服务摘要不能超过20个字",
+          type: "error"
+        });
+      }
+
+      if (this.selected_subjects.length == 0) {
+        this.$message({ message: "所属分组不能为空", type: "error" });
+        return false;
+      }
+
+      if (
+        isNaN(this.info.metadata.init_extent.xmin) ||
+        isNaN(this.info.metadata.init_extent.ymin) ||
+        isNaN(this.info.metadata.init_extent.xmax) ||
+        isNaN(this.info.metadata.init_extent.ymax)
+      ) {
+        return this.$message({ message: "坐标范围不正确", type: "error" });
+      }
+
       var info = {
         ...this.info
       };
@@ -461,8 +490,6 @@ export default {
       } else {
         this.info.aggregate = { minZoom: 1, maxZoom: 20, layers: [] };
       }
-      console.log(this.info);
-
       this.customArr = data.metadata.customize || [];
       this.selected_subjects = (data.groupIdList || "").split(",");
     });
