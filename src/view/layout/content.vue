@@ -22,7 +22,7 @@
           <!-- <span style="font-size: 14px; color: #696969">访问次数: {{service.visit}}</span> -->
         </div>
 
-        <div class="flex-box align-start" >
+        <div class="flex-box align-start">
           <div style="width: 110px; height: 110px;">
             <img :src="`./api/service/thumbnail/${service.id}`" style="width:100%;height:100%" />
           </div>
@@ -134,10 +134,12 @@
       <li class="flex-box" style="justify-content: flex-end;">
         <el-pagination
           background
-          layout="prev, pager, next"
+          layout="prev, pager, next,sizes"
+          :page-sizes="[5,10,15,20]"
           :total="service_list.total"
           :page-size="service_filter.size"
           @current-change="currentChange"
+          @size-change="sizeChange"
         ></el-pagination>
       </li>
     </ul>
@@ -265,6 +267,9 @@ export default {
     currentChange(page) {
       this.queryService({ page });
     },
+    sizeChange(size) {
+      this.queryService({ page: 1, size });
+    },
     handleAggrateChanged() {
       this.queryService({ aggrate: this.with_aggrate });
     }
@@ -373,8 +378,8 @@ export default {
   cursor: pointer;
 }
 
-.control-item:hover{
-  color:#4874ed;
+.control-item:hover {
+  color: #4874ed;
 }
 
 .tw-b {

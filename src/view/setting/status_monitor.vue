@@ -45,7 +45,7 @@
         <!-- 把这个div换成img 👇 -->
         <!-- <div class="mg-r16" style="width: 80px; height: 80px; background: #000;"></div> -->
         <div style="width: 110px; height: 110px;">
-          <img :src="`/api/service/thumbnail/${currentService.id}`" style="width:100%;height:100%" />
+          <img :src="`./api/service/thumbnail/${currentService.id}`" style="width:100%;height:100%" />
         </div>
 
         <div>

@@ -156,7 +156,14 @@ export default {
       this.current = JSON.parse(JSON.stringify(row));
     },
     deleteCatalog(row) {
-      this.$confirm(`是否删除 ${row.name}?`, "提示", {
+      if (row.subject && row.subject.length > 0) {
+        this.$message({
+          message: `${row.name} 下有子目录，请先删除子目录`,
+          type: "error"
+        });
+        return;
+      }
+      this.$confirm(`是否删除目录 ${row.name}? 目录删除后，服务也将移出目录`, "提示", {
         type: "warning"
       })
         .then(async () => {

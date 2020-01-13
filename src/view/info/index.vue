@@ -72,7 +72,7 @@
             </li>
             <li class="flex-box item">
               <div class="inner-title">预览图：</div>
-              <img class="inner-info" :src="`./api/service/thumbnail/${info.id}`" />
+              <img class="inner-info" style="width: 128px;height: 128px;border: 1px solid #ddd;" :src="`./api/service/thumbnail/${info.id}`" />
             </li>
           </ul>
 

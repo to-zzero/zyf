@@ -151,8 +151,12 @@
     </el-dialog>
     <el-table :data="authList.list" border>
       <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
-      <el-table-column prop="userName" label="授权用户" width="150" header-align="center"></el-table-column>
-      <el-table-column prop="authorizer" label="授权人" width="150" header-align="center"></el-table-column>
+      <el-table-column prop="userName" label="授权用户" width="150" header-align="center">
+        <template slot-scope="scope">{{scope.row.userName_real||scope.row.userName}}</template>
+      </el-table-column>
+      <el-table-column prop="authorizer" label="授权人" width="150" header-align="center">
+        <template slot-scope="scope">{{scope.row.authorizer_real||scope.row.authorizer}}</template>
+      </el-table-column>
       <el-table-column label="用户状态" width="60" align="center">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.islocked == 1" size="mini" type="danger">锁定</el-tag>
@@ -207,10 +211,12 @@
     <li class="flex-box" style="justify-content: flex-end;">
       <el-pagination
         background
-        layout="prev, pager, next"
+        layout="prev, pager, next,sizes"
         :total="authList.total"
         :page-size="authList.size"
+        :page-sizes="[20,50,100]"
         @current-change="currentChange"
+        @size-change="sizeChange"
       ></el-pagination>
     </li>
   </div>
@@ -267,6 +273,9 @@ export default {
     },
     currentChange(page) {
       this.loadData(page);
+    },
+    sizeChange(size) {
+      this.loadData(1, size);
     },
     ip_addr_change() {
       // console.log(v);
