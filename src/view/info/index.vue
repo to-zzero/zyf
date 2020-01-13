@@ -35,7 +35,7 @@
             </li>
             <li class="flex-box item">
               <div class="inner-title">服务摘要：</div>
-              <div class="inner-info">{{info.desc}}</div>
+              <div class="inner-info">{{info.metadata.abstract}}</div>
             </li>
             <li class="flex-box item">
               <div class="inner-title">服务类型：</div>

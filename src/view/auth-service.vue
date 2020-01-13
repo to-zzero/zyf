@@ -266,7 +266,7 @@ export default {
       this.set_auth_dlg = true;
     },
     currentChange(page) {
-      loadData(page);
+      this.loadData(page);
     },
     ip_addr_change() {
       // console.log(v);

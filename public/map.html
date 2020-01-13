@@ -52,8 +52,10 @@
             window.map = map
             var view = new MapView({
                 container: "map",
-                map: map
+                map: map,
+
             });
+            view.constraints.minZoom = 1
             window.view = view
             var homeBtn = new Home({
                 view: view
@@ -61,12 +63,13 @@
             view.ui.add(homeBtn, "top-left");
             view.watch('zoom', function (args) {
                 if (args % 1 == 0) {
+                    document.getElementById('level').style.display = 'block'
                     document.getElementById('level').innerText = args + " 级"
                 }
             })
 
-            var sub=window.location.href.substr(window.location.origin.length+1)
-            var base=window.location.origin+'/'+sub.substr(0,sub.indexOf('/'))
+            var sub = window.location.href.substr(window.location.origin.length + 1)
+            var base = window.location.origin + '/' + sub.substr(0, sub.indexOf('/'))
             // var url = `${window.location.origin}/api/service/${params.service}/MapServer/tile/{level}/{row}/{col}/`
             var url = `${base}/api/service/${params.service}/MapServer/tile/{level}/{row}/{col}/`
             if (params.token) {
