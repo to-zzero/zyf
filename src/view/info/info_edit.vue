@@ -455,10 +455,11 @@ export default {
           });
         })
         .catch(err => {
-          this.$message({
-            message: "保存失败。" + err,
-            type: "error"
-          });
+          // this.$message({
+          //   message: "保存失败。" + err,
+          //   type: "error"
+          // });
+          console.log(err )
         });
     }
   },

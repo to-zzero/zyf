@@ -250,7 +250,7 @@ export default {
   mounted() {
     this.loadData();
     api.service.servie_list({ size: 1000, aggrate: true }).then(services => {
-      this.system_layers = services.list;
+      this.system_layers = services.list.filter(r=>r.status==1);
     });
   },
   methods: {
