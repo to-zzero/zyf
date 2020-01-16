@@ -75,18 +75,6 @@
             </el-form-item>
             <el-form-item label="范围">
               <el-row>
-                <el-col :span="2" :offset="7">ymax</el-col>
-                <el-col :span="4">
-                  <el-input-number
-                    :controls="false"
-                    :min="-90"
-                    :max="90"
-                    v-model="extent_parts.ymax"
-                    size="mini"
-                  ></el-input-number>
-                </el-col>
-              </el-row>
-              <el-row>
                 <el-col :span="2" :offset="2">xmin</el-col>
                 <el-col :span="4">
                   <el-input
@@ -97,7 +85,7 @@
                     v-model="extent_parts.xmin"
                   ></el-input>
                 </el-col>
-                <el-col :span="2" :offset="5">xmax</el-col>
+                <el-col :span="2" :offset="2">xmax</el-col>
                 <el-col :span="4">
                   <el-input
                     size="mini"
@@ -109,7 +97,7 @@
                 </el-col>
               </el-row>
               <el-row>
-                <el-col :span="2" :offset="7">ymin</el-col>
+                <el-col :span="2" :offset="2">ymin</el-col>
                 <el-col :span="4">
                   <el-input
                     size="mini"
@@ -118,6 +106,18 @@
                     :max="90"
                     v-model="extent_parts.ymin"
                   ></el-input>
+                </el-col>
+
+                <el-col :span="2" :offset="2">ymax</el-col>
+                <el-col :span="4">
+                  <el-input-number
+                    style="width:100%"
+                    :controls="false"
+                    :min="-90"
+                    :max="90"
+                    v-model="extent_parts.ymax"
+                    size="mini"
+                  ></el-input-number>
                 </el-col>
               </el-row>
             </el-form-item>

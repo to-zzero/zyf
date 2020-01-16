@@ -491,7 +491,11 @@ export default {
         this.info.aggregate = { minZoom: 1, maxZoom: 20, layers: [] };
       }
       this.customArr = data.metadata.customize || [];
-      this.selected_subjects = (data.groupIdList || "").split(",");
+      if (data.groupIdList) {
+        this.selected_subjects = data.groupIdList.split(",");
+      } else {
+        this.selected_subjects = [];
+      }
     });
   }
 };

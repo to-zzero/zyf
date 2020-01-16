@@ -194,6 +194,11 @@ export default {
         this.$message({ message: "请输入服务名称", type: "error" });
         return;
       }
+
+      if (this.subjects.length == 0) {
+        return this.$message({ message: "请选择所属分组", type: "error" });
+      }
+
       try {
         this.bntOKLoading = true;
         var nameOk = await api.service.checkname(this.service_info.name);
