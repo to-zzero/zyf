@@ -66,36 +66,52 @@
               <div style="width: 300px;">
                 <el-row>
                   <el-col :span="4" :offset="10">
-                    <el-input
+                    <el-input-number
                       style="width:120px"
                       size="mini"
+                      :min="-180"
+                      :max="180"
+                      :precision="4"
+                      :controls="false"
                       v-model="info.metadata.init_extent.ymax"
-                    ></el-input>
+                    ></el-input-number>
                   </el-col>
                 </el-row>
                 <el-row>
                   <el-col :span="4" :offset="0">
-                    <el-input
+                    <el-input-number
                       size="mini"
                       style="width:120px"
+                      :precision="4"
+                      :controls="false"
+                      :min="-180"
+                      :max="180"
                       v-model="info.metadata.init_extent.xmin"
-                    ></el-input>
+                    ></el-input-number>
                   </el-col>
                   <el-col :span="4" :offset="16">
-                    <el-input
+                    <el-input-number
                       size="mini"
                       style="width:120px"
+                      :precision="4"
+                      :min="-90"
+                      :max="90"
+                      :controls="false"
                       v-model="info.metadata.init_extent.xmax"
-                    ></el-input>
+                    ></el-input-number>
                   </el-col>
                 </el-row>
                 <el-row>
                   <el-col :span="4" :offset="10">
-                    <el-input
+                    <el-input-number
                       size="mini"
                       style="width:120px"
+                      :precision="4"
+                      :min="-90"
+                      :max="90"
+                      :controls="false"
                       v-model="info.metadata.init_extent.ymin"
-                    ></el-input>
+                    ></el-input-number>
                   </el-col>
                 </el-row>
               </div>
