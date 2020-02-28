@@ -11,6 +11,11 @@ export async function login(userName, password, captcha) {
     throw '请求发生错误'
 }
 
+export async function changePsw(oldPsw, newPsw) {
+    let resp = await http.post('/admin/changPwd', { oldPwd: oldPsw, newPwd: newPsw })
+    return resp.data
+}
+
 export async function getUserInfo() {
     let resp = await http.post('/admin/info')
     return resp.data
@@ -40,7 +45,7 @@ export async function userList() {
 }
 
 export async function getLogList(page, size, username) {
-    let resp = await http.get(`/admin/log?page=${page}&size=${size}&userName=`+username)
+    let resp = await http.get(`/admin/log?page=${page}&size=${size}&userName=` + username)
     if (resp && resp.status == 200) {
         return resp.data
     }
