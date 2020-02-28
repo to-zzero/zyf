@@ -215,6 +215,7 @@
         :total="authList.total"
         :page-size="authList.size"
         :page-sizes="[20,50,100]"
+        :current-page="authList.page"
         @current-change="currentChange"
         @size-change="sizeChange"
       ></el-pagination>
@@ -239,6 +240,12 @@ export default {
         part_3: 0,
         part_4: "0-0"
       },
+      extent_parts: {
+        xmin: -180,
+        xmax: 180,
+        ymin: -90,
+        ymax: 90
+      },
       expiresAtOpts: {
         disabledDate(time) {
           return false;
@@ -250,7 +257,7 @@ export default {
   mounted() {
     this.loadData();
     api.service.servie_list({ size: 1000, aggrate: true }).then(services => {
-      this.system_layers = services.list.filter(r=>r.status==1);
+      this.system_layers = services.list.filter(r => r.status == 1);
     });
   },
   methods: {
@@ -261,6 +268,13 @@ export default {
     },
     handleOpenDlg(auth) {
       this.current = JSON.parse(JSON.stringify(auth));
+      var extent = (this.current.extent || "").split(",");
+      this.extent_parts = {
+        xmin: extent[0] || -180,
+        xmax: extent[1] || 180,
+        ymin: extent[2] || -90,
+        ymax: extent[3] || 90
+      };
       this.authed_servies = [];
       if (this.current.services) {
         this.authed_servies = this.current.services
@@ -296,7 +310,7 @@ export default {
     },
     handleApprove(id, approved) {
       api.serviceAuth.approve(id, approved).then(() => {
-        this.loadData();
+        this.loadData(this.authList.page);
       });
     },
     ip2rows(ip) {
@@ -333,24 +347,12 @@ export default {
           if (ok == true) {
             this.set_auth_dlg = false;
             this.$message({ message: "修改成功", type: "success" });
-            this.loadData();
+            this.loadData(this.authList.page);
           }
         })
         .catch(err => {
           this.$message({ message: err, type: "error" });
         });
-    }
-  },
-  computed: {
-    extent_parts() {
-      var extent = (this.current.extent || "").split(",");
-      var obj = {
-        xmin: extent[0] || -180,
-        xmax: extent[1] || 180,
-        ymin: extent[2] || -90,
-        ymax: extent[3] || 90
-      };
-      return obj;
     }
   },
   watch: {

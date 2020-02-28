@@ -89,7 +89,9 @@
       </li>
 
       <li class="flex-box mg-b16">
-        <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">所属分组</div>
+        <div class="flex-1 mg-r16" style="font-size: 14px; color: #7f8fa4; text-align: right;">所属分组
+          <span style="color:red">*</span>
+        </div>
         <el-select size="mini" multiple style="width: 460px;" v-model="subjects" placeholder="请选择">
           <template v-for="(catalog, index) in catalog_list">
             <!-- 循环template -->
