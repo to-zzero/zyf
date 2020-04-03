@@ -73,7 +73,7 @@
             <el-form-item label="启用范围限制" style="height:20px">
               <el-checkbox v-model="current.enableExtent"></el-checkbox>
             </el-form-item>
-            <el-form-item label="范围">
+            <el-form-item label="范围：">
               <el-row>
                 <el-col :span="2" :offset="2">xmin</el-col>
                 <el-col :span="4">
